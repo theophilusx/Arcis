@@ -1,0 +1,70 @@
+<html>
+  <head>
+      <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>Welcome to Arcis</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Welcome to Arcis</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+	  {% if msg %}
+	  <div class="alert alert-danger">
+	    {{msg}}
+	  </div>
+	  {% endif %}
+	  <form class="form-signin" role="form" action="/login"
+		method="POST" accept-charset="UTF-8"
+		enctype="application/x-www-form-urlencoded">
+            <h2 class="form-signin-heading">Please sign in</h2>
+	    {% csrf-field %}
+	    {% if next %}
+	    <input name="next" type="hidden" value="{{next}}">
+	    {% else %}
+	    <input name="next" type="hidden" value="/">
+	    {% endif %}
+	    
+            <label for="email" class="sr-only">Email address</label>
+            <input type="email" name="email" id="email" class="form-control"
+		   placeholder="Email address" required autofocus>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password"
+		   class="form-control" placeholder="Password" required>
+            <button class="btn btn-lg btn-primary btn-block"
+		    type="submit">Sign in</button>
+	  </form>
+	</div>
+	<div class="col-md-3"></div>
+      </div>
+    </div>
+    <!-- scripts and styles -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    {% style "/css/screen.css" %}
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var context = "{{servlet-context}}";
+        var csrf = "{{csrf-token}}";
+    </script>
+    {% if dev %}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.11.2/react.js"></script>
+      {% script "/js/out/goog/base.js" %}
+      {% script "/js/app.js" %}
+      <script type="text/javascript">goog.require("arcis.app");</script>
+    {% else %}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.11.2/react.min.js"></script>
+      {% script "/js/app.js" %}
+    {% endif %}
+  </body>
+</html>
+
+
+
+

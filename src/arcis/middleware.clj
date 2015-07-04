@@ -1,6 +1,12 @@
+;;      Filename: middleware.clj
+;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
+;; Last Modified: Saturday, 04 July 2015 05:16 PM AEST
+;;        Author: Tim Cross <theophilusx AT gmail.com>
+;;   Description:
+;;
 (ns arcis.middleware
   (:require [arcis.session :as session]
-            [arcis.layout :refer [*servlet-context*]]
+            [arcis.layout :refer [*servlet-context* *identity*]]
             [taoensso.timbre :as timbre]
             [environ.core :refer [env]]
             [clojure.java.io :as io]
@@ -17,7 +23,6 @@
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
-            [arcis.layout :refer [*identity*]]
             ))
 
 (defn wrap-servlet-context [handler]
@@ -54,10 +59,13 @@
 (defn wrap-formats [handler]
   (wrap-restful-format handler :formats [:json-kw :transit-json :transit-msgpack]))
 
+;; (defn on-error [request response]
+;;   {:status  403
+;;    :headers {"Content-Type" "text/plain"}
+;;    :body    (str "Access to " (:uri request) " is not authorized")})
+
 (defn on-error [request response]
-  {:status  403
-   :headers {"Content-Type" "text/plain"}
-   :body    (str "Access to " (:uri request) " is not authorized")})
+  (redirect (str "/login?next=" (:url request))))
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
@@ -79,7 +87,7 @@
       wrap-auth
       (wrap-idle-session-timeout
         {:timeout (* 60 30)
-         :timeout-response (redirect "/")})
+         :timeout-response (redirect "/login")})
       wrap-formats
       (wrap-defaults
         (-> site-defaults

@@ -1,3 +1,9 @@
+;;      Filename: home.clj
+;; Creation Date: Saturday, 04 July 2015 12:19 PM AEST
+;; Last Modified: Saturday, 04 July 2015 12:37 PM AEST
+;;        Author: Tim Cross <theophilusx AT gmail.com>
+;;   Description:
+;;
 (ns arcis.routes.home
   (:require [arcis.layout :as layout]
             [compojure.core :refer [defroutes GET]]

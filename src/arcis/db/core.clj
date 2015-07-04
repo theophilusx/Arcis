@@ -1,9 +1,15 @@
+;;      Filename: core.clj
+;; Creation Date: Saturday, 04 July 2015 12:26 PM AEST
+;; Last Modified: Saturday, 04 July 2015 05:19 PM AEST
+;;        Author: Tim Cross <theophilusx AT gmail.com>
+;;   Description:
+;;
 (ns arcis.db.core
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [yesql.core :refer [defqueries]]
-    [cheshire.core :refer [generate-string parse-string]]
-    [environ.core :refer [env]])
+   [clojure.java.jdbc :as jdbc]
+   [yesql.core :refer [defqueries]]
+   [cheshire.core :refer [generate-string parse-string]]
+   [environ.core :refer [env]])
   (:import org.postgresql.util.PGobject
            org.postgresql.jdbc4.Jdbc4Array
            clojure.lang.IPersistentMap
@@ -13,7 +19,7 @@
 (def db-spec
   {:connection-uri (env :database-url)})
 
-(defqueries "sql/users.sql" {:connection db-spec})
+;(defqueries "sql/users.sql" {:connection db-spec})
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))

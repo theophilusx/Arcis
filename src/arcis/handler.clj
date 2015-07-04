@@ -1,7 +1,13 @@
+;;      Filename: handler.clj
+;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
+;; Last Modified: Saturday, 04 July 2015 05:16 PM AEST
+;;        Author: Tim Cross <theophilusx AT gmail.com>
+;;   Description:
+;;
 (ns arcis.handler
   (:require [compojure.core :refer [defroutes routes wrap-routes]]
             [arcis.routes.home :refer [home-routes]]
-            
+            [arcis.routes.login :refer [login-routes]]
             [arcis.middleware :as middleware]
             [arcis.session :as session]
             [compojure.route :as route]
@@ -64,7 +70,10 @@
 
 (def app
   (-> (routes
-        
-        (wrap-routes #'home-routes middleware/wrap-csrf)
-        #'base-routes)
+       #'login-routes
+       (-> home-routes
+           (wrap-routes middleware/wrap-csrf)
+           (wrap-routes middleware/wrap-restricted))
+       #'base-routes)
       middleware/wrap-base))
+
