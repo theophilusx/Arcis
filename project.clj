@@ -44,9 +44,8 @@
   :main arcis.core
   :migratus {:store :database}
 
-  :plugins [[lein-ring "0.9.1"]
+  :plugins [[lein-ring "0.9.6"]
             [lein-environ "1.0.0"]
-            [lein-ancient "0.6.5"]
             [migratus-lein "0.1.5"]
             [lein-cljsbuild "1.0.6"]]
   
@@ -86,9 +85,9 @@
    :dev {:dependencies [[ring-mock "0.1.5"]
                         [ring/ring-devel "1.3.2"]
                         [pjstadig/humane-test-output "0.7.0"]
-                        [lein-figwheel "0.3.5"]
+                        [lein-figwheel "0.3.7"]
                         [org.clojure/tools.nrepl "0.2.10"]]
-         :plugins [[lein-figwheel "0.3.3"]]
+         :plugins [[lein-figwheel "0.3.7"]]
           :cljsbuild
           {:builds
            {:app
