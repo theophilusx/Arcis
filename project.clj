@@ -56,7 +56,7 @@
          :destroy arcis.handler/destroy
          :uberwar-name "arcis.war"}
 
-  :clean-targets ^{:protect false} ["resources/public/js"]
+  :clean-targets ^{:protect false} ["target" "resources/public/js"]
   
   :cljsbuild
   {:builds

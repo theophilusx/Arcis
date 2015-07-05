@@ -1,2 +1,0 @@
-;; Analyzed by ClojureScript 0.0-3308
-{:name arcis.app, :doc nil, :excludes #{}, :use-macros nil, :require-macros {figwheel figwheel.client, figwheel.client figwheel.client}, :uses nil, :requires {core arcis.core, arcis.core arcis.core, figwheel figwheel.client, figwheel.client figwheel.client}, :imports nil, :cljs.analyzer/constants {:seen #{:jsload-callback :websocket-url}, :order [:websocket-url :jsload-callback]}}
