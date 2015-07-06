@@ -1,16 +1,14 @@
 ;;      Filename: handler.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Saturday, 04 July 2015 05:16 PM AEST
+;; Last Modified: Sunday, 05 July 2015 03:11 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.handler
   (:require [compojure.core :refer [defroutes routes wrap-routes]]
-            [arcis.routes.home :refer [home-routes]]
-            [arcis.routes.login :refer [login-routes]]
+            [arcis.routes.app-routes :as r]
             [arcis.middleware :as middleware]
             [arcis.session :as session]
-            [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
             [selmer.parser :as parser]
@@ -18,10 +16,6 @@
             [clojure.tools.nrepl.server :as nrepl]))
 
 (defonce nrepl-server (atom nil))
-
-(defroutes base-routes
-           (route/resources "/")
-           (route/not-found "Not Found"))
 
 (defn start-nrepl
   "Start a network repl for debugging when the :repl-port is set in the environment."
@@ -70,10 +64,12 @@
 
 (def app
   (-> (routes
-       #'login-routes
-       (-> home-routes
-           (wrap-routes middleware/wrap-csrf)
-           (wrap-routes middleware/wrap-restricted))
-       #'base-routes)
+       #'r/login-routes
+       #'r/debug-routes
+       (wrap-routes (routes
+                     #'r/api-routes
+                     (wrap-routes #'r/app-routes middleware/wrap-csrf))
+                    middleware/wrap-restricted)
+       #'r/base-routes)
       middleware/wrap-base))
 

@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Saturday, 04 July 2015 05:58 PM AEST
+;; Last Modified: Monday, 06 July 2015 07:48 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -8,13 +8,6 @@
   (:require [reagent.core :refer [atom]]
             [reagent.session :as session]
             [secretary.core :as secretary]))
-
-(defn expired-component []
-  (if (session/get :expired)
-    [:div {:class "alert alert-danger" :role "alert"}
-     [:h2 "Session Expired!"]
-     [:p "Your session has expired. Please "
-      [:a {:href "/login"} "sign in"] " to continue"]]))
 
 (defn page-header [title & sub-title]
   [:div.jumbotron
@@ -74,11 +67,16 @@
     (for [i items]
       ^{:key i} [menu-item-component k i f])]])
 
-(defn danger-component []
-  (if-let [msg (session/get :error)]
-    [:div {:class "alert alert-danger" :role "alert"} msg]))
+(def status-type-map {:error "alert-danger"
+                      :warning "alert-warning"
+                      :success "alert-success"
+                      :expired "alert-danger"})
 
 (defn status-component []
-  (if-let [msg (session/get :status)]
-    [:div {:class "alert alert-success" :role "alert"} msg]))
+  (let [status-type (session/get-in [:status :type])]
+    (when (contains? #{:error :warning :success :expired} status-type)
+      [:div {:class (str "alert " (status-type status-type-map)) :role "alert"}
+       (session/get-in [:status :msg])])))
+
+
 

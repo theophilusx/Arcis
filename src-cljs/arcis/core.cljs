@@ -2,6 +2,7 @@
   (:require [arcis.pages.home :refer [home-page]]
             [arcis.pages.about :refer [about-page]]
             [arcis.pages.not-implemented :refer [not-implemented-page]]
+            [arcis.pages.admin.users :refer [users-page]]
             [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [reagent.cookies :as cookie]
@@ -40,6 +41,7 @@
              (session/get-in [:user-data :last-name]))
         [:span {:class "caret"}]]
        [:ul {:class "dropdown-menu" :role "menu"}
+        [:li [:a {:href "#/password"} "Change Password"]]
         [:li [:a {:href "/logout"} "Logout"]]]]]]]])
 
 (def pages
@@ -48,7 +50,7 @@
    :hosts #'not-implemented-page
    :scans #'not-implemented-page
    :incidents #'not-implemented-page
-   :admin #'not-implemented-page})
+   :admin #'users-page})
 
 (defn page []
   [(pages (session/get :page))])

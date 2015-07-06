@@ -1,12 +1,11 @@
 ;;      Filename: login.clj
 ;; Creation Date: Saturday, 04 July 2015 12:23 PM AEST
-;; Last Modified: Saturday, 04 July 2015 05:15 PM AEST
+;; Last Modified: Sunday, 05 July 2015 02:50 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.routes.login
   (:require [arcis.layout :as layout]
-            [compojure.core :refer [defroutes GET POST]]
             [ring.util.response :refer [response redirect set-cookie]]
             [arcis.db.users :as db]
             [buddy.hashers :as hashers]))
@@ -49,8 +48,4 @@
       (assoc :session {})
       (assoc :cookies {})))
 
-(defroutes login-routes
-  (GET "/login" [next] (login-page next))
-  (POST "/login" [] authenticate-user)
-  (GET "/logout" [] logout))
 

@@ -12,6 +12,8 @@
                  [compojure "1.3.4"]
                  [ring/ring-defaults "0.1.5"]
                  [ring/ring-session-timeout "0.1.0"]
+                 [liberator "0.13"]
+                 [cheshire "5.5.0"]
                  [metosin/ring-middleware-format "0.6.0"]
                  [metosin/ring-http-response "0.6.2"]
                  [bouncer "0.3.3"]
@@ -30,6 +32,7 @@
                  [cljsjs/react "0.13.3-0"]
                  [reagent-forms "0.5.1"]
                  [reagent-utils "0.1.5"]
+                 [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.13"]]
@@ -38,8 +41,8 @@
   :uberjar-name "arcis.jar"
   :jvm-opts ["-server"]
 
-;;enable to start the nREPL server when the application launches
-;:env {:repl-port 7001}
+  ;;enable to start the nREPL server when the application launches
+                                        ;:env {:repl-port 7001}
 
   :main arcis.core
   :migratus {:store :database}
@@ -73,13 +76,13 @@
   :profiles
   {:uberjar {:omit-source true
              :env {:production true}
-              :hooks [leiningen.cljsbuild]
-              :cljsbuild
-              {:jar true
-               :builds
-               {:app
-                {:source-paths ["env/prod/cljs"]
-                 :compiler {:optimizations :advanced :pretty-print false}}}} 
+             :hooks [leiningen.cljsbuild]
+             :cljsbuild
+             {:jar true
+              :builds
+              {:app
+               {:source-paths ["env/prod/cljs"]
+                :compiler {:optimizations :advanced :pretty-print false}}}} 
              
              :aot :all}
    :dev {:dependencies [[ring-mock "0.1.5"]
@@ -88,10 +91,10 @@
                         [lein-figwheel "0.3.7"]
                         [org.clojure/tools.nrepl "0.2.10"]]
          :plugins [[lein-figwheel "0.3.7"]]
-          :cljsbuild
-          {:builds
-           {:app
-            {:source-paths ["env/dev/cljs"] :compiler {:source-map true}}}} 
+         :cljsbuild
+         {:builds
+          {:app
+           {:source-paths ["env/dev/cljs"] :compiler {:source-map true}}}} 
          
          :figwheel
          {:http-server-root "public"
