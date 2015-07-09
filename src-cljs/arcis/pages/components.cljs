@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Monday, 06 July 2015 07:48 PM AEST
+;; Last Modified: Wednesday, 08 July 2015 02:03 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,17 +23,6 @@
 
 (defn input [label type id]
   (row label [:input.form-control {:field type :id id}]))
-
-(defn sidebar []
-  [:div.col-sm-3.col-md-2.sidebar
-   [:ul.nav.nav-sidebar
-    [:li {:class (when (= :admin (session/get :page)) "active")}
-     [:a {:on-click #(secretary/dispatch! "#/admin")} "Overview"
-      [:span.sr-only "(current)"]]]
-    [:li {:class (when (= :users (session/get :page)) "active")}
-     [:a {:on-click #(secretary/dispatch! "#/users")} "Users"]]
-    [:li {:class (when (= :register (session/get :page)) "active")}
-     [:a {:on-click #(secretary/dispatch! "#/register")} "Register User"]]]])
 
 (defn render-vec [v]
   [:ul
@@ -73,10 +62,10 @@
                       :expired "alert-danger"})
 
 (defn status-component []
-  (let [status-type (session/get-in [:status :type])]
+  (let [status-type (session/get-in [(session/get :page) :status :type])]
     (when (contains? #{:error :warning :success :expired} status-type)
       [:div {:class (str "alert " (status-type status-type-map)) :role "alert"}
-       (session/get-in [:status :msg])])))
+       (session/get-in [(session/get :page) :status :msg])])))
 
 
 

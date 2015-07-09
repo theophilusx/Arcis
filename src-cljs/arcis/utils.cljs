@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Monday, 06 July 2015 07:36 PM AEST
+;; Last Modified: Wednesday, 08 July 2015 02:00 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -42,23 +42,21 @@
   "Set status in session atom
   status-type can be :error :success :warning :ignore :expired"
   [status-type msg]
-  (.log js/console (str "set-page-status! " status-type " " msg))
-  (session/assoc-in! [:status :type] status-type)
-  (session/assoc-in! [:status :msg] msg)
-  (.log js/console "set-page-status! completed"))
+  (session/assoc-in! [(session/get :page) :status :type] status-type)
+  (session/assoc-in! [(session/get :page) :status :msg] msg))
 
-(defn report-error! [msg]
+(defn report-error [msg]
   (set-page-status! :error msg))
 
-(defn report-success!
+(defn report-success
   ([]
-   (session/remove! :status))
+   (set-page-status! nil nil))
   ([msg]
    (set-page-status! :success msg))
   ([status-type msg]
    (set-page-status! status-type msg)))
 
-(defn report-expired-session! []
+(defn report-expired-session []
   (set-page-status! :expired
                     "Your session has expired. Please login to continue"))
 
@@ -68,5 +66,3 @@
   (and (= 401 status)
        (or (= "not-authenticated" status-text)
            (= "session-timeout" status-text))))
-
-

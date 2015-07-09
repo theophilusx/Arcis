@@ -31,6 +31,12 @@ UPDATE users
 SET is_active = :state
 WHERE id = :id
 
+-- name: update-last-login!
+-- update the last login date for a user
+UPDATE users
+SET last_login = :last
+WHERE email = :email
+
 -- name: delete-user!
 -- delete a user
 DELETE FROM users

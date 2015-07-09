@@ -1,6 +1,6 @@
 ;;      Filename: login.clj
 ;; Creation Date: Saturday, 04 July 2015 12:23 PM AEST
-;; Last Modified: Sunday, 05 July 2015 02:50 PM AEST
+;; Last Modified: Thursday, 09 July 2015 12:32 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,7 +23,8 @@
         next-url (or (get-in req [:params :next]) "/")
         auth-data (valid-auth? email password)]
     (if (first auth-data)
-      (let [first-name (:first_name (second auth-data))
+      (let [now (java.util.Date.)
+            first-name (:first_name (second auth-data))
             last-name (:last_name (second auth-data))
             user-role (:user_role (second auth-data))
             updated-session (assoc  (:session req)
@@ -35,6 +36,8 @@
                                         :role user-role}
                                 :max-age (* 60 30)
                                 :http-only false}}]
+        (println (str "login date: email: " email " date: " now))
+        (db/update-last-login! {:email email :last now})
         (-> (redirect next-url)
             (assoc :session updated-session)
             (assoc :cookies cookie)))
