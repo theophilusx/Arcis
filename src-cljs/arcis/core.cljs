@@ -2,7 +2,7 @@
   (:require [arcis.pages.home :refer [home-page]]
             [arcis.pages.about :refer [about-page]]
             [arcis.pages.not-implemented :refer [not-implemented-page]]
-            [arcis.pages.admin.users :refer [users-page]]
+            [arcis.pages.admin.admin :refer [admin-page]]
             [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [reagent.cookies :as cookie]
@@ -50,7 +50,7 @@
    :hosts #'not-implemented-page
    :scans #'not-implemented-page
    :incidents #'not-implemented-page
-   :admin #'users-page})
+   :admin #'admin-page})
 
 (defn page []
   [(pages (session/get :page))])
