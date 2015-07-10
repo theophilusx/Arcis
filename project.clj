@@ -86,7 +86,7 @@
              
              :aot :all}
    :dev {:dependencies [[ring-mock "0.1.5"]
-                        [ring/ring-devel "1.3.2"]
+                        [ring/ring-devel "1.4.0"]
                         [pjstadig/humane-test-output "0.7.0"]
                         [lein-figwheel "0.3.7"]
                         [org.clojure/tools.nrepl "0.2.10"]]

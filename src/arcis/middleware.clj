@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Saturday, 04 July 2015 05:16 PM AEST
+;; Last Modified: Friday, 10 July 2015 03:48 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,7 +18,6 @@
             [ring.middleware.session-timeout :refer [wrap-idle-session-timeout]]
             [ring.middleware.session.memory :refer [memory-store]]
             [ring.middleware.format :refer [wrap-restful-format]]
-            
             [buddy.auth.middleware :refer [wrap-authentication]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
@@ -57,7 +56,8 @@
   (wrap-anti-forgery handler))
 
 (defn wrap-formats [handler]
-  (wrap-restful-format handler :formats [:json-kw :transit-json :transit-msgpack]))
+  (wrap-restful-format handler {:formats [:json-kw :transit-json
+                                          :transit-msgpack]}))
 
 ;; (defn on-error [request response]
 ;;   {:status  403

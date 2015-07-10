@@ -1,6 +1,6 @@
 ;;      Filename: users.cljs
 ;; Creation Date: Sunday, 05 July 2015 01:36 PM AEST
-;; Last Modified: Wednesday, 08 July 2015 03:19 PM AEST
+;; Last Modified: Friday, 10 July 2015 02:58 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -14,7 +14,8 @@
             [arcis.pages.admin.delete-user :refer [delete-user-button]]
             [arcis.pages.admin.password :refer [password-component]]
             [arcis.pages.admin.user-state :refer [user-state-button]]
-            [arcis.pages.admin.user-role :refer [user-role-selector]]))
+            [arcis.pages.admin.user-role :refer [user-role-selector]]
+            [arcis.pages.admin.register :refer [register-component]]))
 
 ;;; Application users list
 (defn user-list-to-hash
@@ -85,14 +86,37 @@
        (for [u (keys users)]
          ^{:key u} [user-table-row (u users)])]]]))
 
+(defn users-component []
+  [:div
+   [users-table]])
+
+(defn active-tab []
+  (session/get-in [(session/get :page) :tab]))
+
+(defn set-active-tab [v]
+  (session/assoc-in! [(session/get :page) :tab] v))
+
 (defn users-page []
   (if-not (session/get-in [(session/get :page) :users])
     (get-app-users))
+  (if-not (active-tab)
+    (set-active-tab 1))
   (fn []
     [:div.container
-     [c/page-header "Application Users"]
+     [c/page-header "User Administration"]
+     [modals/modal-window]
      [:div.row
       [:div.col-md-12
-       [modals/modal-window]
        [c/status-component]
-       [users-table]]]]))
+       [:div.row
+        [:div {:class "btn-group" :role "group"}
+         [:button {:class (str "btn " (if (= 1 (active-tab))
+                                        "btn-primary" "btn-default"))
+                   :type "button" :on-click #(set-active-tab 1)} "Users"]
+         [:button {:class (str "btn " (if (= 2 (active-tab))
+                                        "btn-primary" "btn-default"))
+                   :type "button" :on-click #(set-active-tab 2)} "Register"]]
+        [:hr]
+        (if (= 1 (session/get-in [(session/get :page) :tab]))
+          [users-component]
+          [register-component])]]]]))
