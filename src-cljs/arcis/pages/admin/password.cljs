@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Wednesday, 08 July 2015 04:21 PM AEST
+;; Last Modified: Sunday, 12 July 2015 11:06 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -41,8 +41,9 @@
   (let [pwd-data (atom {:id id
                         :pwd nil})]
     (fn []
-      [:div
-       [:input {:type "text"
+      [:div.form-inline
+       [:input {:class "form-control"
+                :type "text"
                 :value (:pwd @pwd-data)
                 :on-change
                 #(swap! pwd-data assoc-in [:pwd] (-> % .-target .-value))}]

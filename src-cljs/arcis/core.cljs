@@ -14,7 +14,7 @@
   (:import goog.History))
 
 (defn navbar []
-  [:div.navbar.navbar-inverse.navbar-fixed-top
+  [:div.navbar.navbar-fixed-top
    [:div.container
     [:div.navbar-header
      [:a.navbar-brand {:href "#/"} "Arcis"]]
