@@ -33,8 +33,12 @@ Future planned functionality includes
 + **Control Lists** List of the controls used for each service. Shows an
    estimated level for confidentiality, integrity and availability
 
-
 and more as I think of it!
+
+## Status
+
+This software is still very much in development. In fact, the only completed part is
+the basic user management components.
 
 ## Prerequisites
 
