@@ -1,11 +1,12 @@
 ;;      Filename: delete_user.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:08 PM AEST
-;; Last Modified: Wednesday, 08 July 2015 04:21 PM AEST
+;; Last Modified: Sunday, 19 July 2015 11:14 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.delete-user
   (:require     [arcis.utils :as u]
+                [arcis.pages.admin.users-ajax :refer [get-app-users]]
                 [reagent-modals.modals :as modals]
                 [reagent.session :as session]
                 [ajax.core :refer [POST]]))
@@ -13,7 +14,9 @@
 (defn handle-delete-resp [response]
   (let [rsp (js->clj response :keywordize-keys true)]
     (if (= "success" (:status rsp))
-      (u/report-success (:message rsp))
+      (do
+        (get-app-users)
+        (u/report-success (:message rsp)))
       (u/report-error (:message rsp)))))
 
 (defn handle-delete-error-resp [ctx]
@@ -32,7 +35,7 @@
                       :params {:id id}
                       :handler #'handle-delete-resp
                       :error-handler #'handle-delete-error-resp)]
-    (POST "/admin/user-delete" params)))
+    (POST "/admin/delete" params)))
 
 (defn delete-user-modal [id]
   (let [dkw (u/digit-keyword id)]

@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Friday, 10 July 2015 04:11 PM AEST
+;; Last Modified: Sunday, 19 July 2015 11:31 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -22,15 +22,14 @@
               :last-login (get u "last_login")}))
           {} user-list))
 
-(defn handle-users-list
+(defn users-list-resp
   "Callback used to process response from AJAX call to get user list"
   [response]
   (let [user-list (js->clj response :keywordize-keys true)
         user-hash (user-list-to-hash user-list)]
-    (session/assoc-in! [(session/get :page) :users] user-hash)
-    (u/report-success)))
+    (session/assoc-in! [(session/get :page) :users] user-hash)))
 
-(defn handle-users-list-error
+(defn users-list-error-resp
   "Callback used to process AJAX call errors to get user list"
   [ctx]
   (let [rsp (js->clj (:response ctx) :keywordize-keys true)
@@ -45,5 +44,5 @@
   "Retrieve list of application users"
   []
   (GET "/admin/users" {:format :json
-                       :handler handle-users-list
-                       :error-handler handle-users-list-error}))
+                       :handler users-list-resp
+                       :error-handler users-list-error-resp}))

@@ -1,19 +1,22 @@
 ;;      Filename: user_state.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:28 PM AEST
-;; Last Modified: Wednesday, 08 July 2015 04:20 PM AEST
+;; Last Modified: Sunday, 19 July 2015 10:31 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 
 (ns arcis.pages.admin.user-state
   (:require [arcis.utils :as u]
+            [arcis.pages.admin.users-ajax :refer [get-app-users]]
             [ajax.core :refer [POST]]
             [reagent.session :as session]))
 
 (defn handle-state-toggle-resp [response]
   (let [rsp (js->clj response :keywordize-keys true)]
     (if (= "success" (:status rsp))
-      (u/report-success)
+      (do
+        (get-app-users)
+        (u/report-success))
       (u/report-error (:message rsp)))))
 
 (defn handle-state-toggle-error-resp [ctx]
@@ -34,7 +37,7 @@
                                :active-state (not state)}
                       :handler #'handle-state-toggle-resp
                       :error-handler #'handle-state-toggle-error-resp)]
-    (POST "/admin/change-state" params)))
+    (POST "/admin/state" params)))
 
 (defn user-state-button [id v]
   [:button {:class (str "btn btn-block" (if v " btn-success" " btn-danger"))

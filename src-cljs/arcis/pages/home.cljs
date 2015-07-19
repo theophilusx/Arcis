@@ -1,6 +1,6 @@
 ;;      Filename: home.cljs
 ;; Creation Date: Saturday, 04 July 2015 05:27 PM AEST
-;; Last Modified: Monday, 06 July 2015 05:43 PM AEST
+;; Last Modified: Saturday, 18 July 2015 07:07 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,8 +11,8 @@
 
 (defn home-page []
   [:div.container
-   [c/page-header "Welcome to Arcis"
-    "The Clojure Based Information Security Hub"]
+   [c/page-header [:img {:src "/img/logo_web1.png" :class "image-responsive"}]
+    "Welcome to Arcis"]
    [:div.row
     [:div.col-md-12
      [c/status-component]

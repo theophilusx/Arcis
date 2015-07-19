@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Friday, 10 July 2015 02:58 PM AEST
+;; Last Modified: Sunday, 19 July 2015 11:22 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,6 +13,7 @@
             [bouncer.validators :as v]
             [arcis.debug :as debug]
             [arcis.pages.components :as c]
+            [arcis.pages.admin.users-ajax :refer [get-app-users]]
             [arcis.utils :as u]))
 
 (def register-template
@@ -42,8 +43,10 @@
           status (:status rsp)]
       (cond
         (= "success" status) (do
+                               (get-app-users)
                                (u/report-success (:message rsp)))
         (= "duplicate" status) (do
+                                 (get-app-users)
                                  (u/report-error (:message rsp)))
         :else (do
                 (.log js/console (str "registration-resp: :else " status))

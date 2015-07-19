@@ -4,21 +4,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Arcis Security Hub</title>
+    <title>Arcis Login</title>
 
   </head>
   <body>
     <div class="container">
-      <div class="jumbotron">
-        <h1>Welcome to Arcis</h1>
+      <div class="row">
+	<div class="page-header">
+	  <h1><img src="/img/logo_web1.png" class="image-responsive"></h1>
+	</div>
       </div>
     </div>
     <div class="container">
       <div class="row">
-	<div class="col-md-3"></div>
 	<div class="col-md-6">
 	  {% if msg %}
-	  <div class="alert alert-danger">
+	  <div class="text-danger">
 	    {{msg}}
 	  </div>
 	  {% endif %}
@@ -43,7 +44,6 @@
 		    type="submit">Sign in</button>
 	  </form>
 	</div>
-	<div class="col-md-3"></div>
       </div>
     </div>
 

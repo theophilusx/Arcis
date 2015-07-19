@@ -14,10 +14,10 @@
   (:import goog.History))
 
 (defn navbar []
-  [:div.navbar.navbar-fixed-top
+  [:div.navbar.navbar-fixed-top.navbar-inverse
    [:div.container
     [:div.navbar-header
-     [:a.navbar-brand {:href "#/"} "Arcis"]]
+     [:a.navbar-brand {:href "#/"} [:img {:src "img/logo_small.png" :class "imgage-responsive"}]]]
     [:div.navbar-collapse.collapse
      [:ul.nav.navbar-nav
       [:li {:class (when (= :home (session/get :page)) "active")}

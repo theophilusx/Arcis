@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Wednesday, 08 July 2015 02:03 PM AEST
+;; Last Modified: Sunday, 19 July 2015 10:41 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,10 +10,11 @@
             [secretary.core :as secretary]))
 
 (defn page-header [title & sub-title]
-  [:div.jumbotron
-   [:h1 title]
-   (if sub-title
-     [:p sub-title])])
+  [:div.row
+   [:div.page-header
+    [:h1.text-primary title]
+    (if sub-title
+      [:h2.text-primary sub-title])]])
 
 (defn row [label field]
   [:div.row
@@ -43,7 +44,7 @@
 
 (defn menu-item-component [k i f]
   [:li {:role "presentation"}
-   [:a {:role "menuitem" :href "#" :on-click (fn [] (f k i))} i]])
+   [:a {:role "menuitem" :on-click (fn [] (f k i))} i]])
 
 (defn menu-component [k v id f items]
   [:div.dropdown
