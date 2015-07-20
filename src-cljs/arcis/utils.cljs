@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Wednesday, 08 July 2015 02:00 PM AEST
+;; Last Modified: Monday, 20 July 2015 05:50 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -66,3 +66,15 @@
   (and (= 401 status)
        (or (= "not-authenticated" status-text)
            (= "session-timeout" status-text))))
+
+(defn active-tab []
+  (session/get-in [(session/get :page) :tab]))
+
+(defn set-active-tab [v]
+  (session/assoc-in! [(session/get :page) :tab] v)
+  (session/assoc-in! [(session/get :page) :status :type] :ignore))
+
+(defn get-tab-state [t]
+  (if (= t (active-tab))
+    "active"
+    ""))
