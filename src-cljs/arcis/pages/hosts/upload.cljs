@@ -1,6 +1,6 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Tuesday, 21 July 2015 07:15 PM AEST
+;; Last Modified: Friday, 24 July 2015 04:26 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -25,11 +25,11 @@
         form-data (doto
                       (js/FormData.)
                     (.append name file))]
-    (POST "/upload" {:params form-data
-                     :response-format :json
-                     :keywords? true
-                     :handler upload-resp
-                     :error-handler upload-resp-error})))
+    (POST "/hosts/upload" {:params form-data
+                           :response-format :json
+                           :keywords? true
+                           :handler upload-resp
+                           :error-handler upload-resp-error})))
 
 (defn host-upload-component []
   [:div

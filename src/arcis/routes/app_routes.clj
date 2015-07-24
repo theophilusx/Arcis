@@ -1,6 +1,6 @@
 ;;      Filename: app_routes.clj
 ;; Creation Date: Sunday, 05 July 2015 02:40 PM AEST
-;; Last Modified: Sunday, 19 July 2015 10:16 AM AEST
+;; Last Modified: Friday, 24 July 2015 03:13 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -14,6 +14,7 @@
             [arcis.routes.admin.user-role :refer [set-user-role]]
             [arcis.routes.admin.password :refer [change-password]]
             [arcis.routes.admin.delete-user :refer [delete-user]]
+            [arcis.routes.hosts.upload :refer [upload-hosts]]
             [compojure.route :as route]
             [compojure.core :refer [defroutes GET POST ANY]]
             [ring.handler.dump :refer [handle-dump]]            ))
@@ -39,4 +40,5 @@
   (POST "/admin/state" [] set-user-state)
   (POST "/admin/role" [] set-user-role)
   (POST "/admin/password" [] change-password)
-  (POST "/admin/delete" [] delete-user))
+  (POST "/admin/delete" [] delete-user)
+  (POST "/hosts/upload" [] upload-hosts))

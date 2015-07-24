@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Friday, 10 July 2015 03:48 PM AEST
+;; Last Modified: Saturday, 25 July 2015 06:18 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -22,7 +22,7 @@
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
-            ))
+            [liberator.dev :refer [wrap-trace]]))
 
 (defn wrap-servlet-context [handler]
   (fn [request]
@@ -49,7 +49,8 @@
   (if (env :dev)
     (-> handler
         wrap-error-page
-        wrap-exceptions)
+        wrap-exceptions
+        (wrap-trace :header))
     handler))
 
 (defn wrap-csrf [handler]
