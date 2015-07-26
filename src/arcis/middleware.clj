@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Saturday, 25 July 2015 06:18 AM AEST
+;; Last Modified: Sunday, 26 July 2015 11:36 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -22,6 +22,7 @@
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
+            [cheshire.core :refer [generate-string]]
             [liberator.dev :refer [wrap-trace]]))
 
 (defn wrap-servlet-context [handler]
@@ -66,7 +67,31 @@
 ;;    :body    (str "Access to " (:uri request) " is not authorized")})
 
 (defn on-error [request response]
-  (redirect (str "/login?next=" (:url request))))
+  (let [uri (:uri request)
+        id (get-in request [:session :identity])
+        accept (get-in request [:headers "accept"])]
+    (cond
+      (and (nil? id)
+           (= "application/json" accept))
+      {:status 419
+       :headers {"Content-Type" "application/json"}
+       :body (generate-string
+              {:status "session-timeout"
+               :message "Session has timed out. Please login again"})}
+      (= "application/json" accept)
+      {:status 403
+       :headers {"Content-Type" "application/json"}
+       :body (generate-string
+              {:status "not-authorised"
+               :message "Access to " uri " is not authorised"})}
+      :else (redirect (str "/login?next=" uri)))))
+
+(def session-timeout-error 
+  {:status 419
+   :headers {"Content-Type" "application/json"}
+   :body (generate-string
+          {:status "session-timeout"
+           :message "Session has timed out. Please login again"})})
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
@@ -87,12 +112,12 @@
       wrap-dev
       wrap-auth
       (wrap-idle-session-timeout
-        {:timeout (* 60 30)
-         :timeout-response (redirect "/login")})
+       {:timeout (* 60 30)
+        :timeout-response session-timeout-error})
       wrap-formats
       (wrap-defaults
-        (-> site-defaults
-            (assoc-in [:security :anti-forgery] false)
-            (assoc-in  [:session :store] (memory-store session/mem))))
+       (-> site-defaults
+           (assoc-in [:security :anti-forgery] false)
+           (assoc-in  [:session :store] (memory-store session/mem))))
       wrap-servlet-context
       wrap-internal-error))

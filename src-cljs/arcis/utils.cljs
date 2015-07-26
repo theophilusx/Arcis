@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Monday, 20 July 2015 05:50 PM AEST
+;; Last Modified: Sunday, 26 July 2015 11:15 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -58,14 +58,16 @@
 
 (defn report-expired-session []
   (set-page-status! :expired
-                    "Your session has expired. Please login to continue"))
+                    [:div "Your session has expired. Please "
+                     [:a {:href "/login"} "login"] " to continue"]))
 
 (defn expired-session?
   "Tests to see if AJAX call error was due to expired session"
   [status status-text]
-  (and (= 401 status)
-       (or (= "not-authenticated" status-text)
-           (= "session-timeout" status-text))))
+  (.log js/console (str "expired-session? status = " status
+                        " text = " status-text))
+  (and (= 419 status)
+       (= "session-timeout" status-text)))
 
 (defn active-tab []
   (session/get-in [(session/get :page) :tab]))

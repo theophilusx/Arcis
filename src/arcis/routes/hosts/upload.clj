@@ -1,6 +1,6 @@
 ;;      Filename: upload.clj
 ;; Creation Date: Friday, 24 July 2015 12:49 PM AEST
-;; Last Modified: Saturday, 25 July 2015 07:35 AM AEST
+;; Last Modified: Saturday, 25 July 2015 09:36 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -12,14 +12,18 @@
             [bouncer.validators :as v]
             [arcis.utils :as u]))
 
-(defn is-malformed-upload? [{:keys [upload-file] :as p}]
-  (let [vmap (first (b/validate upload-file
-                                :filename v/required
-                                :size v/required
-                                :tempfile v/required))]
-    (if (nil? vmap)
-      false
-      {:validation-errors vmap})))
+(defn is-malformed-upload? [params]
+  (let [upload-file (if (map? (get params :upload-file))
+                      (get params :upload-file)
+                      {})]
+    
+    (let [vmap (first (b/validate upload-file
+                                  :filename v/required
+                                  :size v/required
+                                  :tempfile v/required))]
+      (if (nil? vmap)
+        false
+        {:validation-errors vmap}))))
 
 (defresource upload-hosts
   :allowed-methods [:post]

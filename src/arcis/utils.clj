@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Sunday, 05 July 2015 02:38 PM AEST
+;; Last Modified: Saturday, 25 July 2015 09:30 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -15,7 +15,7 @@
 (defn handle-malformed-json-request [validation-map]
   (let [ks (keys validation-map)]
     (generate-string
-     {:message (str "Malformed data submitted "
+     {:message (str "Malformed data submitted: "
                     (reduce (fn [s k]
                               (str s " "
                                    (first (get validation-map k))))
