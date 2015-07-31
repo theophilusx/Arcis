@@ -1,6 +1,6 @@
 ;;      Filename: users.clj
 ;; Creation Date: Sunday, 05 July 2015 02:34 PM AEST
-;; Last Modified: Monday, 06 July 2015 08:01 PM AEST
+;; Last Modified: Friday, 31 July 2015 02:14 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,7 +11,11 @@
             [arcis.utils :as u]))
 
 (defn generate-user-list []
-  (let [users (udb/get-all-users)]
+  (let [users (map (fn [u]
+                     (if-let [dt (:last_login u)]
+                       (assoc u :last_login (u/java-date-to-local-str dt))
+                       u))
+                   (udb/get-all-users))]
     (generate-string users)))
 
 (defresource user-list
