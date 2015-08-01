@@ -4,7 +4,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [selmer "0.8.6"]
+                 [selmer "0.8.7"]
                  [com.taoensso/timbre "4.0.2"]
                  [com.taoensso/tower "3.0.2"]
                  [markdown-clj "0.9.67"]
@@ -23,21 +23,22 @@
                  [buddy "0.6.0"]
                  [migratus "0.8.2"]
                  [clj-time "0.10.0"]
-                 [org.clojure/java.jdbc "0.3.7"]
+                 [org.clojure/java.jdbc "0.4.1"]
                  [instaparse "1.4.1"]
                  [yesql "0.5.0-SNAPSHOT"]
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]
-                 [org.clojure/clojurescript "0.0-3308" :scope "provided"]
+                 [org.clojure/clojurescript "1.7.10" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
                  [reagent "0.5.0"]
                  [cljsjs/react "0.13.3-1"]
-                 [reagent-forms "0.5.4"]
+                 [reagent-forms "0.5.5"]
                  [reagent-utils "0.1.5"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [cljs-ajax "0.3.13"]
-                 [com.andrewmcveigh/cljs-time "0.3.10"]]
+                 [cljs-ajax "0.3.14"]
+                 [com.andrewmcveigh/cljs-time "0.3.10"]
+                 [org.clojure/data.csv "0.1.2"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "arcis.jar"
