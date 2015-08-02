@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 02 August 2015 06:45 PM AEST
+;; Last Modified: Sunday, 02 August 2015 06:56 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -44,7 +44,7 @@
                [:li.list-group-item
                 [:strong "Operating System: "] (:os h)]
                [:li.list-group-item
-                [:strong "Host Type"] (:host-type h)]
+                [:strong "Host Type: "] (:host-type h)]
                [:li.list-group-item
                 [:strong "Network Group: "] (:network-gorup h)]
                [:li.list-group-item
