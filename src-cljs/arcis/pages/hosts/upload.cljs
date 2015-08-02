@@ -1,6 +1,6 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Sunday, 26 July 2015 11:08 AM AEST
+;; Last Modified: Saturday, 01 August 2015 04:57 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -38,22 +38,6 @@
                            :keywords? true
                            :handler upload-resp
                            :error-handler upload-resp-error})))
-
-;; (defn host-upload-component []
-;;   [:div
-;;    [:form {:id "upload-form"
-;;            :enc-type "multipart/form-data"
-;;            :method "POST"
-;;            :class "form-inline"}
-;;     [:br]
-;;     [:div.form-group
-;;      [:label {:for "upload-file"} "Upload File: "]
-;;      [:input {:type "file"
-;;               :name "upload-file"
-;;               :id "upload-file"
-;;               :class "form-control btn-warning"}]]]
-;;    [:button {:class "btn btn-primary" :type "button"
-;;              :on-click #(upload-file "upload-file")} "Upload"]])
 
 (defn host-upload-component []
   [:div.form-inline

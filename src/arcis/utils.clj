@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Saturday, 01 August 2015 04:03 PM AEST
+;; Last Modified: Sunday, 02 August 2015 12:05 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -51,6 +51,11 @@
   (tf/unparse
    (tf/formatter-local "d-MMM-yyyy @ hh:mm a")
    (t/to-time-zone (tc/from-date dt) (t/default-time-zone))))
+
+(defn format-date-str [dt]
+  (if (instance? java.util.Date dt)
+    (java-date-to-local-str dt)
+    "Unknown"))
 
 (def mac-re
   "Regular expression used to match mac addresses from master data file"

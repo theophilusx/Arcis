@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Sunday, 19 July 2015 11:31 AM AEST
+;; Last Modified: Sunday, 02 August 2015 06:52 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -14,12 +14,14 @@
   consisting of user record maps indexed/keyed by id"
   [user-list]
   (reduce (fn [m u]
-            (assoc
-             m (keyword (str (get u "id")))
-             {:id (get u "id") :first-name (get u "first_name")
-              :last-name (get u "last_name") :user-role (get u "user_role")
-              :email (get u "email") :is-active (get u "is_active")
-              :last-login (get u "last_login")}))
+            (assoc m (u/digit-keyword (get u "id"))
+                   {:id (get u "id")
+                    :first-name (get u "first_name")
+                    :last-name (get u "last_name")
+                    :user-role (get u "user_role")
+                    :email (get u "email")
+                    :is-active (get u "is_active")
+                    :last-login (get u "last_login")}))
           {} user-list))
 
 (defn users-list-resp

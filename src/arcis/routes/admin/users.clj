@@ -1,6 +1,6 @@
 ;;      Filename: users.clj
 ;; Creation Date: Sunday, 05 July 2015 02:34 PM AEST
-;; Last Modified: Friday, 31 July 2015 02:14 PM AEST
+;; Last Modified: Sunday, 02 August 2015 12:26 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,10 +11,7 @@
             [arcis.utils :as u]))
 
 (defn generate-user-list []
-  (let [users (map (fn [u]
-                     (if-let [dt (:last_login u)]
-                       (assoc u :last_login (u/java-date-to-local-str dt))
-                       u))
+  (let [users (map #(assoc % :last_login (u/format-date-str (:last_login %)))
                    (udb/get-all-users))]
     (generate-string users)))
 
@@ -25,11 +22,10 @@
                  (let [role (get-in ctx [:request :session :identity-role])]
                    (u/is-authorized? #{:Admin} role)))
   :handle-unauthorized (fn [ctx]
-                         (let [user (get-in ctx [:request :session :identity])]
-                           (if (nil? user)
-                             (u/unauthenticated-msg :user-list)
-                             (u/unauthorized-msg :user-list
-                                                 "request a user list"))))
+                         (if-let [id (get-in ctx [:request :session :identity])]
+                           (u/unauthorized-msg :user-list
+                                               "request a user list")
+                           (u/unauthenticated-msg :user-list)))
   :handle-ok (fn [ctx]
                (generate-user-list)))
 
