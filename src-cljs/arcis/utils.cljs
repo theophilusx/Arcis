@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Sunday, 26 July 2015 11:15 AM AEST
+;; Last Modified: Monday, 03 August 2015 07:10 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -80,3 +80,6 @@
   (if (= t (active-tab))
     "active"
     ""))
+
+(defn this-page []
+  (session/get :page))

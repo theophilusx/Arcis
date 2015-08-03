@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 02 August 2015 06:56 PM AEST
+;; Last Modified: Monday, 03 August 2015 10:51 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -57,12 +57,10 @@
                 [:strong "Last Seen Date: "] (:last-seen-dt h)]]]])
 
 
-(defn host-list-component []
-  (if-not (session/get-in [(session/get :page) :host-list])
-    (get-host-list))
-  (fn []
-    (let [host-list (session/get-in [(session/get :page) :host-list])]
-      [:div
-       (map (fn [k]
-              (host-component k (k host-list))) (keys host-list))])))
+(defn host-list-component [idx]
+  (let [host-list (session/get-in [(u/this-page) :host-list])
+        host-index (session/get-in [(u/this-page) :host-index])]
+    [:div
+     (map (fn [k]
+            (host-component k (k host-list))) (idx host-index))]))
 
