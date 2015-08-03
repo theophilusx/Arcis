@@ -20,7 +20,7 @@
                  [prone "0.8.2"]
                  [org.clojure/tools.nrepl "0.2.10"]
                  [ring-server "0.4.0"]
-                 [buddy "0.6.0"]
+                 [buddy "0.6.1"]
                  [migratus "0.8.2"]
                  [clj-time "0.10.0"]
                  [org.clojure/java.jdbc "0.4.1"]
@@ -37,7 +37,6 @@
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]
-                 [com.andrewmcveigh/cljs-time "0.3.10"]
                  [org.clojure/data.csv "0.1.2"]]
 
   :min-lein-version "2.0.0"
