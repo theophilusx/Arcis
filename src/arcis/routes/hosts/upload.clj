@@ -1,6 +1,6 @@
 ;;      Filename: upload.clj
 ;; Creation Date: Friday, 24 July 2015 12:49 PM AEST
-;; Last Modified: Saturday, 01 August 2015 03:59 PM AEST
+;; Last Modified: Saturday, 08 August 2015 09:40 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -12,15 +12,27 @@
             [bouncer.validators :as v]
             [clojure.string :as s]
             [arcis.utils :as u]
-            [arcis.db.hosts :as hdb])
+            [arcis.db.hosts :as hdb]
+            [arcis.local-site.addresses :refer [get-network-group]])
   (:import [java.sql BatchUpdateException]))
 
+(defn y-or-n-check [v]
+  (cond
+    (or (= "y" v) (= "Y" v)) "Y"
+    (or (= "n" v) (= "N" v)) "N"
+    :else "N"))
+
 (defn mk-mdf-record [v]
-  (let [[_ mac ip host domain] (s/split v #":")]
+  (let [[_ mac ip host domain dhcp dns rdns _ tstamp] (s/split v #":")]
     {:mac (u/convert-mac mac)
      :ipv4 ip
      :ipv6 "0000:0000:0000:0000:0000:0000:0000:0000"
      :hostname (s/lower-case (str host "." domain))
+     :network_group (get-network-group ip)
+     :dhcp (y-or-n-check dhcp)
+     :dns (y-or-n-check dns)
+     :reverse_dns (y-or-n-check rdns)
+     :created_dt (u/parse-mdf-date tstamp)
      :last_seen_dt (java.util.Date.)}))
 
 (defn record-id [r]
@@ -40,10 +52,12 @@
     (assoc state :inserts (inc (:inserts state)))
     (catch BatchUpdateException e1
       (let [e2 (.getNextException e1)]
-        (println (str "MDF insert exception: " (.getMessage e2)))
+        (println (str "MDF insert exception1: " (.getMessage e2) "\n\t"
+                      "MDF Line: " l))
         (assoc state :sql-errors (inc (:sql-errors state)))))
     (catch Exception e3
-      (println (str "MDF insert exception: " (.getMessage e3)))
+      (println (str "MDF insert exception2: " (.getMessage e3) "\n\t"
+                    "MDF Line: " l))
       (assoc state :errors (inc (:errors state))))))
 
 (defn parse-mdf [f]

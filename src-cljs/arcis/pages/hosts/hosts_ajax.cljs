@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Monday, 03 August 2015 06:18 PM AEST
+;; Last Modified: Friday, 07 August 2015 06:04 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,6 +23,9 @@
                       :ipv6 (get h "ipv6")
                       :hostname (get h "hostname")
                       :os (get h "os")
+                      :dhcp (get h "dhcp")
+                      :dns (get h "dns")
+                      :reverse-dns (get h "reverse_dns")
                       :host-type (get h "host_type")
                       :network-group (get h "network_group")
                       :management-group (get h "management_group")
@@ -32,15 +35,12 @@
                       :last-seen-dt (get h "last_seen_dt")})))
           {}  host-list))
 
-(defn make-index-entry [ip]
-  (keyword (re-find #"^\d+\.\d+\.\d+" ip)))
-
 (defn build-network-index [hosts]
   (reduce (fn [idx-hash k]
-            (let [idx (make-index-entry (get-in hosts [k :ipv4]))]
-              (if (contains? idx-hash idx)
-                (assoc idx-hash idx (conj (idx idx-hash) k))
-                (assoc idx-hash idx [k]))))
+            (let [grp (keyword (get-in hosts [k :network-group]))]
+              (if-not (contains? idx-hash grp)
+                (assoc idx-hash grp [k])
+                (assoc idx-hash grp (conj (grp idx-hash) k)))))
           (sorted-map) (keys hosts)))
 
 (defn host-list-resp
@@ -49,8 +49,8 @@
   (let [host-list (js->clj response :keywordize-keys true)
         host-hash (keywordize-host-list host-list)
         host-idx (build-network-index host-hash)]
-    (session/assoc-in! [(session/get :page) :host-list] host-hash)
-    (session/assoc-in! [(session/get :page) :host-index] host-idx)))
+    (session/assoc-in! [(u/this-page) :host-list] host-hash)
+    (session/assoc-in! [(u/this-page) :host-index] host-idx)))
 
 (defn host-list-error-resp
   "Callback used to process AJAX call errors retrieving host list"

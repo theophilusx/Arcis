@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Monday, 03 August 2015 10:51 PM AEST
+;; Last Modified: Saturday, 08 August 2015 08:33 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -44,9 +44,13 @@
                [:li.list-group-item
                 [:strong "Operating System: "] (:os h)]
                [:li.list-group-item
+                [:strong "DHCP Client: "] (:dhcp h)
+                [:strong " DNS Entry: "] (:dns h)
+                [:strong " Revers DNS Entry: "] (:reverse-dns h)]
+               [:li.list-group-item
                 [:strong "Host Type: "] (:host-type h)]
                [:li.list-group-item
-                [:strong "Network Group: "] (:network-gorup h)]
+                [:strong "Network Group: "] (:network-group h)]
                [:li.list-group-item
                 [:strong "Managed By: "] (:management-group h)]
                [:li.list-group-item

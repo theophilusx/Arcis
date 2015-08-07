@@ -4,8 +4,8 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [selmer "0.8.7"]
-                 [com.taoensso/timbre "4.0.2"]
+                 [selmer "0.8.8"]
+                 [com.taoensso/timbre "4.1.0"]
                  [com.taoensso/tower "3.0.2"]
                  [markdown-clj "0.9.67"]
                  [environ "1.0.0"]
@@ -27,7 +27,7 @@
                  [instaparse "1.4.1"]
                  [yesql "0.5.0-SNAPSHOT"]
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]
-                 [org.clojure/clojurescript "1.7.28" :scope "provided"]
+                 [org.clojure/clojurescript "1.7.58" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
                  [reagent "0.5.0"]
                  [cljsjs/react "0.13.3-1"]

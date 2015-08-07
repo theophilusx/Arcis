@@ -2,31 +2,36 @@
 -- create a new host record
 INSERT INTO host_def
     (
-	mac, ipv4, ipv6, hostname, os, host_type, network_group,
-	management_group, status
+	mac, ipv4, ipv6, hostname, os, dhcp, dns, reverse_dns,
+	host_type, network_group, management_group, status
 	)
     VALUES
     (
-	:mac, :ipv4, :ipv6, :hostname, :os, :host_type, :network_group,
-	:management_group, :status
+	:mac, :ipv4, :ipv6, :hostname, :os, :dhcp :dns :reverse_dns
+	:host_type, :network_group, :management_group, :status
 	)
 
 -- name: insert-mdf-record!
 -- Insert a record from the master data file
 INSERT INTO host_def
     (
-	mac, ipv4, ipv6, hostname, last_seen_dt
+	mac, ipv4, ipv6, hostname, dhcp, dns, reverse_dns, network_group,
+	created_dt, last_seen_dt
 	)
     VALUES
     (
-	:mac, :ipv4, :ipv6, :hostname, :last_seen_dt
+	:mac, :ipv4, :ipv6, :hostname, :dhcp, :dns, :reverse_dns,
+	:network_group, :created_dt, :last_seen_dt
 	)
 
 
 -- name: update-host!
 -- Update a host record
 UPDATE host_def
-SET os = :os
+SET os = :os,
+    dhcp = :dhcp,
+    dns = :dns,
+    reverse_dns = :reverse_dns,
     host_type = :host_type
     network_group = :network_group
     management_group = :management_group
@@ -39,6 +44,27 @@ WHERE host_id = :host_id
 -- Update the OS setting for a host
 UPDATE host_def
 SET os = :os,
+    last_modified_dt = current_timestamp
+WHERE host_id = :host_id
+
+-- name: update-dhcp!
+-- Update the dhcp client value
+UPDATE host_def
+SET dhcp = :dhcp,
+    last_modified_dt = current_timestamp
+WHERE host_id = :host_id
+
+-- name: update_dns!
+-- Update the dns value for a host
+UPDATE host_def
+SET dns = :dns,
+    last_modified_dt = current_timestamp
+WHERE host_id = :host_id
+
+-- name: update_reverse_dns!
+-- Update the reverse dns value for a host
+UPDATE host_def
+SET reverse_dns = :reverse_dns,
     last_modified_dt = current_timestamp
 WHERE host_id = :host_id
 

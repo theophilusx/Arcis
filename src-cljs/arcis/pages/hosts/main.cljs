@@ -1,6 +1,6 @@
 ;;      Filename: hosts.cljs
 ;; Creation Date: Monday, 20 July 2015 05:35 PM AEST
-;; Last Modified: Monday, 03 August 2015 10:57 PM AEST
+;; Last Modified: Wednesday, 05 August 2015 08:51 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -12,12 +12,14 @@
             [arcis.pages.hosts.upload :refer [host-upload-component]]
             [reagent.session :as session]))
 
+(defn tab-item [k]
+  ^{:key k} [:li {:role "presentation" :class (u/get-tab-state k)}
+             [:a {:on-click #(u/set-active-tab k)} (name k)]])
+
 (defn tab-component []
   (fn []
     [::ul.nav.nav-tabs
-     (doall (map (fn [k]
-                   ^{:key k} [:li {:role "presentation" :class (u/get-tab-state k)}
-                              [:a {:on-click #(u/set-active-tab k)} (str k ".X")]])
+     (doall (map #(tab-item %)
                  (keys (session/get-in [(u/this-page) :host-index]))))
      ^{:key :upload} [:li {:role "presentation"
                            :class (u/get-tab-state :upload)}
@@ -41,19 +43,3 @@
           [host-upload-component]
           [host-list-component (u/active-tab)])        ]]]]))
 
-;; (defn hosts-page []
-;;   (if-not (u/active-tab)
-;;     (u/set-active-tab 1))
-;;   (fn []
-;;     [:div.container
-;;      [c/page-header "Hosts"]
-;;      [:div.row
-;;       [:div.col-md-12
-;;        [c/status-component]
-;;        [:div.row
-;;         [:ul.nav.nav-tabs
-;;          [:li {:role "presentation" :class (u/get-tab-state 1)}
-;;           [:a {:on-click #(u/set-active-tab 1)} "Host List"]]
-;;          [:li {:role "presentation" :class (u/get-tab-state 2)}
-;;           [:a {:on-click #(u/set-active-tab 2)} "Upload Host Data"]]]
-;;         ]]]]))

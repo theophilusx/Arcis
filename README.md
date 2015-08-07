@@ -56,6 +56,26 @@ connections. However, during development, the application is only using HTTP.
 
 ## Running
 
+There is a missing clojure source file which needs to be created to enable the
+project to compile and run. The namespace is
+
+	arcis.local-site.addresses
+
+This namespace is used to classify IP addresses into a network group. The network
+group value is used to break up IP addresses into different groups for display.
+
+The namespace requires a defn of the form
+
+	(defn get-network-group
+    "Accepts and IP address as an argument and returns a string
+	representing the network group that address refers to"
+	[ip]
+	(cond
+	  (re-matches #"^192\.168\.1\.\d+" ip) "Private"
+	  (re-matches #"<some regexp>" ip) "Web"
+	  (re-matches #"<some other regexp" ip) "Email"
+	  :else "Unknown"))
+
 To start a web server for the application, run:
 
     lein ring server

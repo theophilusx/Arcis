@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Sunday, 02 August 2015 12:05 PM AEST
+;; Last Modified: Saturday, 08 August 2015 09:31 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,7 +11,8 @@
             [clojure.string :as s]
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
-            [clj-time.format :as tf]))
+            [clj-time.format :as tf]
+            [clj-time.local :as tl]))
 
 (defn encrypt [pwd]
   (hashers/encrypt pwd {:algorithm :pbkdf2+sha256}))
@@ -52,10 +53,24 @@
    (tf/formatter-local "d-MMM-yyyy @ hh:mm a")
    (t/to-time-zone (tc/from-date dt) (t/default-time-zone))))
 
-(defn format-date-str [dt]
+(defn date-to-str [dt]
   (if (instance? java.util.Date dt)
     (java-date-to-local-str dt)
     "Unknown"))
+
+(defn str-to-java-date [fmt str]
+  (tc/to-date (tf/parse (tf/formatter fmt) str)))
+
+(defn parse-mdf-date [date-str]
+  (try
+    (if (= 8 (count date-str))
+      (str-to-java-date "yyyyMMdd" date-str)
+      (do
+        (println "parse-mdf-date: Invalid date string " date-str)
+        (java.util.Date.)))
+    (catch Exception e
+      (println (str "parse-mdf-date exception: " (.getMessage e)))
+      (java.util.Date.))))
 
 (def mac-re
   "Regular expression used to match mac addresses from master data file"
