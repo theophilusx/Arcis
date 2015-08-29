@@ -4,10 +4,10 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [selmer "0.8.8"]
-                 [com.taoensso/timbre "4.1.0"]
+                 [selmer "0.9.1"]
+                 [com.taoensso/timbre "4.1.1"]
                  [com.taoensso/tower "3.0.2"]
-                 [markdown-clj "0.9.67"]
+                 [markdown-clj "0.9.69"]
                  [environ "1.0.0"]
                  [compojure "1.4.0"]
                  [ring/ring-defaults "0.1.5"]
@@ -15,29 +15,29 @@
                  [liberator "0.13"]
                  [cheshire "5.5.0"]
                  [metosin/ring-middleware-format "0.6.0"]
-                 [metosin/ring-http-response "0.6.3"]
+                 [metosin/ring-http-response "0.6.4"]
                  [bouncer "0.3.3"]
                  [prone "0.8.2"]
                  [org.clojure/tools.nrepl "0.2.10"]
                  [ring-server "0.4.0"]
-                 [buddy "0.6.1"]
-                 [migratus "0.8.2"]
-                 [clj-time "0.10.0"]
+                 [buddy "0.6.2"]
+                 [migratus "0.8.4"]
+                 [clj-time "0.11.0"]
                  [org.clojure/java.jdbc "0.4.1"]
                  [instaparse "1.4.1"]
-                 [yesql "0.5.0-SNAPSHOT"]
+                 [yesql "0.5.0"]
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]
-                 [org.clojure/clojurescript "1.7.58" :scope "provided"]
+                 [org.clojure/clojurescript "1.7.107" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
                  [reagent "0.5.0"]
                  [cljsjs/react "0.13.3-1"]
-                 [reagent-forms "0.5.5"]
+                 [reagent-forms "0.5.6"]
                  [reagent-utils "0.1.5"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]
-                 [org.clojure/data.csv "0.1.2"]]
+                 [org.clojure/data.csv "0.1.3"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "arcis.jar"
@@ -51,8 +51,8 @@
 
   :plugins [[lein-ring "0.9.6"]
             [lein-environ "1.0.0"]
-            [migratus-lein "0.1.5"]
-            [lein-cljsbuild "1.0.6"]]
+            [migratus-lein "0.1.7"]
+            [lein-cljsbuild "1.1.0"]]
   
 
   
