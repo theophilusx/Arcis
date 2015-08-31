@@ -1,6 +1,6 @@
 ;;      Filename: services.clj
 ;; Creation Date: Saturday, 14 March 2015 07:29 AM AEDT
-;; Last Modified: Friday, 10 July 2015 03:03 PM AEST
+;; Last Modified: Monday, 31 August 2015 05:52 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,7 +13,6 @@
             [arcis.db.users :as udb]))
 
 (defn is-malformed-user? [params]
-  (println (str "is-malformed-user?: " params))
   (let [vmap (first (b/validate params
                                 :first-name v/required
                                 :last-name v/required

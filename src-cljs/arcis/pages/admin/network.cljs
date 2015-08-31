@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Saturday, 29 August 2015 01:10 PM AEST
+;; Last Modified: Sunday, 30 August 2015 11:35 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -61,9 +61,10 @@
 
 (defn post-network-group [group]
   (let [params (assoc (u/default-post-params)
-                      :params group
+                      :params @group
                       :handler (add-network-resp group)
                       :error-handler (add-network-error-resp group))]
+    (.log js/console (str "Params: " params))
     (POST "/admin/add-network" params)))
 
 (defn add-network-group-component []
