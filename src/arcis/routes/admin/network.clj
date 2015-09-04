@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Friday, 04 September 2015 11:04 AM AEST
+;; Last Modified: Friday, 04 September 2015 02:37 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -16,31 +16,35 @@
 (defn is-malformed-group? [params]
   (let [vmap (first (b/validate params
                                 :group-name v/required
+                                :subgroup-name v/required
                                 :group-regexp v/required))]
     (if (nil? vmap)
       false
       {:validation-errors vmap})))
 
-(defn group-exists? [group-name]
-  (if (< 0 (count (ndb/get-group-by-name {:group_name group-name})))
+(defn group-exists? [group-name subgroup-name]
+  (if (< 0 (count (ndb/get-group-by-name {:group_name group-name
+                                          :subgroup_name subgroup-name})))
     true
     false))
 
-(defn create-network-group [{:keys [group-name group-regexp]}]
-  (println (str "Group: " group-name " Regexp: " group-regexp))
-  (if (group-exists? group-name)
+(defn create-network-group [{:keys [group-name subgroup-name group-regexp]}]
+  (if (group-exists? group-name subgroup-name)
     {:post-status {:status :duplicate
                    :message (str "A network group with the name "
-                                 group-name " already exists")}}
+                                 group-name "/" subgroup-name
+                                 " already exists")}}
     (let [rslt (ndb/create-network-group! {:group_name group-name
-                                          :group_regexp group-regexp})]
+                                           :subgroup_name subgroup-name
+                                           :group_regexp group-regexp})]
       (if (= 1 rslt)
         {:post-status {:status :success
-                       :message (str "Created new group " group-name)}}
+                       :message (str "Created new group " group-name "/"
+                                     subgroup-name)}}
         {:post-status {:status :unknown
                        :message
                        (str "Unexpected result creating network group "
-                            group-name " Status: " rslt)}}))))
+                            group-name "/" subgroup-name " Status: " rslt)}}))))
 
 (defresource add-group
   :allowed-methods [:post]

@@ -1,14 +1,15 @@
 -- name: create-network-group!
 -- Create a new network group definition
 INSERT INTO network_grp
-(group_name, group_regexp)
-VALUES (:group_name, :group_regexp)
+(group_name, subgroup_name, group_regexp)
+VALUES (:group_name, :subgroup_name, :group_regexp)
 
 -- name: set-active-state!
 -- Set the active state for a network group
 UPDATE network_grp
 SET active = :active
 WHERE group_name = :group_name
+AND subgroup_name = :subgroup_name
 
 -- name: get-network-groups
 -- Return all network groups
@@ -26,3 +27,4 @@ WHERE active = 'Y'
 SELECT *
 FROM network_grp
 WHERE group_name = :group_name
+AND subgroup_name = :subgroup_name

@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Friday, 04 September 2015 12:28 PM AEST
+;; Last Modified: Friday, 04 September 2015 03:31 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -20,11 +20,13 @@
    [:div.col-md-8
     [:br]
     (c/input "Network Group" :text :group-name)
+    (c/input "Subgroup" :text :subgroup-name)
     (c/input "Regular Expression" :text :group-regexp)]])
 
 (defn not-valid? [group]
   (let [vmap (first (b/validate group
                                 :group-name v/required
+                                :subgroup-name v/required 
                                 :group-regexp v/required))]
     (if (nil? vmap)
       false
@@ -32,32 +34,30 @@
 
 (defn group-list-to-hash [lst]
   (reduce (fn [m v]
-            (assoc m (keyword (get v "group_name"))
+            (assoc m (keyword (str (get v "group_name") "-"
+                                   (get v "subgroup_name")))
                    {:group-name (get v "group_name")
+                    :subgroup-name (get v "subgroup_name")
                     :group-regexp (get v "group_regexp")
                     :active (get v "active")
                     :created-dt (get v "created_dt")
                     :last-modified-dt (get v "last_modified_dt")}))
-          {} lst))
+          (sorted-map) lst))
 
 (defn network-groups-resp [response]
   (let [group-list (js->clj response :keywordize-keys true)
         group-hash (group-list-to-hash group-list)]
-    (.log js/console (str "GL: " group-list))
-    (.log js/console (str "NGR: " group-hash))
     (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
 
 (defn network-groups-error-resp [ctx]
   (let [rsp (js->clj {:response ctx} :keywordize-keys true)
         msg (str "Error: " (:status ctx) " " (:status-text ctx)
                  " " (:message rsp))]
-    (.log js/console (str "network-groups-error-rsp AJAX error: " ctx))
     (if (u/expired-session? (:status ctx) (:status-text ctx))
       (u/report-expired-session)
       (u/report-error msg))))
 
 (defn get-network-groups []
-  (.log js/console "Calling get-network-groups")
   (GET "/admin/groups" {:format :json
                         :handler network-groups-resp
                         :error-handler network-groups-error-resp}))
@@ -93,12 +93,12 @@
                       :params @group
                       :handler (add-network-resp group)
                       :error-handler (add-network-error-resp group))]
-    (.log js/console (str "Params: " params))
     (POST "/admin/add-network" params)))
 
 (defn group-table-row [grp]
   [:tr
    [:td (:group-name grp)]
+   [:td (:subgroup-name grp)]
    [:td (:group-regexp grp)]
    [:td (:active grp)]
    [:td (:created-dt grp)]
@@ -106,12 +106,12 @@
 
 (defn network-group-table []
   (let [groups (session/get-in [(u/this-page) :network-groups])]
-    (.log js/console (str "NG: " groups))
     [:div
      [:table.table.table-striped
       [:thead
        [:tr
         [:th "Group Name"]
+        [:th "Sub-group Name"]
         [:th "Regular Expression"]
         [:th "Active?"]
         [:th "Created"]
