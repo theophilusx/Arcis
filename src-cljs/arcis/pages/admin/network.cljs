@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 30 August 2015 11:35 AM AEST
+;; Last Modified: Friday, 04 September 2015 12:28 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -30,8 +30,37 @@
       false
       vmap)))
 
+(defn group-list-to-hash [lst]
+  (reduce (fn [m v]
+            (assoc m (keyword (get v "group_name"))
+                   {:group-name (get v "group_name")
+                    :group-regexp (get v "group_regexp")
+                    :active (get v "active")
+                    :created-dt (get v "created_dt")
+                    :last-modified-dt (get v "last_modified_dt")}))
+          {} lst))
+
+(defn network-groups-resp [response]
+  (let [group-list (js->clj response :keywordize-keys true)
+        group-hash (group-list-to-hash group-list)]
+    (.log js/console (str "GL: " group-list))
+    (.log js/console (str "NGR: " group-hash))
+    (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
+
+(defn network-groups-error-resp [ctx]
+  (let [rsp (js->clj {:response ctx} :keywordize-keys true)
+        msg (str "Error: " (:status ctx) " " (:status-text ctx)
+                 " " (:message rsp))]
+    (.log js/console (str "network-groups-error-rsp AJAX error: " ctx))
+    (if (u/expired-session? (:status ctx) (:status-text ctx))
+      (u/report-expired-session)
+      (u/report-error msg))))
+
 (defn get-network-groups []
-  (.log js/console "Calling get-network-groups"))
+  (.log js/console "Calling get-network-groups")
+  (GET "/admin/groups" {:format :json
+                        :handler network-groups-resp
+                        :error-handler network-groups-error-resp}))
 
 (defn add-network-resp [grop]
   (fn [response]
@@ -67,6 +96,33 @@
     (.log js/console (str "Params: " params))
     (POST "/admin/add-network" params)))
 
+(defn group-table-row [grp]
+  [:tr
+   [:td (:group-name grp)]
+   [:td (:group-regexp grp)]
+   [:td (:active grp)]
+   [:td (:created-dt grp)]
+   [:td (:last-modified-dt grp)]])
+
+(defn network-group-table []
+  (let [groups (session/get-in [(u/this-page) :network-groups])]
+    (.log js/console (str "NG: " groups))
+    [:div
+     [:table.table.table-striped
+      [:thead
+       [:tr
+        [:th "Group Name"]
+        [:th "Regular Expression"]
+        [:th "Active?"]
+        [:th "Created"]
+        [:th "Last Modified"]]]
+      [:tbody
+       (for [g (keys groups)]
+         ^{:key g} [group-table-row (g groups)])]]
+     [:button.btn.btn-primary
+      {:type "button" :on-click #(get-network-groups)}
+      "Refresh"]]))
+
 (defn add-network-group-component []
   (let [network-group (atom {})]
     (fn []
@@ -79,3 +135,11 @@
                        (u/report-error (u/validation-error-msg e))
                        (post-network-group network-group)))}
         "Add Group"]])))
+
+(defn network-component []
+  (if-not (session/get-in [(u/this-page) :network-groups])
+    (get-network-groups))
+  [:div
+   [network-group-table]
+   [:hr]
+   [add-network-group-component]])

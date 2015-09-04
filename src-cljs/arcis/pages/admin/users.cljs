@@ -1,12 +1,13 @@
 ;;      Filename: users.cljs
 ;; Creation Date: Sunday, 05 July 2015 01:36 PM AEST
-;; Last Modified: Tuesday, 28 July 2015 06:55 PM AEST
+;; Last Modified: Friday, 04 September 2015 10:42 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.users
   (:require [reagent.core :refer [atom]]
             [reagent.session :as session]
+            [arcis.utils :as u]
             [arcis.pages.components :as c]
             [arcis.pages.admin.users-ajax :refer [get-app-users]]
             [arcis.pages.admin.delete-user :refer [delete-user-button]]
@@ -27,7 +28,7 @@
    [:td [delete-user-button (:id r)]]])
 
 (defn users-table []
-  (let [users (session/get-in [(session/get :page) :users])]
+  (let [users (session/get-in [(u/this-page) :users])]
     [:div
      [:table.table.table-striped
       [:thead
@@ -47,7 +48,7 @@
       {:type "button" :on-click #(get-app-users)} "Refresh"]]))
 
 (defn users-component []
-  (if-not (session/get-in [(session/get :page) :users])
+  (if-not (session/get-in [(u/this-page) :users])
     (get-app-users))
   [:div
    [users-table]])

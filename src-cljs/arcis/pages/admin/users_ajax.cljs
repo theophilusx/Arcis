@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Sunday, 02 August 2015 06:52 PM AEST
+;; Last Modified: Friday, 04 September 2015 12:30 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -29,7 +29,7 @@
   [response]
   (let [user-list (js->clj response :keywordize-keys true)
         user-hash (user-list-to-hash user-list)]
-    (session/assoc-in! [(session/get :page) :users] user-hash)))
+    (session/assoc-in! [(u/this-page) :users] user-hash)))
 
 (defn users-list-error-resp
   "Callback used to process AJAX call errors to get user list"

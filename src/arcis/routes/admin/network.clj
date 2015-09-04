@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Sunday, 30 August 2015 11:33 AM AEST
+;; Last Modified: Friday, 04 September 2015 11:04 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -68,7 +68,10 @@
                       (generate-string status))))
 
 (defn generate-group-list []
-  (let [groups (ndb/get-network-groups)]
+  (let [groups (map #(assoc
+                      % :created_dt (u/date-to-str (:created_dt %))
+                      :last_modified_dt (u/date-to-str (:last_modified_dt %)))
+                    (ndb/get-network-groups))]
     (generate-string groups)))
 
 (defresource group-list

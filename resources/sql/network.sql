@@ -13,7 +13,7 @@ WHERE group_name = :group_name
 -- name: get-network-groups
 -- Return all network groups
 SELECT *
-FROM netowrk_grp
+FROM network_grp
 
 -- name: get-active-network-groups
 -- Return all active network groups

@@ -1,6 +1,6 @@
 ;;      Filename: main.cljs
 ;; Creation Date: Friday, 10 July 2015 03:54 PM AEST
-;; Last Modified: Saturday, 29 August 2015 01:10 PM AEST
+;; Last Modified: Friday, 04 September 2015 12:31 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,7 +11,7 @@
             [arcis.utils :as u]
             [arcis.pages.admin.users :refer [users-component]]
             [arcis.pages.admin.register :refer [register-component]]
-            [arcis.pages.admin.network :refer [add-network-group-component]]))
+            [arcis.pages.admin.network :refer [network-component]]))
 
 
 (defn admin-page []
@@ -19,7 +19,7 @@
     (u/set-active-tab 1))
   (fn []
     [:div.container
-     [c/page-header "User Administration"]
+     [c/page-header "Administration"]
      [modals/modal-window]
      [:div.row
       [:div.col-md-12
@@ -35,4 +35,4 @@
         (condp = (u/active-tab)
           1 [users-component]
           2 [register-component]
-          3 [add-network-group-component])]]]]))
+          3 [network-component])]]]]))
