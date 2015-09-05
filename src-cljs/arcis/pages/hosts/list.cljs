@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Saturday, 05 September 2015 07:08 PM AEST
+;; Last Modified: Saturday, 05 September 2015 09:39 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -63,28 +63,26 @@
                  [:li.list-group-item
                   [:strong "Last Seen Date: "] (:last-seen-dt host)]]]]))
 
+(defn sidebar-component [ks]
+  [:ul.nav.nav-pills.nav-stacked
+   (doall (for [k ks]
+            ^{:key k} [:li {:role "presentation"
+                            :class (u/get-active-sidebar-state k)}
+                       [:a {:on-click #(u/set-sidebar-menu k)}
+                        (name k)]]))])
 
 (defn host-list-component [idx]
   (let [host-list (session/get-in [(u/this-page) :host-list])
         host-index (session/get-in [(u/this-page) :host-index])
-        sub-keys (keys (idx host-index))]
-    (if-not (session/get-in [(u/this-page) :subgroup])
-      (session/assoc-in! [(u/this-page) :subgroup] (first sub-keys)))
+        sub-keys (sort (keys (idx host-index)))]
+    (if-not (u/sidebar-menu)
+      (u/set-sidebar-menu (first sub-keys)))
     [:div.row
      [:div.col-md-2
-      [:ul.list-group
-       (for [k sub-keys]
-         ^{:key k} [:li.list-group-item
-                    [:a {:on-click #(session/assoc-in! [(u/this-page)
-                                                        :subgroup] k)}
-                     (name k)]])]]
+      [sidebar-component sub-keys]]
      [:div.col-md-10
-      (for [id (get-in host-index [idx (session/get-in
-                                        [(u/this-page) :subgroup])])]
+      [:h3 (name (u/sidebar-menu))]
+      (for [id (get-in host-index [idx (u/sidebar-menu)])]
         ^{:key (str idx id)} [host-component id])]]))
 
 
-      ;; (map (fn [id]
-      ;;        (host-component id (id host-list)))
-      ;;      (get-in host-index [idx (session/get-in
-      ;;                               [(u/this-page) :subgroup])]))

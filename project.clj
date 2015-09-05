@@ -90,9 +90,9 @@
    :dev {:dependencies [[ring-mock "0.1.5"]
                         [ring/ring-devel "1.4.0"]
                         [pjstadig/humane-test-output "0.7.0"]
-                        [lein-figwheel "0.3.8"]
+                        [lein-figwheel "0.3.9"]
                         [org.clojure/tools.nrepl "0.2.10"]]
-         :plugins [[lein-figwheel "0.3.8"]]
+         :plugins [[lein-figwheel "0.3.9"]]
          :cljsbuild
          {:builds
           {:app

@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Monday, 03 August 2015 07:10 PM AEST
+;; Last Modified: Saturday, 05 September 2015 09:21 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -72,12 +72,25 @@
 (defn active-tab []
   (session/get-in [(session/get :page) :tab]))
 
+
+
 (defn set-active-tab [v]
   (session/assoc-in! [(session/get :page) :tab] v)
   (session/assoc-in! [(session/get :page) :status :type] :ignore))
 
 (defn get-tab-state [t]
   (if (= t (active-tab))
+    "active"
+    ""))
+
+(defn sidebar-menu []
+  (session/get-in [(session/get :page) :sidebar]))
+
+(defn set-sidebar-menu [m]
+  (session/assoc-in! [(session/get :page) :sidebar] m))
+
+(defn get-active-sidebar-state [m]
+  (if (= m (sidebar-menu))
     "active"
     ""))
 
