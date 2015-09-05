@@ -1,6 +1,6 @@
 ;;      Filename: hosts.cljs
 ;; Creation Date: Monday, 20 July 2015 05:35 PM AEST
-;; Last Modified: Wednesday, 05 August 2015 08:51 PM AEST
+;; Last Modified: Saturday, 05 September 2015 07:01 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,14 +13,14 @@
             [reagent.session :as session]))
 
 (defn tab-item [k]
-  ^{:key k} [:li {:role "presentation" :class (u/get-tab-state k)}
+  [:li {:role "presentation" :class (u/get-tab-state k)}
              [:a {:on-click #(u/set-active-tab k)} (name k)]])
 
 (defn tab-component []
-  (fn []
+  (let [idx-keys (keys (session/get-in [(u/this-page) :host-index]))]
     [::ul.nav.nav-tabs
-     (doall (map #(tab-item %)
-                 (keys (session/get-in [(u/this-page) :host-index]))))
+     (for [k idx-keys]
+       ^{:key k} [tab-item k])
      ^{:key :upload} [:li {:role "presentation"
                            :class (u/get-tab-state :upload)}
                       [:a {:on-click #(u/set-active-tab :upload)}

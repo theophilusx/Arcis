@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Friday, 07 August 2015 06:04 PM AEST
+;; Last Modified: Saturday, 05 September 2015 10:06 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -28,6 +28,7 @@
                       :reverse-dns (get h "reverse_dns")
                       :host-type (get h "host_type")
                       :network-group (get h "network_group")
+                      :subgroup-name (get h "subgroup_name")
                       :management-group (get h "management_group")
                       :status (get h "status")
                       :created-dt (get h "created_dt")
@@ -37,10 +38,9 @@
 
 (defn build-network-index [hosts]
   (reduce (fn [idx-hash k]
-            (let [grp (keyword (get-in hosts [k :network-group]))]
-              (if-not (contains? idx-hash grp)
-                (assoc idx-hash grp [k])
-                (assoc idx-hash grp (conj (grp idx-hash) k)))))
+            (let [net (keyword (get-in hosts [k :network-group]))
+                  grp (keyword (get-in hosts [k :subgroup-name]))]
+              (update-in idx-hash [net grp] conj k)))
           (sorted-map) (keys hosts)))
 
 (defn host-list-resp

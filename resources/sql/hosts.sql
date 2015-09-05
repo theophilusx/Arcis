@@ -3,12 +3,12 @@
 INSERT INTO host_def
     (
 	mac, ipv4, ipv6, hostname, os, dhcp, dns, reverse_dns,
-	host_type, network_group, management_group, status
+	host_type, network_group, subgroup_name, management_group, status
 	)
     VALUES
     (
 	:mac, :ipv4, :ipv6, :hostname, :os, :dhcp :dns :reverse_dns
-	:host_type, :network_group, :management_group, :status
+	:host_type, :network_group, :subgroup_name, :management_group, :status
 	)
 
 -- name: insert-mdf-record!
@@ -16,12 +16,12 @@ INSERT INTO host_def
 INSERT INTO host_def
     (
 	mac, ipv4, ipv6, hostname, dhcp, dns, reverse_dns, network_group,
-	created_dt, last_seen_dt
+	subgroup_name, created_dt, last_seen_dt
 	)
     VALUES
     (
 	:mac, :ipv4, :ipv6, :hostname, :dhcp, :dns, :reverse_dns,
-	:network_group, :created_dt, :last_seen_dt
+	:network_group, :subgroup_name, :created_dt, :last_seen_dt
 	)
 
 
@@ -34,6 +34,7 @@ SET os = :os,
     reverse_dns = :reverse_dns,
     host_type = :host_type
     network_group = :network_group
+    subgroup_name = :subgroup_name
     management_group = :management_group
     status = :status
     last_modified_dt = current_timestamp
@@ -75,10 +76,11 @@ SET host_type = :host_type,
     last_modified_dt = current_timestamp
 WHERE host_id = :host_id
 
--- name: update-network-group!
+-- name: update-network-groups!
 -- Update the network group for a host
 UPDATE host_def
 SET network_group = :network_group,
+    subgroup_name = "subgroup_name,
     last_modified_dt = current_timestamp
 WHERE host_id = :host_id
 
