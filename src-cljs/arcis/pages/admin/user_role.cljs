@@ -1,6 +1,6 @@
 ;;      Filename: user_role.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:34 PM AEST
-;; Last Modified: Sunday, 19 July 2015 10:37 AM AEST
+;; Last Modified: Sunday, 06 September 2015 07:30 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -38,4 +38,4 @@
     (POST "/admin/role" params)))
 
 (defn user-role-selector [id role]
-  [c/menu-component id role "userrole" #'update-user-role ["Admin" "View"]])
+  (c/menu-component id role "userrole" #'update-user-role ["Admin" "View"]))
