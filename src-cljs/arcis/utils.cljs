@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Saturday, 05 September 2015 09:21 PM AEST
+;; Last Modified: Saturday, 05 September 2015 10:11 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -67,7 +67,8 @@
   (.log js/console (str "expired-session? status = " status
                         " text = " status-text))
   (and (= 419 status)
-       (= "session-timeout" status-text)))
+       (or (= "session-timeout" status-text)
+           (= "419" status-text))))
 
 (defn active-tab []
   (session/get-in [(session/get :page) :tab]))
