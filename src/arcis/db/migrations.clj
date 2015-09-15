@@ -1,14 +1,20 @@
+;;      Filename: migrations.clj
+;; Creation Date: Tuesday, 15 September 2015 11:55 AM AEST
+;; Last Modified: Tuesday, 15 September 2015 11:55 AM AEST
+;;        Author: Tim Cross <theophilusx AT gmail.com>
+;;   Description:
+;;
 (ns arcis.db.migrations
-  (:require
-    [migratus.core :as migratus]
-    [environ.core :refer [env]]))
+  (:require [migratus.core :as migratus]
+            [environ.core :refer [env]]
+            [to-jdbc-uri.core :refer [to-jdbc-uri]]))
 
 (defn parse-ids [args]
   (map #(Long/parseLong %) (rest args)))
 
 (defn migrate [args]
   (let [config {:store :database
-                :db {:connection-uri (:database-url env)}}]
+                :db {:connection-uri (to-jdbc-uri (:database-url env))}}]
     (case (first args)
       "migrate"
       (if (> (count args) 1)

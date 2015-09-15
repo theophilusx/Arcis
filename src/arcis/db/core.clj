@@ -1,25 +1,44 @@
 ;;      Filename: core.clj
 ;; Creation Date: Saturday, 04 July 2015 12:26 PM AEST
-;; Last Modified: Saturday, 04 July 2015 05:19 PM AEST
+;; Last Modified: Tuesday, 15 September 2015 08:06 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.db.core
-  (:require
-   [clojure.java.jdbc :as jdbc]
-   [yesql.core :refer [defqueries]]
-   [cheshire.core :refer [generate-string parse-string]]
-   [environ.core :refer [env]])
+  (:require [cheshire.core :refer [generate-string parse-string]]
+            [clojure.java.jdbc :as jdbc]
+            [conman.core :as conman]
+            [environ.core :refer [env]])
   (:import org.postgresql.util.PGobject
            org.postgresql.jdbc4.Jdbc4Array
            clojure.lang.IPersistentMap
            clojure.lang.IPersistentVector
-           [java.sql Date Timestamp PreparedStatement]))
+           [java.sql
+            BatchUpdateException
+            Date
+            Timestamp
+            PreparedStatement]))
 
-(def db-spec
-  {:connection-uri (env :database-url)})
+(defonce ^:dynamic *conn* (atom nil))
 
-;(defqueries "sql/users.sql" {:connection db-spec})
+;;(conman/bind-connection *conn* "sql/queries.sql")
+
+(def pool-spec
+  {:adapter    :postgresql
+   :init-size  1
+   :min-idle   1
+   :max-idle   4
+   :max-active 32})
+
+(defn connect! []
+  (conman/connect!
+    *conn*
+   (assoc
+     pool-spec
+     :jdbc-url (env :database-url))))
+
+(defn disconnect! []
+  (conman/disconnect! *conn*))
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))

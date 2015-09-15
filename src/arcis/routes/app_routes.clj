@@ -1,6 +1,6 @@
 ;;      Filename: app_routes.clj
 ;; Creation Date: Sunday, 05 July 2015 02:40 PM AEST
-;; Last Modified: Sunday, 30 August 2015 11:39 AM AEST
+;; Last Modified: Tuesday, 15 September 2015 11:57 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,8 +18,7 @@
             [arcis.routes.hosts.upload :refer [upload-hosts]]
             [arcis.routes.hosts.host-list :refer [host-list]]
             [compojure.route :as route]
-            [compojure.core :refer [defroutes GET POST ANY]]
-            [ring.handler.dump :refer [handle-dump]]            ))
+            [compojure.core :refer [defroutes GET POST ANY]]))
 
 (defroutes base-routes
   (route/resources "/")
@@ -28,8 +27,8 @@
 (defroutes app-routes
   (GET "/" [] (home-page)))
 
-(defroutes debug-routes
-  (ANY "/request" [] handle-dump))
+;; (defroutes debug-routes
+;;   (ANY "/request" [] handle-dump))
 
 (defroutes login-routes
   (GET "/login" [next] (login-page next))

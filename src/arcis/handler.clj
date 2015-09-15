@@ -1,35 +1,22 @@
 ;;      Filename: handler.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Sunday, 05 July 2015 03:11 PM AEST
+;; Last Modified: Tuesday, 15 September 2015 12:40 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.handler
   (:require [compojure.core :refer [defroutes routes wrap-routes]]
+            [arcis.layout :refer [error-page]]
             [arcis.routes.app-routes :as r]
             [arcis.middleware :as middleware]
-            [arcis.session :as session]
+            [arcis.db.core :as db]
+            [arcis.db.users :as udb]
+            [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
-            [clojure.tools.nrepl.server :as nrepl]))
-
-(defonce nrepl-server (atom nil))
-
-(defn start-nrepl
-  "Start a network repl for debugging when the :repl-port is set in the environment."
-  []
-  (when-let [port (env :repl-port)]
-    (try
-      (reset! nrepl-server (nrepl/start-server :port port))
-      (timbre/info "nREPL server started on port" port)
-      (catch Throwable t
-        (timbre/error "failed to start nREPL" t)))))
-
-(defn stop-nrepl []
-  (when-let [server @nrepl-server]
-    (nrepl/stop-server server)))
+            [arcis.utils :as u]))
 
 (defn init
   "init will be called once when
@@ -41,35 +28,48 @@
   (timbre/merge-config!
     {:level     (if (env :dev) :trace :info)
      :appenders {:rotor (rotor/rotor-appender
-                          {:path "arcis.log"
+                          {:path "lt.log"
                            :max-size (* 512 1024)
                            :backlog 10})}})
 
   (if (env :dev) (parser/cache-off!))
-  (start-nrepl)
-  ;;start the expired session cleanup job
-  (session/start-cleanup-job!)
+  (db/connect!)
+  (when (= 0 (count (udb/get-user-by-email {:email "theophilusx@gmail.com"})))
+    (udb/create-user! {:first_name "Tim"
+                       :last_name "Cross"
+                       :email "theophilusx@gmail.com"
+                       :user_role "Admin"
+                       :is_active true
+                       :pass (u/encrypt "Dev:100Arcis")}))
   (timbre/info (str
-                 "\n-=[arcis started successfully"
-                 (when (env :dev) "using the development profile")
+                 "\n-=[lt started successfully"
+                 (when (env :dev) " using the development profile")
                  "]=-")))
 
 (defn destroy
   "destroy will be called when your application
    shuts down, put any clean up code here"
   []
-  (timbre/info "arcis is shutting down...")
-  (stop-nrepl)
+  (timbre/info "lt is shutting down...")
+  (db/disconnect!)
   (timbre/info "shutdown complete!"))
+
+;; (def app-routes
+;;   (routes
+;;     (wrap-routes #'home-routes middleware/wrap-csrf)
+;;     (route/not-found
+;;       (:body
+;;         (error-page {:status 404
+;;                      :title "page not found"})))))
+
+;; (def app (middleware/wrap-base #'app-routes))
 
 (def app
   (-> (routes
        #'r/login-routes
-       #'r/debug-routes
        (wrap-routes (routes
                      #'r/api-routes
                      (wrap-routes #'r/app-routes middleware/wrap-csrf))
                     middleware/wrap-restricted)
        #'r/base-routes)
       middleware/wrap-base))
-
