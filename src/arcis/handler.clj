@@ -1,6 +1,6 @@
 ;;      Filename: handler.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 12:40 PM AEST
+;; Last Modified: Tuesday, 15 September 2015 06:01 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -67,9 +67,7 @@
 (def app
   (-> (routes
        #'r/login-routes
-       (wrap-routes (routes
-                     #'r/api-routes
-                     (wrap-routes #'r/app-routes middleware/wrap-csrf))
-                    middleware/wrap-restricted)
+       #'r/api-routes
+       (wrap-routes #'r/app-routes middleware/wrap-csrf)
        #'r/base-routes)
       middleware/wrap-base))

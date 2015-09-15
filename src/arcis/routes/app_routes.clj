@@ -1,13 +1,13 @@
 ;;      Filename: app_routes.clj
 ;; Creation Date: Sunday, 05 July 2015 02:40 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 11:57 AM AEST
+;; Last Modified: Tuesday, 15 September 2015 05:53 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 
 (ns arcis.routes.app-routes
   (:require [arcis.routes.home :refer [home-page]]
-            [arcis.routes.login :refer [authenticate-user login-page logout]]
+            [arcis.routes.login :refer [authenticate-user]]
             [arcis.routes.admin.users :refer [user-list]]
             [arcis.routes.admin.register :refer [register-user]]
             [arcis.routes.admin.user-state :refer [set-user-state]]
@@ -31,9 +31,7 @@
 ;;   (ANY "/request" [] handle-dump))
 
 (defroutes login-routes
-  (GET "/login" [next] (login-page next))
-  (POST "/login" [] authenticate-user)
-  (GET "/logout" [] logout))
+  (POST "/login" [] authenticate-user))
 
 (defroutes api-routes
   (GET "/admin/users" [] user-list)

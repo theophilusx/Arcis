@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 12:39 PM AEST
+;; Last Modified: Tuesday, 15 September 2015 05:57 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -17,14 +17,21 @@
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.format :refer [wrap-restful-format]]
-            [ring.util.http-response :as http-response]
-            [buddy.auth.middleware :refer [wrap-authentication]]
-            [buddy.auth.backends.session :refer [session-backend]]
-            [buddy.auth.accessrules :refer [restrict]]
-            [buddy.auth :refer [authenticated?]]
+            [ring.util.http-response :as http-resp]
             [arcis.layout :refer [*identity*]]
             [cheshire.core :refer [generate-string]]
+            [buddy.core.nonce :as nonce]
+            [buddy.sign.jwe :as jwe]
+            [buddy.auth :refer [authenticated? throw-unauthorized]]
+            [buddy.auth.backends.token :refer [jwe-backend]]
+            [buddy.auth.middleware :refer [wrap-authentication
+                                           wrap-authorization]]
             [liberator.dev :refer [wrap-trace]]))
+
+(defonce secret (nonce/random-bytes 32))
+
+(def auth-backend (jwe-backend {:secret secret
+                                :options {:alg :a256kw :enc :a128gcm}}))
 
 (defn wrap-context [handler]
   (fn [request]
@@ -47,9 +54,10 @@
       (handler req)
       (catch Throwable t
         (timbre/error t)
-        (error-page {:status 500
-                     :title "Something very bad has happened!"
-                     :message "We've dispatched a team of gnomes."})))))
+        (assoc (http-resp/internal-server-error
+                (generate-string {:status-text "Internal server error"
+                                  :message (str "Error: " (.getMessage t))}))
+               :headers {"Content-Type" "application/json"})))))
 
 (defn wrap-dev [handler]
   (if (env :dev)
@@ -61,62 +69,37 @@
 
 (defn wrap-csrf [handler]
   (wrap-anti-forgery
-    handler
-    {:error-response
-     (error-page
-       {:status 403
-        :title "Invalid anti-forgery token"})}))
+   handler
+   (assoc (http-resp/forbidden
+           (generate-string {:status-text "Forbidden"
+                             :message "Invalid anti-forgery-token"}))
+          :headers {"Content-Type" "application/json"})))
 
 (defn wrap-formats [handler]
   (wrap-restful-format handler {:formats [:json-kw :transit-json
                                           :transit-msgpack]}))
 
-;; (defn on-error [request response]
-;;   (error-page
-;;     {:status 403
-;;      :title (str "Access to " (:uri request) " is not authorized")}))
-(defn on-error [request response]
-  (let [uri (:uri request)
-        id (get-in request [:session :identity])
-        accept (get-in request [:headers "accept"])]
-    (cond
-      (and (nil? id)
-           (= "application/json" accept))
-      {:status 419
-       :headers {"Content-Type" "application/json"}
-       :body (generate-string
-              {:status "session-timeout"
-               :message "Session has timed out. Please login again"})}
-      (= "application/json" accept)
-      {:status 403
-       :headers {"Content-Type" "application/json"}
-       :body (generate-string
-              {:status "not-authorised"
-               :message "Access to " uri " is not authorised"})}
-      :else (http-response/temporary-redirect (str "/login?next=" uri)))))
+(defn on-error [req rsp]
+  (assoc (http-resp/forbidden
+          (generate-string {:status-text "Forbidden"
+                            :message (str "Access to " (:uri req)
+                                          " is not authorized")}))
+         :headers {"Content-Type" "application/json"}))
 
-(defn wrap-restricted [handler]
-  (restrict handler {:handler authenticated?
-                     :on-error on-error}))
-
-(defn wrap-identity [handler]
-  (fn [request]
-    (binding [*identity* (get-in request [:session :identity])]
-      (handler request))))
+(defn wrap-authorize [handler]
+  (wrap-authorization handler auth-backend))
 
 (defn wrap-auth [handler]
-  (-> handler
-      wrap-identity
-      (wrap-authentication (session-backend))))
+  (wrap-authentication handler auth-backend))
 
 (defn wrap-base [handler]
   (-> handler
       wrap-dev
+      wrap-authorize
       wrap-auth
       wrap-formats
       wrap-webjars
       wrap-flash
-      (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)

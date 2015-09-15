@@ -37,14 +37,29 @@ and more as I think of it!
 
 ## Status
 
-This software is still very much in development. In fact, the only completed part is
-the basic user management components.
+This software is still very much in development. In fact, it is changing quite
+quickly. Things which are complete include
+
+- User Management. You can add new users, set their password and change their
+      role etc
+ - Uploading host data file. You can upload a master data file containing detials of
+   hosts in the network
+ - Add host grouping regular expressions. In a large network, it is useful to break
+   hosts up into groups and sub-groups. The system supports defining of regular
+   expressions which can be used to group hosts
+ - Display details of hosts. Uses a tab and menu system with content which can be
+ collapsed or expanded
+
+Currently, I'm working on moving from a session based authentication and
+ authorisation model to a stateless token based approach based on JWT. Expect things
+ to be broken! 
 
 ## Prerequisites
 
 You will need [Leiningen][1] 2.0 or above installed.
 
-The application uses PostgreSQL as the backend database.
+The application uses PostgreSQL as the backend database. The server has been changed
+from using jetty to Immutant. 
 
 The application uses various web client functionality which is only supported under
 Chrome and Firefox. Internet Explorer is not supported.
@@ -56,37 +71,17 @@ connections. However, during development, the application is only using HTTP.
 
 ## Running
 
-There is a missing clojure source file which needs to be created to enable the
-project to compile and run. The namespace is
-
-	arcis.local-site.addresses
-
-This namespace is used to classify IP addresses into a network group. The network
-group value is used to break up IP addresses into different groups for display.
-
-The namespace requires a defn of the form
-
-	(defn get-network-group
-    "Accepts and IP address as an argument and returns a string
-	representing the network group that address refers to"
-	[ip]
-	(cond
-	  (re-matches #"^192\.168\.1\.\d+" ip) "Private"
-	  (re-matches #"<some regexp>" ip) "Web"
-	  (re-matches #"<some other regexp" ip) "Email"
-	  :else "Unknown"))
-
 To start a web server for the application, run:
 
-    lein ring server
+    lein run
 
 To start the Figwheel service for compiling and loading ClojureScript files, run
 
-    leini figwheel
+    lein figwheel
 
 To run a repl which can be used to connect from cider, run
 
-lein repl
+	lein repl
 
 ## License
 
