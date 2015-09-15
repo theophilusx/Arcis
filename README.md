@@ -40,14 +40,13 @@ and more as I think of it!
 This software is still very much in development. In fact, it is changing quite
 quickly. Things which are complete include
 
-- User Management. You can add new users, set their password and change their
++ User Management. You can add new users, set their password and change their
       role etc
- - Uploading host data file. You can upload a master data file containing detials of
-   hosts in the network
- - Add host grouping regular expressions. In a large network, it is useful to break
++ hosts in the network
++ Add host grouping regular expressions. In a large network, it is useful to break
    hosts up into groups and sub-groups. The system supports defining of regular
    expressions which can be used to group hosts
- - Display details of hosts. Uses a tab and menu system with content which can be
++ Display details of hosts. Uses a tab and menu system with content which can be
  collapsed or expanded
 
 Currently, I'm working on moving from a session based authentication and
