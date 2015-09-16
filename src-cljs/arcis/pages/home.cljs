@@ -1,6 +1,6 @@
 ;;      Filename: home.cljs
 ;; Creation Date: Saturday, 04 July 2015 05:27 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 07:39 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 07:01 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,6 +18,7 @@
 (def login-template
   [:div
    [:h2 {:class "form-signin-heading"} "Please sign in"]
+   [:hr]
    (c/input "Email" :text :email)
    (c/input "Password" :password :pass)])
 
@@ -29,8 +30,21 @@
       false
       vmap)))
 
+(defn login-resp [user]
+  (fn [response]
+    (let [rsp (js->clj response :keywordize-keys true)]
+      (.log js/console (str "login-resp: " rsp))
+      (session/put! :user-data rsp)
+      (u/report-success)
+      (reset! user {}))))
+
 (defn post-login [data]
-  (.log js/console (str "Login Data: " @data)))
+  (.log js/console (str "Login Data: " @data))
+  (let [params (assoc (u/default-post-params)
+                      :params @data
+                      :handler (login-resp data)
+                      :error-handler (u/default-error-response "post-login"))]
+    (POST "/login" params)))
 
 (defn login-component []
   (let [user (atom {})]
@@ -41,8 +55,7 @@
         {:type "button"
          :on-click (fn []
                      (if-let [e (not-valid? @user)]
-                       (swap! user assoc :error
-                              (u/validation-error-msg e))
+                       (u/report-error (u/validation-error-msg e))
                        (post-login user)))}
         "Login"]
        [:p]
@@ -57,10 +70,11 @@
       [:div.col-md-12
        [c/status-component]
        [:div.row
-        (when-not (session/get :token)
+        (when-not (session/get-in [:user-data :token])
           [login-component])]
        [:div.row
         [:ul
-         [:li (str "Hello " (session/get-in [:user-data :first-name]))]
+         [:li (str "Hello " (session/get-in [:user-data :first_name]))]
          [:li (str "Your email is " (session/get-in [:user-data :email]))]
-         [:li (str "Your role is " (session/get-in [:user-data :role]))]]]]]]))
+         [:li (str "Your role is "
+                   (session/get-in [:user-data :user_role]))]]]]]]))

@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Saturday, 05 September 2015 10:11 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:26 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -97,3 +97,13 @@
 
 (defn this-page []
   (session/get :page))
+
+(defn default-error-response [name]
+  (fn [ctx]
+    (let [rsp (js->clj (:response ctx) :keywordize-keys true)
+          msg (str "Error: " (:status ctx) " " (:status-text rsp)
+                   " " (:message rsp))]
+      (.log js/console (str name ": " msg))
+      (if (expired-session? (:status ctx) (:status-text rsp))
+        (report-expired-session)
+        (report-error msg)))))

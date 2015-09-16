@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Friday, 04 September 2015 03:31 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:37 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -49,18 +49,11 @@
         group-hash (group-list-to-hash group-list)]
     (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
 
-(defn network-groups-error-resp [ctx]
-  (let [rsp (js->clj {:response ctx} :keywordize-keys true)
-        msg (str "Error: " (:status ctx) " " (:status-text ctx)
-                 " " (:message rsp))]
-    (if (u/expired-session? (:status ctx) (:status-text ctx))
-      (u/report-expired-session)
-      (u/report-error msg))))
-
 (defn get-network-groups []
   (GET "/admin/groups" {:format :json
                         :handler network-groups-resp
-                        :error-handler network-groups-error-resp}))
+                        :error-handler (u/default-error-response
+                                         "get-network-groups")}))
 
 (defn add-network-resp [grop]
   (fn [response]
@@ -77,22 +70,12 @@
                 (.log js/console (str "add-network-resp: :else " status))
                 (u/report-error (:message rsp)))))))
 
-(defn add-network-error-resp [group]
-  (fn [ctx]
-    (let [rsp (js->clj (:response ctx) :keywordize-keys true)
-          msg (str "AJAX Error: " (:status ctx) " "
-                   (:status-text ctx) " "
-                   (:message rsp))]
-      (.log js/console (str "add-network-error-resp: " ctx))
-      (if (u/expired-session? (:status ctx) (:status rsp))
-        (u/report-expired-session)
-        (u/report-error msg)))))
-
 (defn post-network-group [group]
   (let [params (assoc (u/default-post-params)
                       :params @group
                       :handler (add-network-resp group)
-                      :error-handler (add-network-error-resp group))]
+                      :error-handler (u/default-error-response
+                                       "post-network-group"))]
     (POST "/admin/add-network" params)))
 
 (defn group-table-row [grp]

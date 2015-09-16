@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Sunday, 19 July 2015 11:22 AM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:31 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -52,22 +52,11 @@
                 (.log js/console (str "registration-resp: :else " status))
                 (u/report-error (:message rsp)))))))
 
-(defn registration-error-resp [user]
-  (fn [ctx]
-    (let [rsp (js->clj (:response ctx) :keywordize-keys true)
-          msg (str "AJAX Error: " (:status ctx) " "
-                   (:status-text ctx) " "
-                   (:message rsp))]
-      (.log js/console (str "registration-error-resp: " ctx))
-      (if (u/expired-session? (:status ctx) (:status rsp))
-        (u/report-expired-session)
-        (u/report-error msg)))))
-
 (defn post-user [user]
   (let [params (assoc (u/default-post-params)
                       :params (dissoc @user :pass2)
                       :handler (registration-resp user)
-                      :error-handler (registration-error-resp user))]
+                      :error-handler (u/default-error-response "post-user"))]
     (POST "/admin/register" params)))
 
 
@@ -80,8 +69,7 @@
         {:type "submit"
          :on-click (fn []
                      (if-let [e (not-valid? @user)]
-                       (swap! user assoc :error
-                              (u/validation-error-msg e))
+                       (u/report-error (u/validation-error-msg e))
                        (post-user user)))}
         "Register"]])))
 

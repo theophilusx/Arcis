@@ -1,10 +1,9 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Sunday, 06 September 2015 07:43 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:39 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
-
 (ns arcis.pages.admin.password
   (:require [arcis.utils :as u]
             [arcis.pages.components :as c]
@@ -18,22 +17,13 @@
       (u/report-success (:message rsp))
       (u/report-error (:message rsp)))))
 
-(defn handle-pwd-change-error-resp [ctx]
-  (let [rsp (js->clj (:response ctx) :keywordize-keys true)
-        msg (str "Password change error: " (:status ctx)
-                 " " (:status-text ctx)
-                 " " (:message rsp))]
-    (.log js/console msg)
-    (if (u/expired-session? (:status ctx) (:status rsp))
-      (u/report-expired-session)
-      (u/report-error msg))))
-
 (defn handle-pwd-change [pdata]
   (let [params (assoc (u/default-post-params)
                       :params {:id (:id @pdata)
                                :password (:value @pdata)}
                       :handler #'handle-pwd-change-resp
-                      :error-handler #'handle-pwd-change-error-resp)]
+                      :error-handler (u/default-error-response
+                                       "handle-pwd-change"))]
     (POST "/admin/password" params)
     (swap! pdata assoc :value nil)))
 

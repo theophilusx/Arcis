@@ -31,19 +31,19 @@
        [:a {:href "#/scans"} "Scans"]]
       [:li {:class (when (= :incidents (session/get :page)) "active")}
        [:a {:href "#/incidents"} "Incidents"]]
-      (if (= "Admin" (session/get-in [:user-data :role]))
+      (if (= "Admin" (session/get-in [:user-data :user_role]))
         [:li {:class (when (= :admin (session/get :page)) "active")}
          [:a {:href "#/admin"} "Admin"]])]
      [:ul.nav.navbar-nav.navbar-right
       [:li.dropdown
        [:a {:class "dropdown-toggle" :data-toggle "dropdown"
             :role "button"}
-        (str (session/get-in [:user-data :first-name]) " "
-             (session/get-in [:user-data :last-name]))
+        (str (session/get-in [:user-data :first_name]) " "
+             (session/get-in [:user-data :last_name]))
         [:span {:class "caret"}]]
        [:ul {:class "dropdown-menu" :role "menu"}
         [:li [:a {:href "#/password"} "Change Password"]]
-        [:li [:a {:href "/logout"} "Logout"]]]]]]]])
+        [:li [:a {:on-click #(session/put! :user-data {})} "Logout"]]]]]]]])
 
 (def pages
   {:home #'home-page

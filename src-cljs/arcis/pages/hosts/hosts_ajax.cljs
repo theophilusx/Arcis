@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Saturday, 05 September 2015 10:06 AM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:45 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -52,20 +52,10 @@
     (session/assoc-in! [(u/this-page) :host-list] host-hash)
     (session/assoc-in! [(u/this-page) :host-index] host-idx)))
 
-(defn host-list-error-resp
-  "Callback used to process AJAX call errors retrieving host list"
-  [ctx]
-  (let [rsp (js->clj (:response ctx) :keywordize-keys true)
-        msg (str "Error: " (:status ctx) " " (:status-text ctx)
-                 " " (:message rsp))]
-    (.log js/console (str "host-list-error-resp: AJAX Error: " ctx))
-    (if (u/expired-session? (:status ctx) (:status rsp))
-      (u/report-expired-session)
-      (u/report-error msg))))
-
 (defn get-host-list
   "Return a list of all known hosts"
   []
   (GET "/hosts/list" {:format :json
                       :handler host-list-resp
-                      :error-handler host-list-error-resp}))
+                      :error-handler (u/default-error-response
+                                       "get-host-list")}))

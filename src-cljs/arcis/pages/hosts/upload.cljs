@@ -1,6 +1,6 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Friday, 07 August 2015 05:54 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:47 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,17 +18,6 @@
     (u/report-success (:message rsp))
     (get-host-list)))
 
-(defn upload-resp-error [ctx]
-  (let [rsp (js->clj (:response ctx) :keywordize-keys true)
-        msg (str "File upload error: " (:status ctx)
-                 " CTX: " (:status-text ctx)
-                 " RSP: " (:status rsp)
-                 " " (:message rsp))]
-    (.log js/console (str "upload-resp-error: " ctx))
-    (if (u/expired-session? (:status ctx) (:status rsp))
-      (u/report-expired-session)
-      (u/report-error msg))))
-
 (defn upload-file [element-id]
   (let [el (.getElementById js/document element-id)
         name (.-name el)
@@ -40,7 +29,8 @@
                            :response-format :json
                            :keywords? true
                            :handler upload-resp
-                           :error-handler upload-resp-error})))
+                           :error-handler (u/default-error-response
+                                            "upload-file")})))
 
 (defn host-upload-component []
   [:div.form-inline

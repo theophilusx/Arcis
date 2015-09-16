@@ -1,6 +1,6 @@
 ;;      Filename: login.clj
 ;; Creation Date: Saturday, 04 July 2015 12:23 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 05:58 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 06:03 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -26,14 +26,14 @@
 
 (defn authenticate-user [req]
   (let [email (get-in req [:params :email])
-        password (get-in req [:params :password])
+        password (get-in req [:params :pass])
         [ok? creds] (valid-auth? email password)]
     (if ok?
       (let [exp (time/plus (time/now) (time/seconds 3600))
             claims (assoc creds :exp exp)
             token (jwe/encrypt claims secret {:alg :a256kw :enc :a128gcm})]
         (assoc (http-resp/ok
-                (generate-string {:token token}))
+                (generate-string (assoc creds :token token)))
                :headers {"Content-Type" "application/json"}))
       (assoc (http-resp/forbidden
               (generate-string {:status-text "Authentication Failed"
