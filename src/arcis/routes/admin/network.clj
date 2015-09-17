@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Friday, 04 September 2015 02:37 PM AEST
+;; Last Modified: Thursday, 17 September 2015 05:42 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -50,14 +50,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [role (get-in ctx [:request :session :identity-role])]
-                   (u/is-authorized? #{:Admin} role)))
+                 (let [identity (get-in ctx [:request :identity])]
+                   (u/is-authorized? identity #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [user (get-in ctx [:request :session :identity])]
-                           (if (nil? user)
-                             (u/unauthenticated-msg :add-group)
-                             (u/unauthorized-msg :add-group
-                                                 "add network group"))))
+                         (let [identity (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized identity "add-group")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-group? params)))
@@ -82,12 +79,10 @@
   :allowed-methods [:get]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [role (get-in ctx [:request :session :identity-role])]
-                   (u/is-authorized? #{:Admin} role)))
+                 (let [identity (get-in ctx [:request :identity])]
+                   (u/is-authorized? identity #{:Admin})))
   :handle-unauthorized (fn [ctx]
-                         (if-let [id (get-in ctx [:request :session :identity])]
-                           (u/unauthorized-msg :group-list
-                                               "request a network group list")
-                           (u/unauthenticated-msg :group-list)))
+                         (let [identity (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized identity "group-list")))
   :handle-ok (fn [ctx]
                (generate-group-list)))

@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Saturday, 08 August 2015 09:31 AM AEST
+;; Last Modified: Thursday, 17 September 2015 05:11 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -31,17 +31,27 @@
     true
     false))
 
-(defn unauthenticated-msg [fname]
-  (println (str fname ": user is not authenticated"))
-  (generate-string {:status :not-authenticated
+(defn is-authorized? [identity roles]
+  (if (and identity
+           (contains? roles (:user_role identity)))
+    true
+    false))
+
+(defn unauthenticated-msg [service]
+  (println (str service ": unauthenticated user tried to access " service))
+  (generate-string {:status-text :not-authenticated
                     :message "User is not authenticated"}))
 
-(defn unauthorized-msg [fname msg]
-  (let [prefix "You are not authorised to "
-        suffix ". This attempt has been logged."]
-    (println (str fname " " prefix msg suffix))
-    (generate-string {:status :not-authorised
-                      :message (str prefix msg suffix)})))
+(defn unauthorized-msg [identity service]
+  (let [msg (str "You are not authorized to access " service " service")]
+    (println (str service " " (:email identity) " tried to access " service))
+    (generate-string {:status-text :not-authorised
+                      :message msg})))
+
+(defn handle-unauthorized [identity service]
+  (if-not identity
+    (unauthenticated-msg service)
+    (unauthorized-msg identity service)))
 
 (defn user-exists? [id]
   (if (= 1 (count (udb/get-user-by-id {:id id})))

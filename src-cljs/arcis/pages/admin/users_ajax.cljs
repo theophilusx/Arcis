@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:41 PM AEST
+;; Last Modified: Thursday, 17 September 2015 05:20 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -34,7 +34,9 @@
 (defn get-app-users
   "Retrieve list of application users"
   []
-  (GET "/admin/users" {:format :json
-                       :handler users-list-resp
-                       :error-handler (u/default-error-response
-                                        "get-app-users")}))
+  (let [token (session/get-in [:user-data :token])]
+    (GET "/admin/users" {:format :json
+                         :headers {"Authorization" (str "Token " token)}
+                         :handler users-list-resp
+                         :error-handler (u/default-error-response
+                                          "get-app-users")})))

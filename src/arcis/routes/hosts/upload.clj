@@ -1,6 +1,6 @@
 ;;      Filename: upload.clj
 ;; Creation Date: Friday, 24 July 2015 12:49 PM AEST
-;; Last Modified: Saturday, 05 September 2015 12:17 PM AEST
+;; Last Modified: Thursday, 17 September 2015 05:44 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -105,14 +105,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [role (get-in ctx [:request :session :identity-role])]
-                   (u/is-authorized? #{:Admin} role)))
+                 (let [identity (get-in ctx [:request :identity])]
+                   (u/is-authorized? identity #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [user (get-in ctx [:request :session :identity])]
-                           (if (nil? user)
-                             (u/unauthenticated-msg :upload-hosts)
-                             (u/unauthorized-msg :upload-hosts
-                                                 "upload hosts"))))
+                         (let [identity (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized identity "upload-hosts")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-upload? params)))

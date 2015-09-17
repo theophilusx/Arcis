@@ -1,6 +1,6 @@
 ;;      Filename: password.clj
 ;; Creation Date: Wednesday, 29 April 2015 05:30 PM AEST
-;; Last Modified: Sunday, 19 July 2015 10:14 AM AEST
+;; Last Modified: Thursday, 17 September 2015 05:42 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -38,14 +38,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [role (get-in ctx [:request :session :identity-role])]
-                   (u/is-authorized? #{:Admin} role)))
+                 (let [identity (get-in ctx [:request :identity])]
+                   (u/is-authorized? identity #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [user (get-in ctx [:request :session :identity])]
-                           (if (nil? user)
-                             (u/unauthenticated-msg :admin-change-password)
-                             (u/unauthorized-msg :admin-change-password
-                                                 "change user passwords"))))
+                         (let [identity (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized identity "change-password")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (malformed-pwd-data? params)))

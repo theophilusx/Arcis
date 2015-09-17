@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:26 PM AEST
+;; Last Modified: Wednesday, 16 September 2015 07:26 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -34,9 +34,14 @@
 (defn default-post-params
   "Setup default parameter hash for cljs-ajax POST calls"
   []
-  {:format :json
-   :response-format :json
-   :keywords? true})
+  (if-let [token (session/get-in [:user-data :token])]
+    {:format :json
+     :response-format :json
+     :keywords? true
+     :headers {"Authorization" (str "Token " token)}}
+    {:format :json
+     :response-format :json
+     :keywords? true}))
 
 (defn set-page-status!
   "Set status in session atom

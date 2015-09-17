@@ -1,6 +1,6 @@
 ;;      Filename: network-groups.clj
 ;; Creation Date: Friday, 04 September 2015 01:14 PM AEST
-;; Last Modified: Saturday, 05 September 2015 12:13 PM AEST
+;; Last Modified: Thursday, 17 September 2015 05:36 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -36,7 +36,3 @@
           (assoc mdf-record
                  :network_group "Unknwon2"
                  :subgroup_name "Unknown2"))))))
-
-
-
-

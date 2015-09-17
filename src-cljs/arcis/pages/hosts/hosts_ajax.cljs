@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:45 PM AEST
+;; Last Modified: Thursday, 17 September 2015 05:51 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -55,7 +55,9 @@
 (defn get-host-list
   "Return a list of all known hosts"
   []
-  (GET "/hosts/list" {:format :json
-                      :handler host-list-resp
-                      :error-handler (u/default-error-response
-                                       "get-host-list")}))
+  (when-let [token (session/get-in [:user-data :token])]
+    (GET "/hosts/list" {:format :json
+                        :handler host-list-resp
+                        :headers {"Authorization" (str "Token " token)}
+                        :error-handler (u/default-error-response
+                                         "get-host-list")})))
