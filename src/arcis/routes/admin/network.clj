@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:42 PM AEST
+;; Last Modified: Friday, 18 September 2015 03:50 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -80,9 +80,10 @@
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
                  (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{:Admin})))
+                   (u/is-authorized? identity #{"Admin"})))
   :handle-unauthorized (fn [ctx]
                          (let [identity (get-in ctx [:request :identity])]
+                           (println (str "Id: " identity))
                            (u/handle-unauthorized identity "group-list")))
   :handle-ok (fn [ctx]
                (generate-group-list)))

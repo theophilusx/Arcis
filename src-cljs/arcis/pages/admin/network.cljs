@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:37 PM AEST
+;; Last Modified: Friday, 18 September 2015 05:19 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -50,10 +50,15 @@
     (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
 
 (defn get-network-groups []
-  (GET "/admin/groups" {:format :json
-                        :handler network-groups-resp
-                        :error-handler (u/default-error-response
-                                         "get-network-groups")}))
+  (let [token (session/get-in [:user-data :token])]
+    (.log js/console (str "Token: " token))
+    (GET "/admin/groups" {:format :json
+                          :response-format :json
+                          :keywords? true
+                          :headers {"Authorization" (str "Token " token)}
+                          :handler network-groups-resp
+                          :error-handler (u/default-error-response
+                                           "get-network-groups")})))
 
 (defn add-network-resp [grop]
   (fn [response]
@@ -71,8 +76,10 @@
                 (u/report-error (:message rsp)))))))
 
 (defn post-network-group [group]
-  (let [params (assoc (u/default-post-params)
+  (let [token (session/get-in [:user-data :token])
+        params (assoc (u/default-post-params)
                       :params @group
+
                       :handler (add-network-resp group)
                       :error-handler (u/default-error-response
                                        "post-network-group"))]

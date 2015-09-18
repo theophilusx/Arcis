@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:11 PM AEST
+;; Last Modified: Friday, 18 September 2015 05:22 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -39,13 +39,13 @@
 
 (defn unauthenticated-msg [service]
   (println (str service ": unauthenticated user tried to access " service))
-  (generate-string {:status-text :not-authenticated
+  (generate-string {:status-text "not-authenticated"
                     :message "User is not authenticated"}))
 
 (defn unauthorized-msg [identity service]
   (let [msg (str "You are not authorized to access " service " service")]
     (println (str service " " (:email identity) " tried to access " service))
-    (generate-string {:status-text :not-authorised
+    (generate-string {:status-text "not-authorised"
                       :message msg})))
 
 (defn handle-unauthorized [identity service]

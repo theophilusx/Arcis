@@ -1,13 +1,14 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:20 PM AEST
+;; Last Modified: Friday, 18 September 2015 05:17 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.users-ajax
   (:require [reagent.session :as session]
             [ajax.core :refer [GET]]
-            [arcis.utils :as u]))
+            [arcis.utils :as u]
+            [arcis.pages.components :as c]))
 
 (defn user-list-to-hash
   "Takes a list of user maps keyed with strings and converts to a map 
@@ -36,6 +37,8 @@
   []
   (let [token (session/get-in [:user-data :token])]
     (GET "/admin/users" {:format :json
+                         :response-format :json
+                         :keywords? true
                          :headers {"Authorization" (str "Token " token)}
                          :handler users-list-resp
                          :error-handler (u/default-error-response

@@ -1,12 +1,13 @@
 ;;      Filename: core.clj
 ;; Creation Date: Tuesday, 15 September 2015 07:19 AM AEST
-;; Last Modified: Tuesday, 15 September 2015 07:19 AM AEST
+;; Last Modified: Friday, 18 September 2015 04:42 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.core
   (:require [arcis.handler :refer [app init destroy]]
             [immutant.web :as immutant]
+            [immutant.web.undertow :refer [options]]
             [arcis.db.migrations :as migrations]
             [clojure.tools.nrepl.server :as nrepl]
             [taoensso.timbre :as timbre]
@@ -47,8 +48,16 @@
 (defonce http-server (atom nil))
 
 (defn start-http-server [port]
-  (init)
-  (reset! http-server (immutant/run app :host "0.0.0.0" :port port)))
+  (println (str "Port: " port))
+  (let [opts (options
+              :host "localhost"
+              :port port
+              :ssl-port (inc port)
+              :keystore "/home/tcross/Projects/ssl/developer.jks"
+              :key-password "developer")]
+    (init)
+    ;;(reset! http-server (immutant/run app opts))
+    (reset! http-server (immutant/run app :host "0.0.0.0" :port port))))
 
 (defn stop-http-server []
   (when @http-server

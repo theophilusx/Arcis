@@ -1,6 +1,6 @@
 ;;      Filename: about.cljs
 ;; Creation Date: Saturday, 04 July 2015 05:56 PM AEST
-;; Last Modified: Monday, 06 July 2015 05:43 PM AEST
+;; Last Modified: Friday, 18 September 2015 08:10 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -16,5 +16,7 @@
    [:div.row
     [:div.col-md-12
      [c/status-component]
+     (when-not (session/get-in [:user-data :token])
+       [c/login-component])
      [d/state-keys]
      [d/render-state]]]])

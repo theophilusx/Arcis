@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:51 PM AEST
+;; Last Modified: Friday, 18 September 2015 05:20 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -57,6 +57,8 @@
   []
   (when-let [token (session/get-in [:user-data :token])]
     (GET "/hosts/list" {:format :json
+                        :response-format :json
+                        :keywords? true
                         :handler host-list-resp
                         :headers {"Authorization" (str "Token " token)}
                         :error-handler (u/default-error-response

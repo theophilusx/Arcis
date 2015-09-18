@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 05:57 PM AEST
+;; Last Modified: Friday, 18 September 2015 03:46 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -30,8 +30,14 @@
 
 (defonce secret (nonce/random-bytes 32))
 
+(defn unauthorized-handler [request metadata]
+  (http-resp/unauthorized
+   (generate-string {:status-text "not-authenticated"
+                     :message "Invalid token"})))
+
 (def auth-backend (jwe-backend {:secret secret
-                                :options {:alg :a256kw :enc :a128gcm}}))
+                                :options {:alg :a256kw :enc :a128gcm}
+                                :unauthorized-handler unauthorized-handler}))
 
 (defn wrap-context [handler]
   (fn [request]
@@ -57,7 +63,12 @@
         (assoc (http-resp/internal-server-error
                 (generate-string {:status-text "Internal server error"
                                   :message (str "Error: " (.getMessage t))}))
-               :headers {"Content-Type" "application/json"})))))
+               :headers {"Content-Type" "application/json"}))
+      (catch Exception e
+        (assoc (http-resp/internal-server-error
+                (generate-string {:status-text "Internal server error"
+                                  :message (str "Error: "
+                                                (.getMessage e))})))))))
 
 (defn wrap-dev [handler]
   (if (env :dev)
@@ -92,10 +103,21 @@
 (defn wrap-auth [handler]
   (wrap-authentication handler auth-backend))
 
+(defn wrap-secure-headers [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (-> response
+          (assoc-in [:headers "Content-Security-Policy"]
+                    "default-src https: data: 'unsafe-inline' 'unsafe-eval'")
+          (assoc-in [:headers "Strict-Transport-Security"]
+                    "\"max-age=31536000; includeSubdomains\" always;")
+          (assoc-in [:headers "Server"] "a server")
+          (assoc-in [:headers "X-Content-Type-Options"] "nosniff")))))
+
 (defn wrap-base [handler]
   (-> handler
       wrap-dev
-      wrap-authorize
+      ;; wrap-authorize
       wrap-auth
       wrap-formats
       wrap-webjars
@@ -105,4 +127,5 @@
             (assoc-in [:security :anti-forgery] false)
             (dissoc :session)))
       wrap-context
+      ;; wrap-secure-headers
       wrap-internal-error))

@@ -1,12 +1,17 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Sunday, 06 September 2015 07:40 PM AEST
+;; Last Modified: Friday, 18 September 2015 04:41 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.components
   (:require [reagent.core :refer [atom]]
             [reagent.session :as session]
+            [reagent-forms.core :refer [bind-fields]]
+            [ajax.core :refer [GET POST]]
+            [bouncer.core :as b]
+            [bouncer.validators :as v]
+            [arcis.utils :as u]
             [secretary.core :as secretary]))
 
 (defn page-header
@@ -130,3 +135,48 @@ default are the string True and False. Map should have two keys :true and
 
 
 
+(def login-template
+  [:div
+   [:h2 {:class "form-signin-heading"} "Please sign in"]
+   [:hr]
+   (input "Email" :text :email)
+   (input "Password" :password :pass)])
+
+(defn not-valid? [user]
+  (let [vmap (first (b/validate user
+				:email v/email
+				:pass [v/required [v/min-count 8]]))]
+    (if (nil? vmap)
+      false
+      vmap)))
+
+(defn login-resp [user]
+  (fn [response]
+    (let [rsp (js->clj response :keywordize-keys true)]
+      (.log js/console (str "login-resp: " rsp))
+      (session/put! :user-data rsp)
+      (u/report-success)
+      (reset! user {}))))
+
+(defn post-login [data]
+  (.log js/console (str "Login Data: " @data))
+  (let [params (assoc (u/default-post-params)
+		      :params @data
+		      :handler (login-resp data)
+		      :error-handler (u/default-error-response "post-login"))]
+    (POST "/login" params)))
+
+(defn login-component []
+  (let [user (atom {})]
+    (fn []
+      [:div.col-md-8
+       [bind-fields login-template user]
+       [:button.btn.btn-primary
+	{:type "button"
+	 :on-click (fn []
+		     (if-let [e (not-valid? @user)]
+		       (u/report-error (u/validation-error-msg e))
+		       (post-login user)))}
+	"Login"]
+       [:p]
+       [:hr]])))
