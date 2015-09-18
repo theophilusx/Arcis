@@ -1,6 +1,6 @@
 ;;      Filename: login.clj
 ;; Creation Date: Saturday, 04 July 2015 12:23 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:03 PM AEST
+;; Last Modified: Saturday, 19 September 2015 08:59 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -29,7 +29,7 @@
         password (get-in req [:params :pass])
         [ok? creds] (valid-auth? email password)]
     (if ok?
-      (let [exp (time/plus (time/now) (time/seconds 3600))
+      (let [exp (time/plus (time/now) (time/seconds 300))
             claims (assoc creds :exp exp)
             token (jwe/encrypt claims secret {:alg :a256kw :enc :a128gcm})]
         (assoc (http-resp/ok
