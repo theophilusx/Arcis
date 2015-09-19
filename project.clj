@@ -63,9 +63,7 @@
     {:source-paths ["src-cljs"]
      :compiler
      {:output-to "resources/public/js/app.js"
-      :output-dir "resources/public/js/out"
       :externs ["react/externs/react.js"]
-      :optimizations :none
       :pretty-print true}}}}
 
   :profiles
@@ -86,14 +84,15 @@
                                  [ring/ring-devel "1.4.0"]
                                  [pjstadig/humane-test-output "0.7.0"]
                                  [org.clojure/tools.nrepl "0.2.11"]
-                                 [lein-figwheel "0.4.0"]
+                                 [lein-figwheel "0.3.9"]
                                  [mvxcvi/puget "0.8.1"]]
-                  :plugins [[lein-figwheel "0.4.0"]]
+                  :plugins [[lein-figwheel "0.3.9"]]
                    :cljsbuild
                   {:builds
                     {:app
-                     {:compiler {:source-map true}
-                      :source-paths ["env/dev/cljs"]}}} 
+                     {:source-paths ["env/dev/cljs"]
+                      :compiler {:optimizations :none
+                                 :source-map true}}}} 
                   
                   :figwheel
                   {:http-server-root "public"

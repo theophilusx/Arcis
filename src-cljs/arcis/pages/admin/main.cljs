@@ -1,6 +1,6 @@
 ;;      Filename: main.cljs
 ;; Creation Date: Friday, 10 July 2015 03:54 PM AEST
-;; Last Modified: Friday, 18 September 2015 01:28 PM AEST
+;; Last Modified: Saturday, 19 September 2015 06:43 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -25,7 +25,6 @@
       [:div.col-md-12
        [c/status-component]
        (when-not (session/get-in [:user-data :token])
-         [c/report-expired-session]
          [c/login-component])
        [:div.row
         [:ul {:class "nav nav-tabs"}
