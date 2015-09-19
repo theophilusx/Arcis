@@ -1,6 +1,6 @@
 ;;      Filename: middleware.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Friday, 18 September 2015 03:46 PM AEST
+;; Last Modified: Saturday, 19 September 2015 10:17 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -59,16 +59,20 @@
     (try
       (handler req)
       (catch Throwable t
-        (timbre/error t)
-        (assoc (http-resp/internal-server-error
-                (generate-string {:status-text "Internal server error"
-                                  :message (str "Error: " (.getMessage t))}))
-               :headers {"Content-Type" "application/json"}))
-      (catch Exception e
-        (assoc (http-resp/internal-server-error
-                (generate-string {:status-text "Internal server error"
-                                  :message (str "Error: "
-                                                (.getMessage e))})))))))
+        (let [msg (.getMessage t)]
+          (timbre/error t)
+          (if (= "checksum failed" msg)
+            {:status 498
+             :headers {"Content-Type" "application/json"}
+             :body (generate-string
+                    {:status-text "Token expired/invalid"
+                     :message (str "Supplied authorization token is invalid. "
+                                   "Logout and login again to obtain "
+                                   "a new token.")})}
+            (assoc (http-resp/internal-server-error
+                    (generate-string {:status-text "Internal Server Error"
+                                      :message (str "Error: " msg)}))
+                   :headers {"Content-Type" "application/json"})))))))
 
 (defn wrap-dev [handler]
   (if (env :dev)
