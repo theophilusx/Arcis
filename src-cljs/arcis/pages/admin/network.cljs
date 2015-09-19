@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Friday, 18 September 2015 05:19 PM AEST
+;; Last Modified: Saturday, 19 September 2015 07:31 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -45,45 +45,44 @@
           (sorted-map) lst))
 
 (defn network-groups-resp [response]
-  (let [group-list (js->clj response :keywordize-keys true)
-        group-hash (group-list-to-hash group-list)]
+  (let [group-hash (group-list-to-hash response)]
     (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
 
 (defn get-network-groups []
-  (let [token (session/get-in [:user-data :token])]
-    (.log js/console (str "Token: " token))
-    (GET "/admin/groups" {:format :json
-                          :response-format :json
-                          :keywords? true
-                          :headers {"Authorization" (str "Token " token)}
-                          :handler network-groups-resp
-                          :error-handler (u/default-error-response
-                                           "get-network-groups")})))
+  (when (u/is-authenticated?)
+    (let [token (session/get-in [:user-data :token])]
+      (GET "/admin/groups" {:format :json
+                            :response-format :json
+                            :keywords? true
+                            :headers {"Authorization" (str "Token " token)}
+                            :handler network-groups-resp
+                            :error-handler (u/default-error-response
+                                             "get-network-groups")}))))
 
 (defn add-network-resp [grop]
   (fn [response]
-    (let [rsp (js->clj response :keywordize-keys true)
-          status (:status rsp)]
+    (let [status (:status response)]
       (cond
         (= "success" status) (do
                                (get-network-groups)
-                               (u/report-success (:message rsp)))
+                               (u/report-success (:message response)))
         (= "duplicate" status) (do
                                  (get-network-groups)
-                                 (u/report-error (:message rsp)))
+                                 (u/report-error (:message response)))
         :else (do
                 (.log js/console (str "add-network-resp: :else " status))
-                (u/report-error (:message rsp)))))))
+                (u/report-error (:message response)))))))
 
 (defn post-network-group [group]
-  (let [token (session/get-in [:user-data :token])
-        params (assoc (u/default-post-params)
-                      :params @group
+  (when (u/is-authenticated?)
+    (let [token (session/get-in [:user-data :token])
+          params (assoc (u/default-post-params)
+                        :params @group
 
-                      :handler (add-network-resp group)
-                      :error-handler (u/default-error-response
-                                       "post-network-group"))]
-    (POST "/admin/add-network" params)))
+                        :handler (add-network-resp group)
+                        :error-handler (u/default-error-response
+                                         "post-network-group"))]
+      (POST "/admin/add-network" params))))
 
 (defn group-table-row [grp]
   [:tr

@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:39 PM AEST
+;; Last Modified: Saturday, 19 September 2015 07:32 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -12,20 +12,20 @@
             [reagent.session :as session]))
 
 (defn handle-pwd-change-resp [response]
-  (let [rsp (js->clj response :keywordize-keys true)]
-    (if (= "success" (:status rsp))
-      (u/report-success (:message rsp))
-      (u/report-error (:message rsp)))))
+  (if (= "success" (:status response))
+    (u/report-success (:message response))
+    (u/report-error (:message response))))
 
 (defn handle-pwd-change [pdata]
-  (let [params (assoc (u/default-post-params)
-                      :params {:id (:id @pdata)
-                               :password (:value @pdata)}
-                      :handler #'handle-pwd-change-resp
-                      :error-handler (u/default-error-response
-                                       "handle-pwd-change"))]
-    (POST "/admin/password" params)
-    (swap! pdata assoc :value nil)))
+  (when (u/is-authenticated?)
+    (let [params (assoc (u/default-post-params)
+                        :params {:id (:id @pdata)
+                                 :password (:value @pdata)}
+                        :handler #'handle-pwd-change-resp
+                        :error-handler (u/default-error-response
+                                         "handle-pwd-change"))]
+      (POST "/admin/password" params)
+      (swap! pdata assoc :value nil))))
 
 (defn password-component [id]
   [c/inline-text-field-component id #'handle-pwd-change])

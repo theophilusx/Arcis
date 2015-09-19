@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:00 PM AEST
+;; Last Modified: Saturday, 19 September 2015 07:11 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -29,8 +29,6 @@
   "Callback used to process response from AJAX call to get user list"
   [response]
   (let [user-hash (user-list-to-hash response)]
-    (.log js/console (str "Raw List: " response))
-    (.log js/console (str "user-hash: " user-hash))
     (session/assoc-in! [(u/this-page) :users] user-hash)))
 
 (defn get-app-users

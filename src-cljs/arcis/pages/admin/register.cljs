@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:31 PM AEST
+;; Last Modified: Saturday, 19 September 2015 07:33 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -39,25 +39,25 @@
 
 (defn registration-resp [user]
   (fn [response]
-    (let [rsp (js->clj response :keywordize-keys true)
-          status (:status rsp)]
+    (let [status (:status response)]
       (cond
         (= "success" status) (do
                                (get-app-users)
-                               (u/report-success (:message rsp)))
+                               (u/report-success (:message response)))
         (= "duplicate" status) (do
                                  (get-app-users)
-                                 (u/report-error (:message rsp)))
+                                 (u/report-error (:message response)))
         :else (do
                 (.log js/console (str "registration-resp: :else " status))
-                (u/report-error (:message rsp)))))))
+                (u/report-error (:message response)))))))
 
 (defn post-user [user]
-  (let [params (assoc (u/default-post-params)
-                      :params (dissoc @user :pass2)
-                      :handler (registration-resp user)
-                      :error-handler (u/default-error-response "post-user"))]
-    (POST "/admin/register" params)))
+  (when (u/is-authenticated?)
+    (let [params (assoc (u/default-post-params)
+                        :params (dissoc @user :pass2)
+                        :handler (registration-resp user)
+                        :error-handler (u/default-error-response "post-user"))]
+      (POST "/admin/register" params))))
 
 
 (defn register-component []

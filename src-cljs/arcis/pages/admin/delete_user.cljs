@@ -1,6 +1,6 @@
 ;;      Filename: delete_user.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:08 PM AEST
-;; Last Modified: Wednesday, 16 September 2015 06:33 PM AEST
+;; Last Modified: Saturday, 19 September 2015 07:14 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -12,21 +12,20 @@
                 [ajax.core :refer [POST]]))
 
 (defn handle-delete-resp [response]
-  (let [rsp (js->clj response :keywordize-keys true)]
-    (if (= "success" (:status rsp))
-      (do
-        (get-app-users)
-        (u/report-success (:message rsp)))
-      (u/report-error (:message rsp)))))
+  (if (= "success" (:status response))
+    (do
+      (get-app-users)
+      (u/report-success (:message response)))
+    (u/report-error (:message response))))
 
 (defn handle-delete-user [id]
-  (.log js/console (str "Delete user " id))
-  (let [params (assoc (u/default-post-params)
-                      :params {:id id}
-                      :handler #'handle-delete-resp
-                      :error-handler (u/default-error-response
-                                       "handle-delete-user"))]
-    (POST "/admin/delete" params)))
+  (when (u/is-authenticated?)
+    (let [params (assoc (u/default-post-params)
+                        :params {:id id}
+                        :handler #'handle-delete-resp
+                        :error-handler (u/default-error-response
+                                         "handle-delete-user"))]
+      (POST "/admin/delete" params))))
 
 (defn delete-user-modal [id]
   (let [dkw (u/digit-keyword id)]
