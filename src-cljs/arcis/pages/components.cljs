@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Friday, 18 September 2015 04:41 PM AEST
+;; Last Modified: Sunday, 20 September 2015 09:18 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -96,7 +96,6 @@ default are the string True and False. Map should have two keys :true and
 :false, which should map to strings to represent those values"
   [record-key curr-val action-fn & t-f-map]
   (let [true-false-map (or (first t-f-map) {:true "True" :false "False"})]
-    (.log js/console (str "toggle-button-component t-f-map: " true-false-map))
     [:button {:class (str "btn btn-block" (if curr-val
                                             " btn-success"
                                             " btn-danger"))
@@ -153,13 +152,11 @@ default are the string True and False. Map should have two keys :true and
 (defn login-resp [user]
   (fn [response]
     (let [rsp (js->clj response :keywordize-keys true)]
-      (.log js/console (str "login-resp: " rsp))
       (session/put! :user-data rsp)
       (u/report-success)
       (reset! user {}))))
 
 (defn post-login [data]
-  (.log js/console (str "Login Data: " @data))
   (let [params (assoc (u/default-post-params)
 		      :params @data
 		      :handler (login-resp data)

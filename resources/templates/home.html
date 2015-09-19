@@ -1,41 +1,30 @@
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Arcis Security Hub</title>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-
   </head>
   <body>
     <div id="navbar"></div>
     <div id="app">
-      <p>If you're seeing this message, that means you haven't yet compiled your ClojureScript!</p>
-      <p>Please run <code>lein figwheel</code> to start the ClojureScript compiler and reload the page.</p>
-      <p>See <a href="http://www.luminusweb.net/docs/clojurescript.md">ClojureScript</a> documentation for further details.</p>
+      <p>If you're seeing this message, that means you haven't
+	yet compiled your ClojureScript!</p>
+      <p>Please run <code>lein figwheel</code> to start the
+	ClojureScript compiler and reload the page.</p>
+      <p>See
+	<a href="http://www.luminusweb.net/docs/clojurescript.md">
+	  ClojureScript</a>
+	documentation for further details.</p>
     </div>
 
     <!-- scripts and styles -->
-
-    <link rel="stylesheet"
-	  href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet"
-	  href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <link rel="stylesheet"
-	  href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
+    {% style "/assets/bootstrap/css/bootstrap.min.css" %}
+    {% style "/assets/bootstrap/css/bootstrap-theme.min.css" %}
     {% style "/css/screen.css" %}
-    
-    <script src="//code.jquery.com/jquery-2.0.3.min.js"
-	    type="text/javascript"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-	    type="text/javascript"></script>
+
+    {% script "/assets/jquery/jquery.min.js" %}
+    {% script "/assets/bootstrap/js/bootstrap.min.js" %}
     
     <script type="text/javascript">
         var context = "{{servlet-context}}";
