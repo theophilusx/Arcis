@@ -1,11 +1,12 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Sunday, 20 September 2015 01:17 PM AEST
+;; Last Modified: Sunday, 20 September 2015 05:26 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.users-ajax
   (:require [arcis.state :as state]
+            [arcis.ajax :as ajax]
             [ajax.core :refer [GET]]
             [arcis.utils :as u]
             [arcis.pages.components :as c]))
@@ -25,21 +26,19 @@
                     :last-login (:last_login u)}))
           {} user-list))
 
-(defn users-list-resp
+(defn process-users-list
   "Callback used to process response from AJAX call to get user list"
   [response]
   (let [user-hash (user-list-to-hash response)]
-    (state/set-value-in! [(state/this-page) :users] user-hash)))
+    (state/set-value-in! [:admin :users] user-hash)))
 
 (defn get-app-users
   "Retrieve list of application users"
   []
   (when (state/is-authenticated?)
-    (let [token (state/value-in [:user-data :token])]
-      (GET "/admin/users" {:format :json
-                           :response-format :json
-                           :keywords? true
-                           :headers {"Authorization" (str "Token " token)}
-                           :handler users-list-resp
-                           :error-handler (u/default-error-response
-                                            "get-app-users")}))))
+    (let [params (assoc (ajax/default-post-params)
+                        :handler (ajax/default-handler "get-app-users"
+                                   #'process-users-list false)
+                        :error-handler (ajax/default-error-handler
+                                         "get-app-users"))]
+      (GET "/admin/users" params))))

@@ -15,38 +15,55 @@
             [ajax.core :refer [GET POST]])
   (:import goog.History))
 
+
+(defn nav-link [uri title page collapsed?]
+  [:li {:class (when (= page (session/get :page)) "active")}
+   [:a {:href uri
+        :on-click #(reset! collapsed? true)}
+    title]])
+
 (defn navbar []
-  [:div.navbar.navbar-fixed-top.navbar-inverse
-   [:div.container
-    [:div.navbar-header
-     [:a.navbar-brand {:href "#/"} [:img {:src "img/logo_small.png"
-                                          :class "imgage-responsive"}]]]
-    [:div.navbar-collapse.collapse
-     [:ul.nav.navbar-nav
-      [:li {:class (when (= :home (state/value-of :page)) "active")}
-       [:a {:href "#/"} "Home"]]
-      [:li {:class (when (= :about (state/value-of :page)) "active")}
-       [:a {:href "#/about"} "About"]]
-      [:li {:class (when (= :hosts (state/value-of :page)) "active")}
-       [:a {:href "#/hosts"} "Hosts"]]
-      [:li {:class (when (= :scans (state/value-of :page)) "active")}
-       [:a {:href "#/scans"} "Scans"]]
-      [:li {:class (when (= :incidents (state/value-of :page)) "active")}
-       [:a {:href "#/incidents"} "Incidents"]]
-      (if (= "Admin" (state/value-in [:user-data :user_role]))
-        [:li {:class (when (= :admin (state/value-of :page)) "active")}
-         [:a {:href "#/admin"} "Admin"]])]
-     [:ul.nav.navbar-nav.navbar-right
-      [:li.dropdown
-       [:a {:class "dropdown-toggle" :data-toggle "dropdown"
-            :role "button"}
-        (str (state/value-in [:user-data :first_name]) " "
-             (state/value-in [:user-data :last_name]))
-        [:span {:class "caret"}]]
-       [:ul {:class "dropdown-menu" :role "menu"}
-        [:li [:a {:href "#/password"} "Change Password"]]
-        [:li [:a {:on-click #(state/set-value! :user-data {})}
-              "Logout"]]]]]]]])
+  (let [collapsed? (atom true)]
+    (fn []
+      [:nav.navbar.navbar-inverse.navbar-fixed-top
+       [:div.container
+        [:div.navbar-header
+         [:button.navbar-toggle
+          {:class         (when-not @collapsed? "collapsed")
+           :data-toggle   "collapse"
+           :aria-expanded @collapsed?
+           :aria-controls "navbar"
+           :on-click      #(swap! collapsed? not)}
+          [:span.sr-only "Toggle Navigation"]
+          [:span.icon-bar]
+          [:span.icon-bar]
+          [:span.icon-bar]]
+         [:a.navbar-brand {:href "#/"} [:img {:src "img/logo_small.png"
+                                              :class "image-responsive"}]]]
+        [:div.navbar-collapse.collapse
+         (when-not @collapsed? {:class "in"})
+         [:ul.nav.navbar-nav
+          [nav-link "#/" "Home" :home collapsed?]
+          [nav-link "#/about" "About" :about collapsed?]
+          [nav-link "#/hosts" "Hosts" :hosts collapsed?]
+          [nav-link "#/scans" "Scans" :scans collapsed?]
+          [nav-link "#/incidents" "Incidents" :incidents collapsed?]
+          (when (= "Admin" (state/value-in [:user-data :user_role]))
+            [nav-link "#/admin" "Admin" :admin collapsed?])]
+         (when (state/is-authenticated?)
+           [:ul.nav.navbar-nav.navbar-right
+            [:li.dropdown
+             [:a {:class "dropdown-toggle" :data-toggle "dropdown"
+                  :role "button"}
+              (str (state/value-in [:user-data :first_name]) " "
+                   (state/value-in [:user-data :last_name]))
+              [:span {:class "caret"}]]
+             [:ul {:class "dropdown-menu" :role "menu"}
+              [:li [:a {:href "#/password"} "Change Password"]]
+              [:li [:a {:on-click #(state/set-value! :user-data nil)}
+                    "Logout"]]]]])]]])))
+
+
 
 (def pages
   {:home #'home-page

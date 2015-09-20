@@ -1,6 +1,6 @@
 ;;      Filename: users.cljs
 ;; Creation Date: Sunday, 05 July 2015 01:36 PM AEST
-;; Last Modified: Sunday, 20 September 2015 01:16 PM AEST
+;; Last Modified: Sunday, 20 September 2015 06:05 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -48,8 +48,6 @@
       {:type "button" :on-click #(get-app-users)} "Refresh"]]))
 
 (defn users-component []
-  (when-not (state/value-in [(state/this-page) :users])
-    (get-app-users))
   [:div
    [users-table]])
 

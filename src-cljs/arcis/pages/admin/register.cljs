@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Sunday, 20 September 2015 01:14 PM AEST
+;; Last Modified: Sunday, 20 September 2015 05:19 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,9 +9,9 @@
             [reagent-forms.core :refer [bind-fields init-field value-of]]
             [arcis.state :as state]
             [ajax.core :refer [GET POST]]
+            [arcis.ajax :as ajax]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [arcis.debug :as debug]
             [arcis.pages.components :as c]
             [arcis.pages.admin.users-ajax :refer [get-app-users]]
             [arcis.utils :as u]))
@@ -39,24 +39,22 @@
 
 (defn registration-resp [user]
   (fn [response]
-    (let [status (:status response)]
+    (let [status (:status-text response)]
+      (get-app-users)
+      (reset! user {})
       (cond
-        (= "success" status) (do
-                               (get-app-users)
-                               (u/report-success (:message response)))
-        (= "duplicate" status) (do
-                                 (get-app-users)
-                                 (u/report-error (:message response)))
-        :else (do
-                (.log js/console (str "registration-resp: :else " status))
-                (u/report-error (:message response)))))))
+        (= "Success" status) (u/report-success (:message response))
+        (= "Duplicate" status) (u/report-error "registration-resp"
+                                               (:message response))
+        :else (u/report-error "registration-resp" (:message response))))))
 
 (defn post-user [user]
   (when (state/is-authenticated?)
-    (let [params (assoc (u/default-post-params)
+    (let [params (assoc (ajax/default-post-params)
                         :params (dissoc @user :pass2)
                         :handler (registration-resp user)
-                        :error-handler (u/default-error-response "post-user"))]
+                        :error-handler (ajax/default-error-handler
+                                         "post-user"))]
       (POST "/admin/register" params))))
 
 
@@ -69,7 +67,8 @@
         {:type "submit"
          :on-click (fn []
                      (if-let [e (not-valid? @user)]
-                       (u/report-error (u/validation-error-msg e))
+                       (u/report-error "register-component"
+                                       (u/validation-error-msg e))
                        (post-user user)))}
         "Register"]])))
 

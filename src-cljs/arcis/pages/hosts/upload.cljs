@@ -1,6 +1,6 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Sunday, 20 September 2015 12:53 PM AEST
+;; Last Modified: Sunday, 20 September 2015 05:44 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,11 +9,11 @@
             [arcis.pages.components :as c]
             [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
             [ajax.core :refer [POST]]
+            [arcis.ajax :as ajax]
             [arcis.state :as state]))
 
 
-(defn upload-resp [response]
-  (u/report-success (:message response))
+(defn process-upload [response]
   (get-host-list))
 
 (defn upload-file [element-id]
@@ -23,13 +23,13 @@
           file (aget (.-files el) 0)
           form-data (doto
                         (js/FormData.)
-                      (.append name file))]
-      (POST "/hosts/upload" {:params form-data
-                             :response-format :json
-                             :keywords? true
-                             :handler upload-resp
-                             :error-handler (u/default-error-response
-                                              "upload-file")}))))
+                      (.append name file))
+          params (assoc (ajax/default-post-params)
+                        :handler (ajax/default-handler "upload-file"
+                                   #'process-upload true)
+                        :error-handler (ajax/default-error-handler
+                                         "upload-file"))]
+      (POST "/hosts/upload" params))))
 
 (defn host-upload-component []
   [:div.form-inline

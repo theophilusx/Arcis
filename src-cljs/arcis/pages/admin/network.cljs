@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 20 September 2015 02:09 PM AEST
+;; Last Modified: Sunday, 20 September 2015 06:55 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -8,6 +8,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields init-field value-of]]
             [arcis.state :as state]
+            [arcis.ajax :as ajax]
             [ajax.core :refer [GET POST]]
             [bouncer.core :as b]
             [bouncer.validators :as v]
@@ -43,43 +44,29 @@
                     :last-modified-dt (:last_modified_dt v)}))
           (sorted-map) lst))
 
-(defn network-groups-resp [response]
+(defn process-network-groups [response]
   (let [group-hash (group-list-to-hash response)]
-    (state/set-value-in! [(state/this-page) :network-groups] group-hash)))
+    (state/set-value-in! [:admin :network-groups] group-hash)))
 
 (defn get-network-groups []
   (when (state/is-authenticated?)
-    (let [token (state/value-in [:user-data :token])]
-      (GET "/admin/groups" {:format :json
-                            :response-format :json
-                            :keywords? true
-                            :headers {"Authorization" (str "Token " token)}
-                            :handler network-groups-resp
-                            :error-handler (u/default-error-response
-                                             "get-network-groups")}))))
+    (let [params (assoc (ajax/default-get-params)
+                        :handler (ajax/default-handler "get-network-groups"
+                                   #'process-network-groups false)
+                        :error-handler (ajax/default-error-handler
+                                         "get-network-groups"))]
+      (GET "/admin/groups" params))))
 
-(defn add-network-resp [grop]
-  (fn [response]
-    (let [status (:status response)]
-      (cond
-        (= "success" status) (do
-                               (get-network-groups)
-                               (u/report-success (:message response)))
-        (= "duplicate" status) (do
-                                 (get-network-groups)
-                                 (u/report-error (:message response)))
-        :else (do
-                (.log js/console (str "add-network-resp: :else " status))
-                (u/report-error (:message response)))))))
+(defn network-group-add [response]
+  (get-network-groups))
 
 (defn post-network-group [group]
   (when (state/is-authenticated?)
-    (let [token (state/value-in [:user-data :token])
-          params (assoc (u/default-post-params)
+    (let [params (assoc (ajax/default-post-params)
                         :params @group
-
-                        :handler (add-network-resp group)
-                        :error-handler (u/default-error-response
+                        :handler (ajax/default-handler "post-network-group"
+                                   #'network-group-add true)
+                        :error-handler (ajax/default-error-handler
                                          "post-network-group"))]
       (POST "/admin/add-network" params))))
 
@@ -93,7 +80,7 @@
    [:td (:last-modified-dt grp)]])
 
 (defn network-group-table []
-  (let [groups (state/value-in [(state/this-page) :network-groups])]
+  (let [groups (state/value-in [:admin :network-groups])]
     [:div
      [:table.table.table-striped
       [:thead
@@ -120,13 +107,12 @@
         {:type "submit"
          :on-click (fn []
                      (if-let [e (not-valid? @network-group)]
-                       (u/report-error (u/validation-error-msg e))
+                       (u/report-error "add-network-group-component"
+                                       (u/validation-error-msg e))
                        (post-network-group network-group)))}
         "Add Group"]])))
 
 (defn network-component []
-  (if-not (state/value-in [(state/this-page) :network-groups])
-    (get-network-groups))
   [:div
    [network-group-table]
    [:hr]

@@ -1,11 +1,12 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Sunday, 20 September 2015 02:25 PM AEST
+;; Last Modified: Sunday, 20 September 2015 05:39 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.hosts.hosts-ajax
   (:require [arcis.state :as state]
+            [arcis.ajax :as ajax]
             [ajax.core :refer [GET]]
             [arcis.utils :as u]))
 
@@ -43,23 +44,21 @@
               (update-in idx-hash [net grp] conj k)))
           (sorted-map) (keys hosts)))
 
-(defn host-list-resp
+(defn process-host-list
   "Callback used to process response from AJAX call to get host list"
   [response]
   (let [host-hash (keywordize-host-list response)
         host-idx (build-network-index host-hash)]
-    (state/set-value-in! [(state/this-page) :host-list] host-hash)
-    (state/set-value-in! [(state/this-page) :host-index] host-idx)))
+    (state/set-value-in! [:hosts :host-list] host-hash)
+    (state/set-value-in! [:hosts :host-index] host-idx)))
 
 (defn get-host-list
   "Return a list of all known hosts"
   []
   (when (state/is-authenticated?)
-    (let [token (state/value-in [:user-data :token])]
-      (GET "/hosts/list" {:format :json
-                          :response-format :json
-                          :keywords? true
-                          :handler host-list-resp
-                          :headers {"Authorization" (str "Token " token)}
-                          :error-handler (u/default-error-response
-                                           "get-host-list")}))))
+    (let [params (assoc (ajax/default-get-params)
+                        :handler (ajax/default-handler "get-host-list"
+                                   #'process-host-list false)
+                        :error-handler (ajax/default-error-handler
+                                         "get-host-list"))]
+      (GET "/hosts/list" params))))

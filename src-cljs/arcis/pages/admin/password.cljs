@@ -1,28 +1,29 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Sunday, 20 September 2015 01:13 PM AEST
+;; Last Modified: Sunday, 20 September 2015 05:12 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.password
   (:require [arcis.utils :as u]
             [arcis.pages.components :as c]
+            [arcis.pages.admin.users-ajax :refer [get-app-users]]
+            [arcis.ajax :as ajax]
             [ajax.core :refer [POST]]
             [reagent.core :refer [atom]]
             [arcis.state :as state]))
 
-(defn handle-pwd-change-resp [response]
-  (if (= "success" (:status response))
-    (u/report-success (:message response))
-    (u/report-error (:message response))))
+(defn pwd-change [response]
+  (get-app-users))
 
 (defn handle-pwd-change [pdata]
   (when (state/is-authenticated?)
-    (let [params (assoc (u/default-post-params)
+    (let [params (assoc (ajax/default-post-params)
                         :params {:id (:id @pdata)
                                  :password (:value @pdata)}
-                        :handler #'handle-pwd-change-resp
-                        :error-handler (u/default-error-response
+                        :handler (ajax/default-handler "handle-pwd-change"
+                                   #'pwd-change true)
+                        :error-handler (ajax/default-error-handler
                                          "handle-pwd-change"))]
       (POST "/admin/password" params)
       (swap! pdata assoc :value nil))))
