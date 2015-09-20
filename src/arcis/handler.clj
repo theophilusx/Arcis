@@ -1,6 +1,6 @@
 ;;      Filename: handler.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 06:01 PM AEST
+;; Last Modified: Sunday, 20 September 2015 03:31 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -28,7 +28,7 @@
   (timbre/merge-config!
     {:level     (if (env :dev) :trace :info)
      :appenders {:rotor (rotor/rotor-appender
-                          {:path "lt.log"
+                          {:path "arcis.log"
                            :max-size (* 512 1024)
                            :backlog 10})}})
 

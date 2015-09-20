@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:32 PM AEST
+;; Last Modified: Sunday, 20 September 2015 01:13 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,7 +9,7 @@
             [arcis.pages.components :as c]
             [ajax.core :refer [POST]]
             [reagent.core :refer [atom]]
-            [reagent.session :as session]))
+            [arcis.state :as state]))
 
 (defn handle-pwd-change-resp [response]
   (if (= "success" (:status response))
@@ -17,7 +17,7 @@
     (u/report-error (:message response))))
 
 (defn handle-pwd-change [pdata]
-  (when (u/is-authenticated?)
+  (when (state/is-authenticated?)
     (let [params (assoc (u/default-post-params)
                         :params {:id (:id @pdata)
                                  :password (:value @pdata)}

@@ -1,11 +1,11 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:37 PM AEST
+;; Last Modified: Sunday, 20 September 2015 02:25 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.hosts.hosts-ajax
-  (:require [reagent.session :as session]
+  (:require [arcis.state :as state]
             [ajax.core :refer [GET]]
             [arcis.utils :as u]))
 
@@ -14,26 +14,26 @@
   generates a map of hosts indexed by host-id key"
   [host-list]
   (reduce (fn [m h]
-            (let [host-id (get h "host_id")]
+            (let [host-id (:host_id h)]
               (assoc m (u/digit-keyword host-id)
                      {:host-id host-id
                       :visible "hidden"
-                      :mac (get h "mac")
-                      :ipv4 (get h "ipv4")
-                      :ipv6 (get h "ipv6")
-                      :hostname (get h "hostname")
-                      :os (get h "os")
-                      :dhcp (get h "dhcp")
-                      :dns (get h "dns")
-                      :reverse-dns (get h "reverse_dns")
-                      :host-type (get h "host_type")
-                      :network-group (get h "network_group")
-                      :subgroup-name (get h "subgroup_name")
-                      :management-group (get h "management_group")
-                      :status (get h "status")
-                      :created-dt (get h "created_dt")
-                      :last-modified-dt (get h "last_modified_dt")
-                      :last-seen-dt (get h "last_seen_dt")})))
+                      :mac (:mac h)
+                      :ipv4 (:ipv4 h)
+                      :ipv6 (:ipv6 h)
+                      :hostname (:hostname h)
+                      :os (:os h)
+                      :dhcp (:dhcp h)
+                      :dns (:dns h)
+                      :reverse-dns (:reverse_dns h)
+                      :host-type (:host_type h)
+                      :network-group (:network_group h)
+                      :subgroup-name (:subgroup_name h)
+                      :management-group (:management_group h)
+                      :status (:status h)
+                      :created-dt (:created_dt h)
+                      :last-modified-dt (:last_modified_dt h)
+                      :last-seen-dt (:last_seen_dt h)})))
           {}  host-list))
 
 (defn build-network-index [hosts]
@@ -48,14 +48,14 @@
   [response]
   (let [host-hash (keywordize-host-list response)
         host-idx (build-network-index host-hash)]
-    (session/assoc-in! [(u/this-page) :host-list] host-hash)
-    (session/assoc-in! [(u/this-page) :host-index] host-idx)))
+    (state/set-value-in! [(state/this-page) :host-list] host-hash)
+    (state/set-value-in! [(state/this-page) :host-index] host-idx)))
 
 (defn get-host-list
   "Return a list of all known hosts"
   []
-  (when (u/is-authenticated?)
-    (let [token (session/get-in [:user-data :token])]
+  (when (state/is-authenticated?)
+    (let [token (state/value-in [:user-data :token])]
       (GET "/hosts/list" {:format :json
                           :response-format :json
                           :keywords? true

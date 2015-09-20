@@ -1,11 +1,11 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:11 PM AEST
+;; Last Modified: Sunday, 20 September 2015 01:17 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.users-ajax
-  (:require [reagent.session :as session]
+  (:require [arcis.state :as state]
             [ajax.core :refer [GET]]
             [arcis.utils :as u]
             [arcis.pages.components :as c]))
@@ -29,13 +29,13 @@
   "Callback used to process response from AJAX call to get user list"
   [response]
   (let [user-hash (user-list-to-hash response)]
-    (session/assoc-in! [(u/this-page) :users] user-hash)))
+    (state/set-value-in! [(state/this-page) :users] user-hash)))
 
 (defn get-app-users
   "Retrieve list of application users"
   []
-  (when (u/is-authenticated?)
-    (let [token (session/get-in [:user-data :token])]
+  (when (state/is-authenticated?)
+    (let [token (state/value-in [:user-data :token])]
       (GET "/admin/users" {:format :json
                            :response-format :json
                            :keywords? true

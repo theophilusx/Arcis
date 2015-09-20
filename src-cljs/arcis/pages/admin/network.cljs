@@ -1,17 +1,16 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Saturday, 19 September 2015 07:31 PM AEST
+;; Last Modified: Sunday, 20 September 2015 02:09 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.network
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields init-field value-of]]
-            [reagent.session :as session]
+            [arcis.state :as state]
             [ajax.core :refer [GET POST]]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [arcis.debug :as debug]
             [arcis.pages.components :as c]
             [arcis.utils :as u]))
 
@@ -34,23 +33,23 @@
 
 (defn group-list-to-hash [lst]
   (reduce (fn [m v]
-            (assoc m (keyword (str (get v "group_name") "-"
-                                   (get v "subgroup_name")))
-                   {:group-name (get v "group_name")
-                    :subgroup-name (get v "subgroup_name")
-                    :group-regexp (get v "group_regexp")
-                    :active (get v "active")
-                    :created-dt (get v "created_dt")
-                    :last-modified-dt (get v "last_modified_dt")}))
+            (assoc m (keyword (str (:group_name v) "-"
+                                   (:subgroup_name v)))
+                   {:group-name (:group_name v)
+                    :subgroup-name (:subgroup_name v)
+                    :group-regexp (:group_regexp v)
+                    :active (:active v)
+                    :created-dt (:created_dt v)
+                    :last-modified-dt (:last_modified_dt v)}))
           (sorted-map) lst))
 
 (defn network-groups-resp [response]
   (let [group-hash (group-list-to-hash response)]
-    (session/assoc-in! [(u/this-page) :network-groups] group-hash)))
+    (state/set-value-in! [(state/this-page) :network-groups] group-hash)))
 
 (defn get-network-groups []
-  (when (u/is-authenticated?)
-    (let [token (session/get-in [:user-data :token])]
+  (when (state/is-authenticated?)
+    (let [token (state/value-in [:user-data :token])]
       (GET "/admin/groups" {:format :json
                             :response-format :json
                             :keywords? true
@@ -74,8 +73,8 @@
                 (u/report-error (:message response)))))))
 
 (defn post-network-group [group]
-  (when (u/is-authenticated?)
-    (let [token (session/get-in [:user-data :token])
+  (when (state/is-authenticated?)
+    (let [token (state/value-in [:user-data :token])
           params (assoc (u/default-post-params)
                         :params @group
 
@@ -94,7 +93,7 @@
    [:td (:last-modified-dt grp)]])
 
 (defn network-group-table []
-  (let [groups (session/get-in [(u/this-page) :network-groups])]
+  (let [groups (state/value-in [(state/this-page) :network-groups])]
     [:div
      [:table.table.table-striped
       [:thead
@@ -126,7 +125,7 @@
         "Add Group"]])))
 
 (defn network-component []
-  (if-not (session/get-in [(u/this-page) :network-groups])
+  (if-not (state/value-in [(state/this-page) :network-groups])
     (get-network-groups))
   [:div
    [network-group-table]

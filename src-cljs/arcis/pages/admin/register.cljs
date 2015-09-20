@@ -1,13 +1,13 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:33 PM AEST
+;; Last Modified: Sunday, 20 September 2015 01:14 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.register
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields init-field value-of]]
-            [reagent.session :as session]
+            [arcis.state :as state]
             [ajax.core :refer [GET POST]]
             [bouncer.core :as b]
             [bouncer.validators :as v]
@@ -52,7 +52,7 @@
                 (u/report-error (:message response)))))))
 
 (defn post-user [user]
-  (when (u/is-authenticated?)
+  (when (state/is-authenticated?)
     (let [params (assoc (u/default-post-params)
                         :params (dissoc @user :pass2)
                         :handler (registration-resp user)

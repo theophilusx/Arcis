@@ -1,6 +1,6 @@
 ;;      Filename: debug.cljs
 ;; Creation Date: Sunday, 03 May 2015 05:47 PM AEST
-;; Last Modified: Sunday, 03 May 2015 05:50 PM AEST
+;; Last Modified: Sunday, 20 September 2015 09:38 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -19,16 +19,18 @@
 
 (defn render-state []
   (let [smap (dissoc @session/state :current-page :nav)]
-    [:div
-     [:h4 "Arcis Current State"]
-     (if (not (empty? smap))
-       (c/render-map smap)
-       [:p "No additional state values to display"])]))
+    [:div.row
+     [:div.col-md-12
+      [:h4 "Arcis Current State"]
+      (if (not (empty? smap))
+        (c/render-map smap)
+        [:p "No additional state values to display"])]]))
 
 (defn state-keys []
   (let [ks (keys @session/state)]
-    [:div
-     [:h4 "Current state keys"]
-     [:ul
-      (for [k ks]
-        ^{:key k} [:li (str k)])]]))
+    [:div.row
+     [:div.col-md-12
+      [:h4 "Current state keys"]
+      [:ul
+       (for [k ks]
+         ^{:key k} [:li (str k)])]]]))

@@ -1,13 +1,15 @@
 ;;      Filename: main.cljs
 ;; Creation Date: Friday, 10 July 2015 03:54 PM AEST
-;; Last Modified: Saturday, 19 September 2015 06:43 PM AEST
+;; Last Modified: Sunday, 20 September 2015 02:01 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.main
-  (:require [reagent.session :as session]
+  (:require [arcis.state :as state]
             [reagent-modals.modals :as modals]
             [arcis.pages.components :as c]
+            [arcis.pages.tabs :as tabs]
+            [arcis.pages.login :refer [login-component]]
             [arcis.utils :as u]
             [arcis.pages.admin.users :refer [users-component]]
             [arcis.pages.admin.register :refer [register-component]]
@@ -15,26 +17,20 @@
 
 
 (defn admin-page []
-  (if-not (u/active-tab)
-    (u/set-active-tab 1))
+  (if-not (tabs/active-tab)
+    (tabs/set-active-tab! "Users"))
   (fn []
     [:div.container
      [c/page-header "Administration"]
      [modals/modal-window]
      [:div.row
       [:div.col-md-12
-       [c/status-component]
-       (when-not (session/get-in [:user-data :token])
-         [c/login-component])
-       [:div.row
-        [:ul {:class "nav nav-tabs"}
-         [:li {:role "presentation" :class (u/get-tab-state 1)}
-          [:a {:on-click #(u/set-active-tab 1)} "Users"]]
-         [:li {:role "presentation" :class (u/get-tab-state 2)}
-          [:a {:on-click #(u/set-active-tab 2)} "Register"]]
-         [:li {:role "presentation" :class (u/get-tab-state 3)}
-          [:a {:on-click #(u/set-active-tab 3)} "Network Groups"]]]
-        (condp = (u/active-tab)
-          1 [users-component]
-          2 [register-component]
-          3 [network-component])]]]]))
+       [c/status-component]]]
+     (when-not (state/is-authenticated?)
+       [login-component])
+     [:div.row
+      (tabs/tab-component ["Users" "Register" "Network Groups"])
+      (condp = (tabs/active-tab)
+        "Users" [users-component]
+        "Register" [register-component]
+        "Network Groups" [network-component])]]))

@@ -1,6 +1,6 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Saturday, 19 September 2015 07:39 PM AEST
+;; Last Modified: Sunday, 20 September 2015 12:53 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,7 +9,7 @@
             [arcis.pages.components :as c]
             [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
             [ajax.core :refer [POST]]
-            [reagent.session :as session]))
+            [arcis.state :as state]))
 
 
 (defn upload-resp [response]
@@ -17,7 +17,7 @@
   (get-host-list))
 
 (defn upload-file [element-id]
-  (when (u/is-authenticated?)
+  (when (state/is-authenticated?)
     (let [el (.getElementById js/document element-id)
           name (.-name el)
           file (aget (.-files el) 0)

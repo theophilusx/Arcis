@@ -1,16 +1,14 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Sunday, 20 September 2015 09:18 AM AEST
+;; Last Modified: Sunday, 20 September 2015 01:45 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.components
   (:require [reagent.core :refer [atom]]
-            [reagent.session :as session]
             [reagent-forms.core :refer [bind-fields]]
+            [arcis.state :as state]
             [ajax.core :refer [GET POST]]
-            [bouncer.core :as b]
-            [bouncer.validators :as v]
             [arcis.utils :as u]
             [secretary.core :as secretary]))
 
@@ -126,54 +124,15 @@ default are the string True and False. Map should have two keys :true and
                       :success "alert-success"
                       :expired "alert-danger"})
 
+
+
+
+
 (defn status-component []
-  (let [status-type (session/get-in [(session/get :page) :status :type])]
+  (let [status-type (state/value-in [(state/this-page) :status :type])]
     (when (contains? #{:error :warning :success :expired} status-type)
-      [:div {:class (str "alert " (status-type status-type-map)) :role "alert"}
-       (session/get-in [(session/get :page) :status :msg])])))
-
-
-
-(def login-template
-  [:div
-   [:h2 {:class "form-signin-heading"} "Please sign in"]
-   [:hr]
-   (input "Email" :text :email)
-   (input "Password" :password :pass)])
-
-(defn not-valid? [user]
-  (let [vmap (first (b/validate user
-				:email v/email
-				:pass [v/required [v/min-count 8]]))]
-    (if (nil? vmap)
-      false
-      vmap)))
-
-(defn login-resp [user]
-  (fn [response]
-    (let [rsp (js->clj response :keywordize-keys true)]
-      (session/put! :user-data rsp)
-      (u/report-success)
-      (reset! user {}))))
-
-(defn post-login [data]
-  (let [params (assoc (u/default-post-params)
-		      :params @data
-		      :handler (login-resp data)
-		      :error-handler (u/default-error-response "post-login"))]
-    (POST "/login" params)))
-
-(defn login-component []
-  (let [user (atom {})]
-    (fn []
-      [:div.col-md-8
-       [bind-fields login-template user]
-       [:button.btn.btn-primary
-	{:type "button"
-	 :on-click (fn []
-		     (if-let [e (not-valid? @user)]
-		       (u/report-error (u/validation-error-msg e))
-		       (post-login user)))}
-	"Login"]
-       [:p]
-       [:hr]])))
+      [:div.row
+       [:div.col-md-12
+        [:div {:class (str "alert " (status-type status-type-map))
+               :role "alert"}
+         (state/value-in [(state/this-page) :status :msg])]]])))
