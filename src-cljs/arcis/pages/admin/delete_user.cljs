@@ -1,6 +1,6 @@
 ;;      Filename: delete_user.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:08 PM AEST
-;; Last Modified: Sunday, 20 September 2015 04:22 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:02 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -8,23 +8,18 @@
   (:require     [arcis.utils :as u]
                 [arcis.pages.admin.users-ajax :refer [get-app-users]]
                 [arcis.ajax :as ajax]
-                [reagent-modals.modals :as modals]
                 [arcis.state :as state]
-                [ajax.core :refer [POST]]))
+                [reagent-modals.modals :as modals]))
 
 (defn process-delete [response]
   (get-app-users)
   (u/report-success {:message response}))
 
 (defn handle-delete-user [id]
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-post-params)
-                        :params {:id id}
-                        :handler (ajax/default-handler "delete-user"
-                                   #'process-delete true)
-                        :error-handler (ajax/default-error-handler
-                                         "delete-user"))]
-      (POST "/admin/delete" params))))
+  (if (state/is-authenticated?)
+    (ajax/post-it "handle-delete-user" "/admin/delete"
+                  {:id id} #'process-delete)
+    (u/report-unauthenticated "handle-delete-user")))
 
 (defn delete-user-modal [id]
   (let [dkw (u/digit-keyword id)]

@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 20 September 2015 06:55 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:04 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,11 +9,10 @@
             [reagent-forms.core :refer [bind-fields init-field value-of]]
             [arcis.state :as state]
             [arcis.ajax :as ajax]
-            [ajax.core :refer [GET POST]]
-            [bouncer.core :as b]
-            [bouncer.validators :as v]
             [arcis.pages.components :as c]
-            [arcis.utils :as u]))
+            [arcis.utils :as u]
+            [bouncer.core :as b]
+            [bouncer.validators :as v]))
 
 (def add-network-template
   [:div.row
@@ -49,26 +48,19 @@
     (state/set-value-in! [:admin :network-groups] group-hash)))
 
 (defn get-network-groups []
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-get-params)
-                        :handler (ajax/default-handler "get-network-groups"
-                                   #'process-network-groups false)
-                        :error-handler (ajax/default-error-handler
-                                         "get-network-groups"))]
-      (GET "/admin/groups" params))))
+  (if (state/is-authenticated?)
+    (ajax/get-it "get-network-groups" "/admin/groups"
+                 #'process-network-groups)
+    (u/report-unauthenticated "get-network-groups")))
 
 (defn network-group-add [response]
   (get-network-groups))
 
 (defn post-network-group [group]
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-post-params)
-                        :params @group
-                        :handler (ajax/default-handler "post-network-group"
-                                   #'network-group-add true)
-                        :error-handler (ajax/default-error-handler
-                                         "post-network-group"))]
-      (POST "/admin/add-network" params))))
+  (if (state/is-authenticated?)
+    (ajax/post-it "post-network-group" "/admin/add-network" @group
+                  #'network-group-add)
+    (u/report-unauthenticated "post-network-group")))
 
 (defn group-table-row [grp]
   [:tr

@@ -1,13 +1,12 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Sunday, 20 September 2015 05:39 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:00 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.hosts.hosts-ajax
   (:require [arcis.state :as state]
             [arcis.ajax :as ajax]
-            [ajax.core :refer [GET]]
             [arcis.utils :as u]))
 
 (defn keywordize-host-list
@@ -52,13 +51,9 @@
     (state/set-value-in! [:hosts :host-list] host-hash)
     (state/set-value-in! [:hosts :host-index] host-idx)))
 
-(defn get-host-list
-  "Return a list of all known hosts"
-  []
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-get-params)
-                        :handler (ajax/default-handler "get-host-list"
-                                   #'process-host-list false)
-                        :error-handler (ajax/default-error-handler
-                                         "get-host-list"))]
-      (GET "/hosts/list" params))))
+(defn get-host-list []
+  (if (state/is-authenticated?)
+    (ajax/get-it "get-host-list" "/hosts/list" #'process-host-list)
+    (u/report-unauthenticated "get-host-lists")))
+
+

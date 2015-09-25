@@ -1,6 +1,6 @@
 ;;      Filename: ajax.cljs
 ;; Creation Date: Sunday, 20 September 2015 03:48 PM AEST
-;; Last Modified: Sunday, 20 September 2015 06:27 PM AEST
+;; Last Modified: Friday, 25 September 2015 09:53 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -19,31 +19,6 @@
 ;;      :keywords? true
 ;;      :headers {"X-CSRF-Token" token}}))
 
-(defn default-post-params
-  "Setup default parameter hash for cljs-ajax POST calls"
-  []
-  (if-let [token (state/value-in [:user-data :token])]
-    {:format :json
-     :response-format :json
-     :keywords? true
-     :headers {"Authorization" (str "Token " token)}}
-    {:format :json
-     :response-format :json
-     :keywords? true}))
-
-(defn default-get-params
-  "Setup default parameter hash for cljs-ajax GET calls"
-  []
-  (if-let [token (state/value-in [:user-data :token])]
-    {:format :json
-     :response-format :json
-     :keywords? true
-     :headers {"Authorization" (str "Token " token)}}
-    {:format :json
-     :response-format :json
-     :keywords? true}))
-
-
 (defn default-error-handler [name]
   (fn [ctx]
     (let [rsp (js->clj (:response ctx) :keywordize-keys true)
@@ -53,11 +28,49 @@
         (u/report-expired-session)
         (u/report-error name msg)))))
 
-(defn default-handler [name handler-fn report-status]
+(defn default-handler [handler-fn]
   (fn [response]
-    (handler-fn response)
-    (if report-status
-      (if (= "Success" (:status-text response))
-        (u/report-success (:message response))
-        (u/report-error name (:message response)))
-      (u/report-success))))
+    (when handler-fn
+      (handler-fn response))))
+
+(defn default-post-params
+  "Setup default parameter hash for cljs-ajax POST calls"
+  [name params handler-fn]
+  (if-let [token (state/value-in [:user-data :token])]
+    {:format :json
+     :response-format :json
+     :keywords? true
+     :params params
+     :headers {"Authorization" (str "Token " token)}
+     :handler (default-handler handler-fn)
+     :error-handler (default-error-handler name)}
+    {:format :json
+     :response-format :json
+     :keywords? true
+     :params params
+     :handler (default-handler handler-fn)
+     :error-handler (default-error-handler name)}))
+
+(defn default-get-params
+  "Setup default parameter hash for cljs-ajax GET calls"
+  [name handler-fn]
+  (if-let [token (state/value-in [:user-data :token])]
+    {:format :json
+     :response-format :json
+     :keywords? true
+     :headers {"Authorization" (str "Token " token)}
+     :handler (default-handler handler-fn)
+     :error-handler (default-error-handler name)}
+    {:format :json
+     :response-format :json
+     :keywords? true
+     :handler (default-handler handler-fn)
+     :error-handler (default-error-handler name)}))
+
+(defn post-it [name url params handler-fn]
+  (let [post-params (default-post-params name params handler-fn)]
+    (POST url post-params)))
+
+(defn get-it [name url handler-fn]
+  (let [get-params (default-get-params name handler-fn)]
+    (GET url get-params)))

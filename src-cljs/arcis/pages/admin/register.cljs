@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Sunday, 20 September 2015 05:19 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:09 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -8,13 +8,12 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields init-field value-of]]
             [arcis.state :as state]
-            [ajax.core :refer [GET POST]]
             [arcis.ajax :as ajax]
-            [bouncer.core :as b]
-            [bouncer.validators :as v]
             [arcis.pages.components :as c]
             [arcis.pages.admin.users-ajax :refer [get-app-users]]
-            [arcis.utils :as u]))
+            [arcis.utils :as u]
+            [bouncer.core :as b]
+            [bouncer.validators :as v]))
 
 (def register-template
   [:div.row
@@ -49,14 +48,10 @@
         :else (u/report-error "registration-resp" (:message response))))))
 
 (defn post-user [user]
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-post-params)
-                        :params (dissoc @user :pass2)
-                        :handler (registration-resp user)
-                        :error-handler (ajax/default-error-handler
-                                         "post-user"))]
-      (POST "/admin/register" params))))
-
+  (if (state/is-authenticated?)
+    (ajax/post-it "post-user" "/admin/register" (dissoc @user :pass2)
+                  (registration-resp user))
+    (u/report-unauthenticated "post-user")))
 
 (defn register-component []
   (let [user (atom {})]

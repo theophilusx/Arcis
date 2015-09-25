@@ -1,6 +1,6 @@
 ;;      Filename: utils.cljs
 ;; Creation Date: Sunday, 05 July 2015 06:42 PM AEST
-;; Last Modified: Sunday, 20 September 2015 04:12 PM AEST
+;; Last Modified: Friday, 25 September 2015 09:59 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -38,6 +38,9 @@
    (set-page-status! :success msg))
   ([status-type msg]
    (set-page-status! status-type msg)))
+
+(defn report-unauthenticated [name]
+  (report-error name "You are not authenticated. Please login"))
 
 (defn report-expired-session []
   (set-page-status! :expired (str "Your session token has expired. "

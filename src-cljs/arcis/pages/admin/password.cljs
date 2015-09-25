@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Sunday, 20 September 2015 05:12 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:08 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,20 +13,17 @@
             [reagent.core :refer [atom]]
             [arcis.state :as state]))
 
-(defn pwd-change [response]
-  (get-app-users))
+(defn pwd-change [data]
+  (fn [response]
+    (get-app-users)
+    (swap! data assoc :value nil)))
 
 (defn handle-pwd-change [pdata]
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-post-params)
-                        :params {:id (:id @pdata)
-                                 :password (:value @pdata)}
-                        :handler (ajax/default-handler "handle-pwd-change"
-                                   #'pwd-change true)
-                        :error-handler (ajax/default-error-handler
-                                         "handle-pwd-change"))]
-      (POST "/admin/password" params)
-      (swap! pdata assoc :value nil))))
+  (if (state/is-authenticated?)
+    (ajax/post-it "handle-pwd-change" "/admin/password"
+                  {:id (:id @pdata) :password (:value @pdata)}
+                  (pwd-change pdata))
+    (u/report-unauthenticated "handle-pwd-change")))
 
 (defn password-component [id]
   [c/inline-text-field-component id #'handle-pwd-change])

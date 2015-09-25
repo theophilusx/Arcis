@@ -1,13 +1,12 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Sunday, 20 September 2015 05:26 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:10 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.admin.users-ajax
   (:require [arcis.state :as state]
             [arcis.ajax :as ajax]
-            [ajax.core :refer [GET]]
             [arcis.utils :as u]
             [arcis.pages.components :as c]))
 
@@ -32,13 +31,8 @@
   (let [user-hash (user-list-to-hash response)]
     (state/set-value-in! [:admin :users] user-hash)))
 
-(defn get-app-users
-  "Retrieve list of application users"
-  []
-  (when (state/is-authenticated?)
-    (let [params (assoc (ajax/default-post-params)
-                        :handler (ajax/default-handler "get-app-users"
-                                   #'process-users-list false)
-                        :error-handler (ajax/default-error-handler
-                                         "get-app-users"))]
-      (GET "/admin/users" params))))
+(defn get-app-users []
+  (if (state/is-authenticated?)
+    (ajax/get-it "get-app-users" "/admin/users" #'process-users-list)
+    (u/report-unauthenticated "get-app-users")))
+

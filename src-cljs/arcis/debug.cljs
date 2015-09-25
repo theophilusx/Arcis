@@ -1,6 +1,6 @@
 ;;      Filename: debug.cljs
 ;; Creation Date: Sunday, 03 May 2015 05:47 PM AEST
-;; Last Modified: Sunday, 20 September 2015 09:38 AM AEST
+;; Last Modified: Friday, 25 September 2015 10:23 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,7 +18,7 @@
         ^{:key k} [:tr [:th (str k)] [:td (str (cookie/get k))]])])])
 
 (defn render-state []
-  (let [smap (dissoc @session/state :current-page :nav)]
+  (let [smap (dissoc @session/state :current-page :nav :host-list)]
     [:div.row
      [:div.col-md-12
       [:h4 "Arcis Current State"]

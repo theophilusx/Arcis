@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 20 September 2015 03:09 PM AEST
+;; Last Modified: Friday, 25 September 2015 10:29 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -69,12 +69,13 @@
         host-index (state/value-in [(state/this-page) :host-index])
         sub-keys (sort (keys (idx host-index)))]
     (sidebar/set-active-item! (first sub-keys))
-    [:div.row
-     [:div.col-md-2
-      [sidebar/sidebar-menu-component sub-keys]]
-     [:div.col-md-10
-      [:h3 (name (sidebar/get-active-item))]
-      (for [id (get-in host-index [idx (sidebar/get-active-item)])]
-        ^{:key (str idx id)} [host-component id])]]))
+    (fn []
+      [:div.row
+       [:div.col-md-2
+        [sidebar/sidebar-menu-component sub-keys]]
+       [:div.col-md-10
+        [:h3 (name (sidebar/get-active-item))]
+        (for [id (get-in host-index [idx (sidebar/get-active-item)])]
+          ^{:key (str idx id)} [host-component id])]])))
 
 
