@@ -1,30 +1,29 @@
 ;;      Filename: tabs.cljs
 ;; Creation Date: Sunday, 20 September 2015 12:25 PM AEST
-;; Last Modified: Sunday, 20 September 2015 01:55 PM AEST
+;; Last Modified: Sunday, 27 September 2015 07:07 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.tabs
   (:require [arcis.state :as state]))
 
-(defn active-tab []
-  (state/value-in [(state/this-page) :tab]))
+(defn get-active []
+  (state/value-in [(state/this-page) :tab :current]))
 
-(defn set-active-tab! [v]
-  (state/set-value-in! [(state/this-page) :tab] v)
-  (state/set-value-in! [(state/this-page) :status :type] :ignore))
+(defn set-active! [v]
+  (state/set-value-in! [(state/this-page) :tab :current] v))
 
-(defn is-active-tab [t]
-  (= t (active-tab)))
+(defn is-active? [t]
+  (= t (get-active)))
 
 (defn tab-role [t]
-  (if (is-active-tab t)
+  (if (is-active? t)
     {:role "presentation" :class "active"}
     {:role "presentation"}))
 
 (defn tab-item [t]
   [:li (tab-role t)
-   [:a {:on-click #(set-active-tab! t)} (name t)]])
+   [:a {:on-click #(set-active! t)} (name t)]])
 
 (defn tab-component [tab-list]
   (into [:ul.nav.nav-tabs]

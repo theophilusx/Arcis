@@ -1,6 +1,6 @@
 ;;      Filename: hosts.cljs
 ;; Creation Date: Monday, 20 July 2015 05:35 PM AEST
-;; Last Modified: Sunday, 20 September 2015 05:40 PM AEST
+;; Last Modified: Sunday, 27 September 2015 07:11 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,8 +13,8 @@
             [arcis.state :as state]))
 
 (defn hosts-page []
-  (when-not (tabs/active-tab)
-    (tabs/set-active-tab! :upload))
+  (when-not (tabs/get-active)
+    (tabs/set-active! :upload))
   (fn []
     (let [tab-list (conj (keys (state/value-in [(state/this-page) :host-index]))
                          :upload)]
@@ -27,7 +27,7 @@
           [login-component])
         [:div.row
           (tabs/tab-component tab-list)
-          (if (= :upload (tabs/active-tab))
+          (if (= :upload (tabs/get-active))
             [host-upload-component]
-            [host-list-component (tabs/active-tab)])        ]]])))
+            [host-list-component (tabs/get-active)])        ]]])))
 

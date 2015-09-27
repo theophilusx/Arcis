@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 27 September 2015 11:23 AM AEST
+;; Last Modified: Sunday, 27 September 2015 07:33 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -82,19 +82,15 @@
   (let [host-list (state/value-in [(state/this-page) :host-list])
         host-index (state/value-in [(state/this-page) :host-index])
         sidebar-keys (sort (keys (idx host-index)))]
-    ;; (sidebar/set-active-item! (first sub-keys))
     [:div.row
      [:div.col-md-2
       [sidebar/sidebar-menu-component sidebar-keys]]
      [:div.col-md-10
-      (when (sidebar/get-active-item)
-        (let [pg-idx (build-pg-index idx (sidebar/get-active-item))]
+      (when (sidebar/get-active)
+        (let [pg-idx (build-pg-index idx (sidebar/get-active))]
           [:row
-           [:h3 (name (sidebar/get-active-item))]
-           [pager/paginate (sort (keys pg-idx))]
-           [hosts-page (get pg-idx (pager/get-active-page))]])
-        ;; (for [id (get-in host-index [idx (sidebar/get-active-item)])]
-        ;;   ^{:key (str idx id)} [host-component id])
-        )]]))
+           [:h3 (name (sidebar/get-active))]
+           [pager/header (sort (keys pg-idx))]
+           [hosts-page (get pg-idx (pager/get-active))]]))]]))
 
 

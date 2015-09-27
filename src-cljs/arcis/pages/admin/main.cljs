@@ -1,6 +1,6 @@
 ;;      Filename: main.cljs
 ;; Creation Date: Friday, 10 July 2015 03:54 PM AEST
-;; Last Modified: Friday, 25 September 2015 08:47 AM AEST
+;; Last Modified: Sunday, 27 September 2015 07:41 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -16,8 +16,8 @@
             [reagent-modals.modals :as modals]))
 
 (defn admin-page []
-  (if-not (tabs/active-tab)
-    (tabs/set-active-tab! "Users"))
+  (if-not (tabs/get-active)
+    (tabs/set-active! "Users"))
   (fn []
     [:div.container
      [c/page-header "Administration"]
@@ -29,7 +29,7 @@
        [login-component])
      [:div.row
       (tabs/tab-component ["Users" "Register" "Network Groups"])
-      (condp = (tabs/active-tab)
+      (condp = (tabs/get-active)
         "Users" [users-component]
         "Register" [register-component]
         "Network Groups" [network-component])]]))
