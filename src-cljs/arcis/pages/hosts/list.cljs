@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Friday, 25 September 2015 10:29 AM AEST
+;; Last Modified: Sunday, 27 September 2015 11:23 AM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,6 +9,7 @@
             [arcis.utils :as u]
             [arcis.pages.components :as c]
             [arcis.pages.sidebar :as sidebar]
+            [arcis.pages.pager :as pager]
             [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]))
 
 (defn toggle-visibility [k h]
@@ -64,18 +65,36 @@
                  [:li.list-group-item
                   [:strong "Last Seen Date: "] (:last-seen-dt host)]]]]))
 
+(defn build-pg-index [idx1 idx2]
+  (apply merge (map-indexed
+                (fn [i v]
+                  {i (vec v)})
+                (partition 10 10 nil (state/value-in [(state/this-page)
+                                                        :host-index
+                                                        idx1 idx2])))))
+
+(defn hosts-page [ids]
+  (into [:div]
+        (for [i ids]
+          [host-component i])))
+
 (defn host-list-component [idx]
   (let [host-list (state/value-in [(state/this-page) :host-list])
         host-index (state/value-in [(state/this-page) :host-index])
-        sub-keys (sort (keys (idx host-index)))]
-    (sidebar/set-active-item! (first sub-keys))
-    (fn []
-      [:div.row
-       [:div.col-md-2
-        [sidebar/sidebar-menu-component sub-keys]]
-       [:div.col-md-10
-        [:h3 (name (sidebar/get-active-item))]
-        (for [id (get-in host-index [idx (sidebar/get-active-item)])]
-          ^{:key (str idx id)} [host-component id])]])))
+        sidebar-keys (sort (keys (idx host-index)))]
+    ;; (sidebar/set-active-item! (first sub-keys))
+    [:div.row
+     [:div.col-md-2
+      [sidebar/sidebar-menu-component sidebar-keys]]
+     [:div.col-md-10
+      (when (sidebar/get-active-item)
+        (let [pg-idx (build-pg-index idx (sidebar/get-active-item))]
+          [:row
+           [:h3 (name (sidebar/get-active-item))]
+           [pager/paginate (sort (keys pg-idx))]
+           [hosts-page (get pg-idx (pager/get-active-page))]])
+        ;; (for [id (get-in host-index [idx (sidebar/get-active-item)])]
+        ;;   ^{:key (str idx id)} [host-component id])
+        )]]))
 
 

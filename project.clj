@@ -84,9 +84,9 @@
                                  [ring/ring-devel "1.4.0"]
                                  [pjstadig/humane-test-output "0.7.0"]
                                  [org.clojure/tools.nrepl "0.2.11"]
-                                 [lein-figwheel "0.3.9"]
+                                 [lein-figwheel "0.4.0"]
                                  [mvxcvi/puget "0.8.1"]]
-                  :plugins [[lein-figwheel "0.3.9"]]
+                  :plugins [[lein-figwheel "0.4.0"]]
                    :cljsbuild
                   {:builds
                     {:app
