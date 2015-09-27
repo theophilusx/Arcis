@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Friday, 25 September 2015 10:08 AM AEST
+;; Last Modified: Sunday, 27 September 2015 03:10 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -16,7 +16,8 @@
 (defn pwd-change [data]
   (fn [response]
     (get-app-users)
-    (swap! data assoc :value nil)))
+    (swap! data assoc :value nil)
+    (u/report-success (:message response))))
 
 (defn handle-pwd-change [pdata]
   (if (state/is-authenticated?)

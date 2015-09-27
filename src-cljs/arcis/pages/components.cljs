@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Sunday, 20 September 2015 01:45 PM AEST
+;; Last Modified: Sunday, 27 September 2015 03:05 PM AEST
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -106,14 +106,14 @@ default are the string True and False. Map should have two keys :true and
 (defn inline-text-field-component [record-id action-fn]
   (let [field-data (atom {:id record-id
                           :value nil})]
-    (fn []
+    (fn [record-id action-fn]
+      (swap! field-data assoc-in [:id] record-id)
       [:div.form-inline
        [:input {:class "form-control"
                 :type "text"
                 :value (:value @field-data)
-                :on-change #(swap! field-data assoc-in [:value] (-> %
-                                                                    .-target
-                                                                    .-value))}]
+                :on-change #(swap! field-data assoc-in [:value]
+                                   (-> % .-target .-value))}]
        [:button {:class "btn btn-primary"
                  :type "button"
                  :on-click #(action-fn field-data)}
