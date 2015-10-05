@@ -1,6 +1,6 @@
 ;;      Filename: sidebar.cljs
 ;; Creation Date: Sunday, 20 September 2015 02:47 PM AEST
-;; Last Modified: Sunday, 27 September 2015 06:58 PM AEST
+;; Last Modified: Monday, 05 October 2015 02:47 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -31,4 +31,4 @@
 (defn sidebar-menu-component [menu-items]
   (into [:u1.nav.nav-pills.nav-stacked]
         (for [i menu-items]
-          ^{:key i} (menu-item i))))
+          ^{:key i} [menu-item i])))

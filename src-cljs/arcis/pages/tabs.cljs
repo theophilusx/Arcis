@@ -1,6 +1,6 @@
 ;;      Filename: tabs.cljs
 ;; Creation Date: Sunday, 20 September 2015 12:25 PM AEST
-;; Last Modified: Sunday, 27 September 2015 07:07 PM AEST
+;; Last Modified: Monday, 05 October 2015 02:46 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -28,4 +28,4 @@
 (defn tab-component [tab-list]
   (into [:ul.nav.nav-tabs]
         (for [t tab-list]
-          ^{:key t} (tab-item t))))
+          ^{:key t} [tab-item t])))

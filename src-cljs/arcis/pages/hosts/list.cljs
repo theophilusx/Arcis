@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 27 September 2015 07:33 PM AEST
+;; Last Modified: Monday, 05 October 2015 06:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -66,31 +66,53 @@
                   [:strong "Last Seen Date: "] (:last-seen-dt host)]]]]))
 
 (defn build-pg-index [idx1 idx2]
-  (apply merge (map-indexed
-                (fn [i v]
-                  {i (vec v)})
-                (partition 10 10 nil (state/value-in [(state/this-page)
-                                                        :host-index
-                                                        idx1 idx2])))))
+  (let [data-idx (apply merge (sorted-map)
+                        (map-indexed
+                         (fn [i v]
+                           {(inc i) (vec v)})
+                         (partition-all 10 (state/value-in [(state/this-page)
+                                                            :host-index
+                                                            idx1 idx2]))))
+        page-idx (apply merge (sorted-map)
+                        (map-indexed (fn [i v]
+                                               {(inc i) (vec v)})
+                                             (partition-all 10 (sort (keys data-idx)))))]
+    {:data-idx data-idx
+     :page-idx page-idx}))
 
 (defn hosts-page [ids]
   (into [:div]
         (for [i ids]
           [host-component i])))
 
+(defn host-pager-title [title]
+  (.log js/console "host-page-title")
+  ;; (pager/set-page! 1)
+  ;; (pager/set-active! 1)
+  [:h3 (name title)])
+
+(defn host-pager-component [idx1 idx2]
+  (let [paginate-data (build-pg-index idx1 idx2)]
+    (.log js/console (str "host-pager-component"))
+    [:row
+     [host-pager-title (sidebar/get-active)]
+     [pager/header (:page-idx paginate-data)]
+     [hosts-page (get (:data-idx paginate-data) (pager/get-active))]]))
+
+(defn host-menu-component [menu-items]
+  (.log js/console (str "host-menu-component"))
+  (when-not (sidebar/get-active)
+    (sidebar/set-active! (first menu-items)))
+  [sidebar/sidebar-menu-component menu-items])
+
 (defn host-list-component [idx]
-  (let [host-list (state/value-in [(state/this-page) :host-list])
-        host-index (state/value-in [(state/this-page) :host-index])
-        sidebar-keys (sort (keys (idx host-index)))]
+  (let [host-index (state/value-in [(state/this-page) :host-index])
+        sidebar-keys (vec (sort (keys (idx host-index))))]
+    (.log js/console (str "host-list-component"))
     [:div.row
      [:div.col-md-2
-      [sidebar/sidebar-menu-component sidebar-keys]]
+      [host-menu-component sidebar-keys]]
      [:div.col-md-10
-      (when (sidebar/get-active)
-        (let [pg-idx (build-pg-index idx (sidebar/get-active))]
-          [:row
-           [:h3 (name (sidebar/get-active))]
-           [pager/header (sort (keys pg-idx))]
-           [hosts-page (get pg-idx (pager/get-active))]]))]]))
+      [host-pager-component idx (sidebar/get-active)]]]))
 
 

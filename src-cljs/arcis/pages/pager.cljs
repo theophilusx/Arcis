@@ -1,6 +1,6 @@
 ;;      Filename: pager.cljs
 ;; Creation Date: Friday, 25 September 2015 07:06 PM AEST
-;; Last Modified: Monday, 28 September 2015 07:54 AM AEST
+;; Last Modified: Monday, 05 October 2015 05:08 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,10 +18,18 @@
   (state/set-value-in! [(state/this-page) :pager :page-size] size))
 
 (defn get-active []
-  (state/value-in [(state/this-page) :pager :current]))
+  (or (state/value-in [(state/this-page) :pager :current])
+      1))
 
-(defn set-active! [p]
-  (state/set-value-in! [(state/this-page) :pager :current] p))
+(defn set-active! [i]
+  (state/set-value-in! [(state/this-page) :pager :current] i))
+
+(defn get-page []
+  (or (state/value-in [(state/this-page) :pager :page])
+      1))
+
+(defn set-page! [p]
+  (state/set-value-in! [(state/this-page) :pager :page] p))
 
 (defn is-active? [p]
   (= p (get-active)))
@@ -30,27 +38,52 @@
   [:li (when (is-active? p) {:class "active"})
    [:a {:on-click #(set-active! p)} (str p)]])
 
-(defn maybe-previous [first-idx]
-  (when (< first-idx (get-active))
-    (set-active! (dec (get-active)))))
+(defn current-page-list [pages]
+  (get pages (get-page)))
 
-(defn maybe-next [last-idx]
-  (when (> last-idx (get-active))
-    (set-active! (inc (get-active)))))
+(defn next-page-list [pages]
+  (get pages (inc (get-page))))
 
-(defn previous-page [first-idx]
-  [:li (when (= first-idx (get-active)) {:class "disabled"})
-   [:a {:on-click #(maybe-previous first-idx)}
-    (str (gstring/unescapeEntities "&laquo;") " Prev")]])
+(defn previous-page-list [pages]
+  (get pages (dec (get-page))))
 
-(defn next-page [last-idx]
-  [:li (when (= last-idx (get-active)) {:class "disabled"})
-   [:a {:on-click #(maybe-next last-idx)}
-    (str "Next " (gstring/unescapeEntities "&raquo;"))]])
+(defn previous-page [pages]
+  (let [curr-page (get-page)
+        curr-item (get-active)
+        curr-list (current-page-list pages)
+        prv-list (previous-page-list pages)
+        [pg idx] (cond
+                   (> curr-item (first curr-list)) [curr-page (dec curr-item)]
+                   prv-list [(dec curr-page) (last prv-list)]
+                   :else nil)]
+    [:li (when-not pg {:class "disabled"})
+     [:a {:on-click (fn []
+                      (when pg
+                        (set-page! pg)
+                        (set-active! idx)))}
+    (str (gstring/unescapeEntities "&laquo;") " Prev")]]))
 
-(defn header [idx]
-  (let [pg-idx (into [:ul.pagination (previous-page (first idx))]
-                     (for [i idx]
-                       (page-item i)))]
-    [:nav
-     (conj pg-idx (next-page (last idx)))]))
+(defn next-page [pages]
+  (let [curr-page (get-page)
+        curr-item (get-active)
+        curr-list (current-page-list pages)
+        next-list (next-page-list pages)
+        [pg idx] (cond
+                   (< curr-item (last curr-list)) [curr-page (inc curr-item)]
+                   next-list [(inc curr-page) (first next-list)]
+                   :else nil)]
+    [:li (when-not pg {:class "disabled"})
+     [:a {:on-click (fn []
+                      (when pg
+                        (set-page! pg)
+                        (set-active! idx)))}
+      (str "Next " (gstring/unescapeEntities "&raquo;"))]]))
+
+
+(defn header [page-index]
+  (.log js/console (str "header: page-index: " page-index))
+  [:nav
+   (conj (into [:ul.pagination [previous-page page-index]]
+               (for [i (current-page-list page-index)]
+                 ^{:key (str "p" i)} [page-item i]))
+         [next-page page-index])])
