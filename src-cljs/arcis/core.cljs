@@ -19,7 +19,9 @@
 (defn nav-link [uri title page collapsed?]
   [:li {:class (when (= page (session/get :page)) "active")}
    [:a {:href uri
-        :on-click #(reset! collapsed? true)}
+        :on-click (fn []
+                    (reset! collapsed? true)
+                    nil)}
     title]])
 
 (defn navbar []
@@ -33,7 +35,9 @@
            :data-toggle   "collapse"
            :aria-expanded @collapsed?
            :aria-controls "navbar"
-           :on-click      #(swap! collapsed? not)}
+           :on-click      (fn []
+                            (swap! collapsed? not)
+                            nil)}
           [:span.sr-only "Toggle Navigation"]
           [:span.icon-bar]
           [:span.icon-bar]
