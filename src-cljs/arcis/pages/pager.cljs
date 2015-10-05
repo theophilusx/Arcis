@@ -1,6 +1,6 @@
 ;;      Filename: pager.cljs
 ;; Creation Date: Friday, 25 September 2015 07:06 PM AEST
-;; Last Modified: Monday, 05 October 2015 05:08 PM AEDT
+;; Last Modified: Monday, 05 October 2015 08:34 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,25 +11,33 @@
             [arcis.utils :as u]
             [goog.string :as gstring]))
 
-(defn page-size []
-  (state/value-in [(state/this-page) :pager :page-size]))
+(defn set-page-count! [cnt]
+  (state/set-value-in! [(state/this-page) :pager :page-count] cnt))
 
-(defn set-page-size! [size]
-  (state/set-value-in! [(state/this-page) :pager :page-size] size))
-
-(defn get-active []
-  (or (state/value-in [(state/this-page) :pager :current])
-      1))
+(defn get-page-count []
+  (state/value-in [(state/this-page) :pager :page-count]))
 
 (defn set-active! [i]
   (state/set-value-in! [(state/this-page) :pager :current] i))
 
-(defn get-page []
-  (or (state/value-in [(state/this-page) :pager :page])
-      1))
+(defn get-active []
+  (let [idx (state/value-in [(state/this-page) :pager :current])]
+    (if-not idx
+      (do
+        (set-active! 1)
+        1)
+      idx)))
 
 (defn set-page! [p]
   (state/set-value-in! [(state/this-page) :pager :page] p))
+
+(defn get-page []
+  (let [pg (or (state/value-in [(state/this-page) :pager :page]) 1)]
+    (if (> pg (get-page-count))
+      (do
+        (set-page! 1)
+        1)
+      pg)))
 
 (defn is-active? [p]
   (= p (get-active)))
@@ -82,6 +90,7 @@
 
 (defn header [page-index]
   (.log js/console (str "header: page-index: " page-index))
+  (set-page-count! (count (keys page-index)))
   [:nav
    (conj (into [:ul.pagination [previous-page page-index]]
                (for [i (current-page-list page-index)]
