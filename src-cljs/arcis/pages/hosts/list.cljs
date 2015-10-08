@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Monday, 05 October 2015 06:59 PM AEDT
+;; Last Modified: Friday, 09 October 2015 07:41 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -75,8 +75,8 @@
                                                             idx1 idx2]))))
         page-idx (apply merge (sorted-map)
                         (map-indexed (fn [i v]
-                                               {(inc i) (vec v)})
-                                             (partition-all 10 (sort (keys data-idx)))))]
+                                       {(inc i) (vec v)})
+                                     (partition-all 10 (sort (keys data-idx)))))]
     {:data-idx data-idx
      :page-idx page-idx}))
 
