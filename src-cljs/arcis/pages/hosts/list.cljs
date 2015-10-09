@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Friday, 09 October 2015 07:41 AM AEDT
+;; Last Modified: Friday, 09 October 2015 02:41 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -80,9 +80,10 @@
     {:data-idx data-idx
      :page-idx page-idx}))
 
-(defn hosts-page [ids]
+(defn hosts-page [page-cursor]
   (into [:div]
-        (for [i ids]
+        (for [i (get-in @page-cursor [(pager/active-page)
+                                      (pager/active-index)])]
           [host-component i])))
 
 (defn host-pager-title [title]
@@ -92,12 +93,14 @@
   [:h3 (name title)])
 
 (defn host-pager-component [idx1 idx2]
-  (let [paginate-data (build-pg-index idx1 idx2)]
+  (let [paginate-cursor (state/cursor [(state/this-page) :host-index
+                                       idx1 idx2])]
     (.log js/console (str "host-pager-component"))
     [:row
      [host-pager-title (sidebar/get-active)]
-     [pager/header (:page-idx paginate-data)]
-     [hosts-page (get (:data-idx paginate-data) (pager/get-active))]]))
+     [pager/header paginate-cursor]
+     [hosts-page paginate-cursor]
+     ]))
 
 (defn host-menu-component [menu-items]
   (.log js/console (str "host-menu-component"))
@@ -105,10 +108,11 @@
     (sidebar/set-active! (first menu-items)))
   [sidebar/sidebar-menu-component menu-items])
 
-(defn host-list-component [idx]
-  (let [host-index (state/value-in [(state/this-page) :host-index])
-        sidebar-keys (vec (sort (keys (idx host-index))))]
+(defn host-list-component [net-cursor idx]
+  (let [sidebar-keys (vec (sort (keys (idx @net-cursor))))]
     (.log js/console (str "host-list-component"))
+    (.log js/console (str "host-list-component: idx = " idx
+                          " sidebar-keys = " sidebar-keys))
     [:div.row
      [:div.col-md-2
       [host-menu-component sidebar-keys]]
