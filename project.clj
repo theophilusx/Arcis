@@ -23,15 +23,15 @@
                  [org.clojure/tools.nrepl "0.2.11"]
                  [org.webjars/bootstrap "3.3.5"]
                  [org.webjars/jquery "2.1.4"]
-                 [buddy "0.7.1"]
-                 [migratus "0.8.6"]
+                 [buddy "0.7.2"]
+                 [migratus "0.8.7"]
                  [clj-time "0.11.0"]
-                 [conman "0.2.0"]
+                 [conman "0.2.1"]
                  [org.postgresql/postgresql "9.4-1203-jdbc41"]
                  [org.clojure/clojurescript "1.7.122" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
                  [reagent "0.5.1"]
-                 [reagent-forms "0.5.11"]
+                 [reagent-forms "0.5.12"]
                  [reagent-utils "0.1.5"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
@@ -48,7 +48,7 @@
   :migratus {:store :database}
 
   :plugins [[lein-environ "1.0.1"]
-            [migratus-lein "0.1.9"]
+            [migratus-lein "0.2.0"]
             [lein-cljsbuild "1.1.0"]]
   
   :clean-targets ^{:protect false} [:target-path
@@ -84,9 +84,10 @@
    :project/dev  {:dependencies [[ring/ring-mock "0.3.0"]
                                  [ring/ring-devel "1.4.0"]
                                  [pjstadig/humane-test-output "0.7.0"]
-                                 [lein-figwheel "0.4.0"]
-                                 [mvxcvi/puget "0.8.1"]]
-                  :plugins [[lein-figwheel "0.4.0"]]
+                                 [lein-figwheel "0.4.1"]
+                                 [mvxcvi/puget "0.8.1"]
+                                 [com.cemerick/piggieback "0.2.1"]]
+                  :plugins [[lein-figwheel "0.4.1"]]
                    :cljsbuild
                   {:builds
                     {:app
