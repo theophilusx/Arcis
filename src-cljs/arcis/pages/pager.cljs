@@ -1,6 +1,6 @@
 ;;      Filename: pager.cljs
 ;; Creation Date: Friday, 25 September 2015 07:06 PM AEST
-;; Last Modified: Friday, 09 October 2015 02:48 PM AEDT
+;; Last Modified: Friday, 09 October 2015 03:42 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -104,10 +104,18 @@
       (str "Next " (gstring/unescapeEntities "&raquo;"))]]))
 
 
+(defn get-max-page [pg-cursor]
+  (let [max-page (apply max (keys @pg-cursor))
+        max-index (apply max (keys (get @pg-cursor max-page)))]
+    max-index))
+
 (defn header [page-cursor]
-  (set-page-count! (count (keys @page-cursor)))
-  [:nav
-   (conj (into [:ul.pagination [previous-page page-cursor]]
-               (for [i (current-page-list page-cursor)]
-                 ^{:key (str "p" i)} [page-item i]))
-         [next-page page-cursor])])
+  (set-page-count! (get-max-page page-cursor))
+  [:div
+   [:nav
+    (conj (into [:ul.pagination [previous-page page-cursor]]
+                (for [i (current-page-list page-cursor)]
+                  ^{:key (str "p" i)} [page-item i]))
+          [next-page page-cursor])]
+   [:p (str "Page " (active-index) " of " (page-count) " pages")]
+   [:hr]])

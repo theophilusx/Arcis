@@ -1,6 +1,6 @@
 ;;      Filename: hosts.cljs
 ;; Creation Date: Monday, 20 July 2015 05:35 PM AEST
-;; Last Modified: Friday, 09 October 2015 12:46 PM AEDT
+;; Last Modified: Friday, 09 October 2015 03:43 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,8 +23,6 @@
       (tabs/set-active! :upload))
     (fn []
       (let [tab-list (conj (keys @net-idx-cursor) :upload)]
-        (.log js/console (str "host-page"))
-        (.log js/console (str "home-page: tab-list = " tab-list))
         [:div.container
          [c/page-header "Hosts"]
          [:div.row
