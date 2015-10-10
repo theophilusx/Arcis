@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Friday, 25 September 2015 10:04 AM AEST
+;; Last Modified: Saturday, 10 October 2015 06:39 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -66,10 +66,13 @@
   [:tr
    [:td (:group-name grp)]
    [:td (:subgroup-name grp)]
-   [:td (:group-regexp grp)]
+   [:td (:group-regexp grp)
+    [:button [:span {:class "fa fa-pencil"}]]]
    [:td (:active grp)]
    [:td (:created-dt grp)]
-   [:td (:last-modified-dt grp)]])
+   [:td (:last-modified-dt grp)]
+   [:td [:button {:class "btn btn-primary"} [:span {:class "fa fa-pencil"}]] " "
+    [:button {:class "btn btn-danger"} [:span {:class "fa fa-trash-o"}]]]])
 
 (defn network-group-table []
   (let [groups (state/value-in [:admin :network-groups])]
@@ -82,7 +85,8 @@
         [:th "Regular Expression"]
         [:th "Active?"]
         [:th "Created"]
-        [:th "Last Modified"]]]
+        [:th "Last Modified"]
+        [:th " "]]]
       [:tbody
        (for [g (keys groups)]
          ^{:key g} [group-table-row (g groups)])]]

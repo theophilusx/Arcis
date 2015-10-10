@@ -23,6 +23,7 @@
                  [org.clojure/tools.nrepl "0.2.11"]
                  [org.webjars/bootstrap "3.3.5"]
                  [org.webjars/jquery "2.1.4"]
+                 [org.webjars/font-awesome "4.4.0"]
                  [buddy "0.7.2"]
                  [migratus "0.8.7"]
                  [clj-time "0.11.0"]

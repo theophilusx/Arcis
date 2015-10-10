@@ -1,6 +1,6 @@
 ;;      Filename: user_role.clj
 ;; Creation Date: Sunday, 03 May 2015 12:45 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:43 PM AEST
+;; Last Modified: Saturday, 10 October 2015 05:07 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;

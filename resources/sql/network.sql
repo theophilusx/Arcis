@@ -11,6 +11,13 @@ SET active = :active
 WHERE group_name = :group_name
 AND subgroup_name = :subgroup_name
 
+-- name: update-group-pattern!
+-- Update the regexp for the group
+UPDATE network_grp
+SET group_regexp = :group_regexp
+WHERE group_name = :group_name
+AND subgroup_name = :subgroup_name
+
 -- name: get-network-groups
 -- Return all network groups
 SELECT *
@@ -26,5 +33,11 @@ WHERE active = 'Y'
 -- Return the network group with specified name
 SELECT *
 FROM network_grp
+WHERE group_name = :group_name
+AND subgroup_name = :subgroup_name
+
+-- name: delete-group!
+-- Delete a network group definition
+DELETE FROM network_grp
 WHERE group_name = :group_name
 AND subgroup_name = :subgroup_name

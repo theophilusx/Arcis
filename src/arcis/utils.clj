@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Friday, 18 September 2015 05:22 PM AEST
+;; Last Modified: Saturday, 10 October 2015 11:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -8,6 +8,7 @@
   (:require [buddy.hashers :as hashers]
             [cheshire.core :refer [generate-string]]
             [arcis.db.users :as udb]
+            [arcis.db.network :as ndb]
             [clojure.string :as s]
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
@@ -55,6 +56,12 @@
 
 (defn user-exists? [id]
   (if (= 1 (count (udb/get-user-by-id {:id id})))
+    true
+    false))
+
+(defn network-group-exists? [network-group subgroup]
+  (if (= 1 (count (ndb/get-group-by-name {:grop_name network-group
+                                          :subgroup_name subgroup})))
     true
     false))
 
