@@ -1,6 +1,6 @@
 ;;      Filename: delete_user.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:08 PM AEST
-;; Last Modified: Sunday, 11 October 2015 06:56 AM AEDT
+;; Last Modified: Sunday, 11 October 2015 09:34 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,7 +13,7 @@
 
 (defn process-delete [response]
   (get-app-users)
-  (u/report-success {:message response}))
+  (u/report-success (:message response)))
 
 (defn handle-delete-user [id]
   (if (state/is-authenticated?)
