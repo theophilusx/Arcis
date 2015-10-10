@@ -1,6 +1,6 @@
 ;;      Filename: delete_user.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:08 PM AEST
-;; Last Modified: Friday, 25 September 2015 10:02 AM AEST
+;; Last Modified: Sunday, 11 October 2015 06:56 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -39,4 +39,4 @@
 
 (defn delete-user-button [id]
   [:div.btn.btn-danger {:on-click #(modals/modal! (delete-user-modal id))}
-   "Delete"])
+   [:span {:class "fa fa-trash"}]])

@@ -1,6 +1,6 @@
 ;;      Filename: password.cljs
 ;; Creation Date: Wednesday, 08 July 2015 02:20 PM AEST
-;; Last Modified: Sunday, 27 September 2015 03:10 PM AEST
+;; Last Modified: Sunday, 11 October 2015 08:40 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,14 +10,14 @@
             [arcis.pages.admin.users-ajax :refer [get-app-users]]
             [arcis.ajax :as ajax]
             [ajax.core :refer [POST]]
-            [reagent.core :refer [atom]]
+            [reagent.core :as r :refer [atom]]
             [arcis.state :as state]))
 
 (defn pwd-change [data]
   (fn [response]
     (get-app-users)
-    (swap! data assoc :value nil)
-    (u/report-success (:message response))))
+    (u/report-success (:message response))
+    (reset! data {})))
 
 (defn handle-pwd-change [pdata]
   (if (state/is-authenticated?)
@@ -26,21 +26,26 @@
                   (pwd-change pdata))
     (u/report-unauthenticated "handle-pwd-change")))
 
-(defn password-component [id]
-  [c/inline-text-field-component id #'handle-pwd-change])
+(defn cancel-pwd-change [pwd-data]
+  (let [id (:id @pwd-data)]
+    (state/set-value-in! [(state/this-page) :users
+                          (u/digit-keyword id) :edit-pwd] false)
+    (reset! pwd-data {})))
 
-;; (defn password-component [id]
-;;   (let [pwd-data (atom {:id id
-;;                         :pwd nil})]
-;;     (fn []
-;;       [:div.form-inline
-;;        [:input {:class "form-control"
-;;                 :type "text"
-;;                 :value (:pwd @pwd-data)
-;;                 :on-change
-;;                 #(swap! pwd-data assoc-in [:pwd] (-> % .-target .-value))}]
-;;        [:button {:class "btn btn-primary"
-;;                  :type "button"
-;;                  :on-click (fn []
-;;                              (handle-pwd-change pwd-data))}
-;;         "Change"]])))
+(defn password-change-component [id]
+  (let [pwd-data (r/atom {})]
+    (fn [id]
+      (swap! pwd-data assoc :id id)
+      [c/inline-text-field-component pwd-data #'handle-pwd-change
+       #'cancel-pwd-change])))
+
+(defn password-link-component [id]
+  [:div
+   [:a {:on-click #(state/set-value-in! [(state/this-page) :users
+                                         (u/digit-keyword id) :edit-pwd] true)}
+    "Change Password"]])
+
+(defn password-component [id]
+  (if (state/value-in [(state/this-page) :users (u/digit-keyword id) :edit-pwd])
+    [password-change-component id]
+    [password-link-component id]))

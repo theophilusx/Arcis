@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Saturday, 10 October 2015 06:39 PM AEDT
+;; Last Modified: Sunday, 11 October 2015 08:49 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,6 +10,8 @@
             [arcis.state :as state]
             [arcis.ajax :as ajax]
             [arcis.pages.components :as c]
+            [arcis.pages.admin.network-ajax :refer [get-network-groups]]
+            [arcis.pages.admin.edit-pattern :refer [pattern-component]]
             [arcis.utils :as u]
             [bouncer.core :as b]
             [bouncer.validators :as v]))
@@ -31,28 +33,6 @@
       false
       vmap)))
 
-(defn group-list-to-hash [lst]
-  (reduce (fn [m v]
-            (assoc m (keyword (str (:group_name v) "-"
-                                   (:subgroup_name v)))
-                   {:group-name (:group_name v)
-                    :subgroup-name (:subgroup_name v)
-                    :group-regexp (:group_regexp v)
-                    :active (:active v)
-                    :created-dt (:created_dt v)
-                    :last-modified-dt (:last_modified_dt v)}))
-          (sorted-map) lst))
-
-(defn process-network-groups [response]
-  (let [group-hash (group-list-to-hash response)]
-    (state/set-value-in! [:admin :network-groups] group-hash)))
-
-(defn get-network-groups []
-  (if (state/is-authenticated?)
-    (ajax/get-it "get-network-groups" "/admin/groups"
-                 #'process-network-groups)
-    (u/report-unauthenticated "get-network-groups")))
-
 (defn network-group-add [response]
   (get-network-groups))
 
@@ -66,13 +46,12 @@
   [:tr
    [:td (:group-name grp)]
    [:td (:subgroup-name grp)]
-   [:td (:group-regexp grp)
-    [:button [:span {:class "fa fa-pencil"}]]]
+   [:td [pattern-component (:group-name grp) (:subgroup-name grp)
+         (:group-regexp grp)]]
    [:td (:active grp)]
    [:td (:created-dt grp)]
    [:td (:last-modified-dt grp)]
-   [:td [:button {:class "btn btn-primary"} [:span {:class "fa fa-pencil"}]] " "
-    [:button {:class "btn btn-danger"} [:span {:class "fa fa-trash-o"}]]]])
+   [:td [:button {:class "btn btn-danger"} [:span {:class "fa fa-trash-o"}]]]])
 
 (defn network-group-table []
   (let [groups (state/value-in [:admin :network-groups])]

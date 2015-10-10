@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Saturday, 10 October 2015 11:59 PM AEDT
+;; Last Modified: Sunday, 11 October 2015 09:20 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -60,7 +60,7 @@
     false))
 
 (defn network-group-exists? [network-group subgroup]
-  (if (= 1 (count (ndb/get-group-by-name {:grop_name network-group
+  (if (= 1 (count (ndb/get-group-by-name {:group_name network-group
                                           :subgroup_name subgroup})))
     true
     false))

@@ -1,6 +1,6 @@
 ;;      Filename: app_routes.clj
 ;; Creation Date: Sunday, 05 July 2015 02:40 PM AEST
-;; Last Modified: Saturday, 10 October 2015 04:43 PM AEDT
+;; Last Modified: Sunday, 11 October 2015 08:30 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -17,6 +17,7 @@
             [arcis.routes.admin.network :refer [add-group group-list]]
             [arcis.routes.admin.delete-network :refer [delete-network-group]]
             [arcis.routes.admin.network-state :refer [set-group-state]]
+            [arcis.routes.admin.network-pattern :refer [group-pattern]]
             [arcis.routes.hosts.upload :refer [upload-hosts]]
             [arcis.routes.hosts.host-list :refer [host-list]]
             [compojure.route :as route]
@@ -46,5 +47,6 @@
   (POST "/admin/add-network" [] add-group)
   (POST "/admin/delete-network" [] delete-network-group)
   (POST "/admin/network-state" [] set-group-state)
+  (POST "/admin/network-pattern" [] group-pattern)
   (GET "/hosts/list" [] host-list)
   (POST "/hosts/upload" [] upload-hosts))
