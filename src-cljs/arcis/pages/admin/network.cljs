@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 11 October 2015 10:15 AM AEDT
+;; Last Modified: Sunday, 11 October 2015 04:53 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,6 +13,7 @@
             [arcis.pages.admin.network-ajax :refer [get-network-groups]]
             [arcis.pages.admin.edit-pattern :refer [pattern-component]]
             [arcis.pages.admin.delete-group :refer [delete-group-button]]
+            [arcis.pages.admin.network-state :refer [group-state-component]]
             [arcis.utils :as u]
             [bouncer.core :as b]
             [bouncer.validators :as v]))
@@ -49,7 +50,8 @@
    [:td (:subgroup-name grp)]
    [:td [pattern-component (:group-name grp) (:subgroup-name grp)
          (:group-regexp grp)]]
-   [:td (:active grp)]
+   [:td [group-state-component (:group-name grp) (:subgroup-name grp)
+         (:active grp)]]
    [:td (:created-dt grp)]
    [:td (:last-modified-dt grp)]
    [:td [delete-group-button (:group-name grp) (:subgroup-name grp)]]])

@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Friday, 09 October 2015 03:42 PM AEDT
+;; Last Modified: Sunday, 11 October 2015 05:24 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -30,10 +30,10 @@
                  [:button {:type "button" :class "btn btn-default"
                            :aria-label "Expand"
                            :on-click #(toggle-visibility k host)}
-                  [:span {:class (str "glyphicon "
+                  [:span {:class (str "fa "
                                       (if (= "show" (:visible host))
-                                        "glyphicon-minus"
-                                        "glyphicon-plus"))}]]
+                                        "fa-compress"
+                                        "fa-expand"))}]]
                  [:strong " IPv4 Address: "] (:ipv4 host)
                  [:strong " Hostname: "] (:hostname host)
                  [:div.pull-right (str "Host ID: " (:host-id host))]]]
