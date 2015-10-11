@@ -1,6 +1,6 @@
 ;;      Filename: users_ajax.cljs
 ;; Creation Date: Friday, 10 July 2015 04:09 PM AEST
-;; Last Modified: Sunday, 11 October 2015 06:28 AM AEDT
+;; Last Modified: Sunday, 11 October 2015 10:43 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -30,7 +30,7 @@
   "Callback used to process response from AJAX call to get user list"
   [response]
   (let [user-hash (user-list-to-hash response)]
-    (state/set-value-in! [(state/this-page) :users] user-hash)))
+    (state/set-value-in! [:admin :users] user-hash)))
 
 (defn get-app-users []
   (if (state/is-authenticated?)

@@ -1,6 +1,6 @@
 ;;      Filename: network_ajax.cljs
 ;; Creation Date: Sunday, 11 October 2015 08:43 AM AEDT
-;; Last Modified: Sunday, 11 October 2015 08:47 AM AEDT
+;; Last Modified: Sunday, 11 October 2015 10:44 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -25,7 +25,7 @@
 
 (defn process-network-groups [response]
   (let [group-hash (group-list-to-hash response)]
-    (state/set-value-in! [(state/this-page) :network-groups] group-hash)))
+    (state/set-value-in! [:admin :network-groups] group-hash)))
 
 (defn get-network-groups []
   (if (state/is-authenticated?)

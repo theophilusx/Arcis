@@ -30,7 +30,7 @@
                  [conman "0.2.1"]
                  [org.postgresql/postgresql "9.4-1203-jdbc41"]
                  [org.clojure/clojurescript "1.7.122" :scope "provided"]
-                 [org.clojure/tools.reader "0.9.2"]
+                 [org.clojure/tools.reader "0.10.0"]
                  [reagent "0.5.1"]
                  [reagent-forms "0.5.12"]
                  [reagent-utils "0.1.5"]
