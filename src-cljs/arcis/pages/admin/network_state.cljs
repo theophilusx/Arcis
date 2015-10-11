@@ -1,6 +1,6 @@
 ;;      Filename: network_state.cljs
 ;; Creation Date: Sunday, 11 October 2015 10:39 AM AEDT
-;; Last Modified: Sunday, 11 October 2015 05:18 PM AEDT
+;; Last Modified: Sunday, 11 October 2015 05:28 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,7 +10,7 @@
             [arcis.ajax :as ajax]
             [arcis.state :as state]))
 
-(defn y-or-n-toogle [val]
+(defn y-or-n-toggle [val]
   (if (or (= val "Y") (= val "y"))
     "N"
     "Y"))
@@ -39,5 +39,5 @@
                            (if (or (= state "Y") (= state "y"))
                              "btn-success"
                              "btn-danger"))
-               :on-click #(update-state grp sub-grp (y-or-n-toogle state))}
+               :on-click #(update-state grp sub-grp (y-or-n-toggle state))}
       (y-or-n-text state)]]))
