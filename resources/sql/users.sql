@@ -22,13 +22,15 @@ WHERE id = :id
 -- name: update-role!
 -- update an existing user role
 UPDATE users
-SET user_role = :user_role
+SET user_role = :user_role,
+    last_modified_dt = current_timestamp
 WHERE id = :id
 
 -- name: update-state!
 -- update the is_active status
 UPDATE users
-SET is_active = :state
+SET is_active = :state,
+    last_modified_dt = current_timestamp
 WHERE id = :id
 
 -- name: update-last-login!

@@ -7,7 +7,8 @@ VALUES (:group_name, :subgroup_name, :group_regexp)
 -- name: set-active-state!
 -- Set the active state for a network group
 UPDATE network_grp
-SET active = :active
+SET active = :active,
+    last_modified_dt = current_timestamp
 WHERE group_name = :group_name
 AND subgroup_name = :subgroup_name
 
@@ -15,6 +16,7 @@ AND subgroup_name = :subgroup_name
 -- Update the regexp for the group
 UPDATE network_grp
 SET group_regexp = :group_regexp
+    last_modified_dt = current_timestamp
 WHERE group_name = :group_name
 AND subgroup_name = :subgroup_name
 
