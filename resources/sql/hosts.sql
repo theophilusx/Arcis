@@ -213,5 +213,3 @@ ORDER BY status
 SELECT *
 FROM host_def
 WHERE ipv4 like :ipv4
-
-

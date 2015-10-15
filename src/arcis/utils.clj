@@ -27,10 +27,10 @@
                                    (first (get validation-map k))))
                             "" ks))})))
 
-(defn is-authorized? [allowed-roles role]
-  (if (contains? allowed-roles role)
-    true
-    false))
+;; (defn is-authorized? [allowed-roles role]
+;;   (if (contains? allowed-roles role)
+;;     true
+;;     false))
 
 (defn is-authorized? [identity roles]
   (if (and identity
@@ -53,17 +53,6 @@
   (if-not identity
     (unauthenticated-msg service)
     (unauthorized-msg identity service)))
-
-(defn user-exists? [id]
-  (if (= 1 (count (udb/get-user-by-id {:id id})))
-    true
-    false))
-
-(defn network-group-exists? [network-group subgroup]
-  (if (= 1 (count (ndb/get-group-by-name {:group_name network-group
-                                          :subgroup_name subgroup})))
-    true
-    false))
 
 (defn java-date-to-local-str [dt]
   (tf/unparse

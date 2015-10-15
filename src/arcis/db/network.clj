@@ -10,4 +10,8 @@
 
 (conman/bind-connection *conn* "sql/network.sql")
 
-
+(defn network-group-exists? [network-group subgroup]
+  (if (= 1 (count (get-group-by-name {:group_name network-group
+                                          :subgroup_name subgroup})))
+    true
+    false))

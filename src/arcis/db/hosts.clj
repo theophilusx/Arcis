@@ -10,4 +10,7 @@
 
 (conman/bind-connection *conn* "sql/hosts.sql")
 
-
+(defn host-exists? [host_id]
+  (if (= 1 (count (get-host-by-id {:host_id host_id})))
+    true
+    false))

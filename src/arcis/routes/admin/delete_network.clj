@@ -21,7 +21,7 @@
       {:validation-errors validation-msg})))
 
 (defn delete-group [{:keys [group_name subgroup_name]}]
-  (if-not (u/network-group-exists? group_name subgroup_name)
+  (if-not (ndb/network-group-exists? group_name subgroup_name)
     {:post-status {:status :not-exist
                    :message (str "Network group with group name of "
                                  group_name ":" subgroup_name

@@ -23,7 +23,7 @@
 
 (defn update-password-by-id [{:keys [id password]}]
   (let [pass (u/encrypt password)]
-    (if (= 1 (count (udb/get-user-by-id {:id id})))
+    (if (udb/user-exists? id)
       (let [rslt (udb/update-password! {:id id :pass pass})]
         (if (= 1 rslt)
           {:post-status {:status :success

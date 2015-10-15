@@ -22,7 +22,7 @@
       {:validation-errors validation-map})))
 
 (defn update-state-by-id [{:keys [id active-state]}]
-  (if-not (u/user-exists? id)
+  (if-not (udb/user-exists? id)
     {:post-status {:status :not-exist
                    :message "User with Id " id " not found"}}
     (let [rslt (udb/update-state! {:id id :state active-state})]

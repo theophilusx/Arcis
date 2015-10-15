@@ -19,7 +19,7 @@
       {:validation-errors validation-map})))
 
 (defn delete-user-by-id [{:keys [id]}]
-  (if-not (u/user-exists? id)
+  (if-not (udb/user-exists? id)
     {:post-status {:status :not-exist
                    :message "User with Id " id " not found"}}
     (let [rslt (udb/delete-user! {:id id})]
@@ -51,4 +51,3 @@
   :handle-created (fn [ctx]
                     (let [status (get ctx :post-status)]
                       (generate-string status))))
-

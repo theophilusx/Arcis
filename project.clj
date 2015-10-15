@@ -51,13 +51,13 @@
   :plugins [[lein-environ "1.0.1"]
             [migratus-lein "0.2.0"]
             [lein-cljsbuild "1.1.0"]]
-  
+
   :clean-targets ^{:protect false} [:target-path
                                     [:cljsbuild :builds :app :compiler
                                      :output-dir]
                                     [:cljsbuild :builds :app :compiler
                                      :output-to]]
-  
+
   :cljsbuild
   {:builds
    {:app
@@ -77,8 +77,8 @@
                :builds
                {:app
                 {:source-paths ["env/prod/cljs"]
-                 :compiler {:optimizations :advanced :pretty-print false}}}} 
-             
+                 :compiler {:optimizations :advanced :pretty-print false}}}}
+
              :aot :all}
    :dev           [:project/dev :profiles/dev]
    :test          [:project/test :profiles/test]
@@ -94,15 +94,15 @@
                     {:app
                      {:source-paths ["env/dev/cljs"]
                       :compiler {:optimizations :none
-                                 :source-map true}}}} 
-                  
+                                 :source-map true}}}}
+
                   :figwheel
                   {:http-server-root "public"
                    :server-port 3449
                    :nrepl-port 7002
                    :css-dirs ["resources/public/css"]
                    :ring-handler arcis.handler/app}
-                  
+
                   :repl-options {:init-ns arcis.core}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]
@@ -116,5 +116,3 @@
                         :nrepl-port 7001}}
    :profiles/dev {}
    :profiles/test {}})
-
-

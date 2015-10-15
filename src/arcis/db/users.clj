@@ -9,3 +9,8 @@
             [arcis.db.core :refer [*conn*]]))
 
 (conman/bind-connection *conn* "sql/users.sql")
+
+(defn user-exists? [id]
+  (if (= 1 (count (get-user-by-id {:id id})))
+    true
+    false))

@@ -21,7 +21,7 @@
       {:validation-errors validation-map})))
 
 (defn update-role-by-id [{:keys [id role]}]
-  (if-not (u/user-exists? id)
+  (if-not (udb/user-exists? id)
     {:post-status {:status :not-exist
                    :message "User with Id " id " not found"}}
     (let [rslt (udb/update-role! {:id id :user_role role})]

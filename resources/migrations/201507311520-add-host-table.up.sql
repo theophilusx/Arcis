@@ -13,9 +13,9 @@ host_type VARCHAR(64) DEFAULT 'Unknown',
 network_group VARCHAR(64) DEFAULT 'Unknown',
 subgroup_name VARCHAR(64) DEFAULT 'Unknown',
 management_group VARCHAR(64) DEFAULT 'Unknown',
-	status VARCHAR(64) DEFAULT 'Unknown',
-	created_dt TIMESTAMP DEFAULT current_timestamp,
-	last_modified_dt TIMESTAMP DEFAULT current_timestamp,
-	last_seen_dt TIMESTAMP DEFAULT current_timestamp,
-	CONSTRAINT host_def_uq UNIQUE (mac, ipv4, ipv6, hostname)
-	);
+status VARCHAR(64) DEFAULT 'Unknown',
+created_dt TIMESTAMP DEFAULT current_timestamp,
+last_modified_dt TIMESTAMP DEFAULT current_timestamp,
+last_seen_dt TIMESTAMP DEFAULT current_timestamp,
+CONSTRAINT host_def_uq UNIQUE (mac, ipv4, ipv6, hostname)
+);

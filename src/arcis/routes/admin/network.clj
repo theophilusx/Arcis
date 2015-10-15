@@ -29,7 +29,7 @@
     false))
 
 (defn create-network-group [{:keys [group-name subgroup-name group-regexp]}]
-  (if (group-exists? group-name subgroup-name)
+  (if (ndb/network-group-exists? group-name subgroup-name)
     {:post-status {:status :duplicate
                    :message (str "A network group with the name "
                                  group-name "/" subgroup-name
