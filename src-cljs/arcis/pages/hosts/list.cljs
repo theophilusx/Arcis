@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 11 October 2015 05:24 PM AEDT
+;; Last Modified: Friday, 16 October 2015 01:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,7 +10,10 @@
             [arcis.pages.components :as c]
             [arcis.pages.sidebar :as sidebar]
             [arcis.pages.pager :as pager]
-            [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]))
+            [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
+            [arcis.pages.hosts.host-os :refer [os-component]]))
+
+
 
 (defn toggle-visibility [k h]
   (let [new-v (if (= "show" (:visible h))
@@ -36,7 +39,11 @@
                                         "fa-expand"))}]]
                  [:strong " IPv4 Address: "] (:ipv4 host)
                  [:strong " Hostname: "] (:hostname host)
-                 [:div.pull-right (str "Host ID: " (:host-id host))]]]
+                 [:div.pull-right
+                  [:a {:on-click (fn [e]
+                                   (.log js/console (str "edit host " e)))}
+                   (str "Host ID: " (:host-id host) " ")
+                   [:span {:class "fa fa-pencil"}]]]]]
                [:div {:class (str "panel-body " (:visible host))}
                 [:ul.list-group
                  [:li.list-group-item
@@ -46,7 +53,7 @@
                  [:li.list-group-item
                   [:strong "IPv6 Address: "] (:ipv6 host)]
                  [:li.list-group-item
-                  [:strong "Operating System: "] (:os host)]
+                  [:strong "Operating System "] (:os host)]
                  [:li.list-group-item
                   [:strong "DHCP Client: "] (:dhcp host)
                   [:strong " DNS Entry: "] (:dns host)

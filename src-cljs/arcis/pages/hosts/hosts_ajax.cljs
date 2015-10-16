@@ -1,6 +1,6 @@
 ;;      Filename: hosts_ajax.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Friday, 09 October 2015 10:14 AM AEDT
+;; Last Modified: Friday, 16 October 2015 12:03 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,7 +13,7 @@
 (def index-size 10)
 
 (defn keywordize-host-list
-  "Convert a list of hosts maps and converts keys to keywords and 
+  "Convert a list of hosts maps and converts keys to keywords and
   generates a map of hosts indexed by host-id key"
   [host-list]
   (reduce (fn [m h]
@@ -26,6 +26,7 @@
                       :ipv6 (:ipv6 h)
                       :hostname (:hostname h)
                       :os (:os h)
+                      :os-edit false
                       :dhcp (:dhcp h)
                       :dns (:dns h)
                       :reverse-dns (:reverse_dns h)
@@ -49,7 +50,7 @@
 ;;     Page Index (i.e. the list of pages displayed at top of paginated page
 ;;       Index/Page (i.e. the list of records for that page (vector)
 (defn collect-ids
-  "Builds a hash of hashes where the outer hash is the network group and 
+  "Builds a hash of hashes where the outer hash is the network group and
 the inner hash is a hash of subgroups. Each subgroup value is a vector of
 host IDs"
   [hosts]
@@ -73,7 +74,7 @@ with a maximum number <= size"
 
 (defn pagify
   "Takes a vector of host IDs and first partitions the vector into a hash
-where each key is an index number (starting at 1) and each value is a vector 
+where each key is an index number (starting at 1) and each value is a vector
 of the host IDs such that the vector is <= index-size. Then takes this result
 and gruops the indexes such that each group of indexes is <= page-size"
   [index-size page-size ids]
@@ -89,8 +90,8 @@ and gruops the indexes such that each group of indexes is <= page-size"
 
 (defn collect-group-pages
   "Processes each subgroup within a network group and partitions the host IIDs
-associated with that group into pages of indexes. Each page has a maximum 
-number of indexes <= page-size and each index has a maximum number of host IDs 
+associated with that group into pages of indexes. Each page has a maximum
+number of indexes <= page-size and each index has a maximum number of host IDs
 which is <= index-size"
   [index-size page-size subgroups]
   (apply merge  (map (fn [grp]
