@@ -1,6 +1,6 @@
 ;;      Filename: services.clj
 ;; Creation Date: Saturday, 14 March 2015 07:29 AM AEDT
-;; Last Modified: Thursday, 17 September 2015 05:42 PM AEST
+;; Last Modified: Sunday, 18 October 2015 06:00 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -49,11 +49,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "register-user")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "register-user")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-user? params)))

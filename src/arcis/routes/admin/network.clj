@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Friday, 18 September 2015 03:50 PM AEST
+;; Last Modified: Sunday, 18 October 2015 05:58 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -50,11 +50,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "add-group")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "add-group")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-group? params)))
@@ -79,11 +79,10 @@
   :allowed-methods [:get]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (println (str "Id: " identity))
-                           (u/handle-unauthorized identity "group-list")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "group-list")))
   :handle-ok (fn [ctx]
                (generate-group-list)))

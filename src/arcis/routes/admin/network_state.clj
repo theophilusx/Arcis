@@ -1,6 +1,6 @@
 ;;      Filename: network_state.clj
 ;; Creation Date: Saturday, 10 October 2015 04:16 PM AEDT
-;; Last Modified: Saturday, 10 October 2015 05:50 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 05:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -44,11 +44,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "set-group-state")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "set-group-state")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-state? params)))

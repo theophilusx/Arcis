@@ -1,6 +1,6 @@
 ;;      Filename: network_pattern.clj
 ;; Creation Date: Saturday, 10 October 2015 05:08 PM AEDT
-;; Last Modified: Saturday, 10 October 2015 05:49 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 05:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -44,11 +44,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "group-pattern")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "group-pattern")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-pattern? params)))

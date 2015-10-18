@@ -25,6 +25,21 @@ INSERT INTO host_def
 	)
 
 
+-- name: full-update-host!
+-- Update a host record
+UPDATE host_def
+SET os = :os,
+    dhcp = :dhcp,
+    dns = :dns,
+    reverse_dns = :reverse_dns,
+    host_type = :host_type,
+    network_group = :network_group,
+    subgroup_name = :subgroup_name,
+    management_group = :management_group,
+    status = :status,
+    last_modified_dt = current_timestamp
+WHERE host_id = :host_id
+
 -- name: update-host!
 -- Update a host record
 UPDATE host_def
@@ -32,13 +47,10 @@ SET os = :os,
     dhcp = :dhcp,
     dns = :dns,
     reverse_dns = :reverse_dns,
-    host_type = :host_type
-    network_group = :network_group
-    subgroup_name = :subgroup_name
-    management_group = :management_group
-    status = :status
+    host_type = :host_type,
+    management_group = :management_group,
+    status = :status,
     last_modified_dt = current_timestamp
-    last_seen_dt = current_timestamp
 WHERE host_id = :host_id
 
 -- name: update-os!

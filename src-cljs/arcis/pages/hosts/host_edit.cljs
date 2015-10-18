@@ -1,6 +1,6 @@
 ;;      Filename: host_edit.cljs
 ;; Creation Date: Saturday, 17 October 2015 09:36 AM AEDT
-;; Last Modified: Sunday, 18 October 2015 01:11 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 07:13 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -30,11 +30,37 @@
                                     [:n "No"]])
    (c/radio-input "Reverse DNS" :reverse-dns [[:y "Yes"]
                                               [:n "No"]])])
+(defn handle-update [response]
+  (u/report-success (:message response))
+  (hu/get-host-list))
 
-(defn update-host [host]
-  (.log js/console (str "update-host host " @host))
-  (hu/set-display-action (:host-id @host) :full)
-  (reset! host {}))
+(defn update-host [host-update]
+  (if (state/is-authenticated?)
+    (let [new-host {:host_id (:host-id @host-update)
+                    :status (condp = (:status @host-update)
+                              :unknown "Unknown"
+                              :active "Active"
+                              :inactive "Inactive"
+                              :else "Unknown")
+                    :os (:os @host-update)
+                    :host_type (:host-type @host-update)
+                    :management_group (:management-group @host-update)
+                    :dhcp (condp = (:dhcp @host-update)
+                            :y "Y"
+                            :n "N"
+                            :else "N")
+                    :dns (condp = (:dns @host-update)
+                           :y "Y"
+                           :n "N"
+                           :else "N")
+                    :reverse_dns (condp = (:reverse-dns @host-update)
+                                   :y "Y"
+                                   :n "N"
+                                   :else "N")}]
+      (ajax/post-it "update-host" "/hosts/update-host"
+                    new-host #'handle-update)
+      (hu/set-display-action (:host-id @host-update) :full)
+      (reset! host-update {}))))
 
 (defn init-edit-data [host]
   {:host-id (:host-id host)
@@ -61,10 +87,7 @@
 
 (defn host-edit-component [host]
   (let [data (r/atom (init-edit-data host))]
-    (.log js/console (str "host-edit-component init host = " (:host-id host)))
     (fn [host]
-      (.log js/console (str "host-edit-component fn host" (:host-id host)
-                            " data " (:host-id @data)))
       [:div
        [:legend "Host Update"]
        [:h5 (:hostname host)]

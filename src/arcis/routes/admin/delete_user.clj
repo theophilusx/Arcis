@@ -1,6 +1,6 @@
 ;;      Filename: delete_user.clj
 ;; Creation Date: Sunday, 10 May 2015 10:39 AM AEST
-;; Last Modified: Thursday, 17 September 2015 05:41 PM AEST
+;; Last Modified: Sunday, 18 October 2015 05:57 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -34,11 +34,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "delete-user")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "delete-user")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-delete params)))

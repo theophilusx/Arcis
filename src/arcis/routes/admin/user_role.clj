@@ -1,6 +1,6 @@
 ;;      Filename: user_role.clj
 ;; Creation Date: Sunday, 03 May 2015 12:45 PM AEST
-;; Last Modified: Saturday, 10 October 2015 05:07 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 06:01 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -36,11 +36,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "set-user-role")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "set-user-role")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-role params)))

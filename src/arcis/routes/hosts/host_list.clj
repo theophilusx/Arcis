@@ -1,6 +1,6 @@
 ;;      Filename: host_list.clj
 ;; Creation Date: Saturday, 01 August 2015 05:28 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:44 PM AEST
+;; Last Modified: Sunday, 18 October 2015 05:55 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -24,10 +24,10 @@
   :allowed-methods [:get]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin" "View"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin" "View"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "host-list")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "host-list")))
   :handle-ok (fn [ctx]
                (generate-host-list)))

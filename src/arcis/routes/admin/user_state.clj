@@ -1,6 +1,6 @@
 ;;      Filename: user_state.clj
 ;; Creation Date: Thursday, 30 April 2015 08:20 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:41 PM AEST
+;; Last Modified: Sunday, 18 October 2015 06:01 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -37,11 +37,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "set-user-state")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "set-user-state")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-state params)))

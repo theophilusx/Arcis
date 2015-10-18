@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Sunday, 18 October 2015 01:05 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 07:14 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -63,8 +63,6 @@
 
 (defn host-component [k]
   (let [host (state/value-in [(state/this-page) :host-list k])]
-    (.log js/console (str "host-component display-action = "
-                          (:display-action host)))
     (condp = (:display-action host)
       :summary [host-summary-component host]
       :full [host-full-component host]

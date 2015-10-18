@@ -1,6 +1,6 @@
 ;;      Filename: login.cljs
 ;; Creation Date: Sunday, 20 September 2015 01:37 PM AEST
-;; Last Modified: Sunday, 18 October 2015 01:12 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 06:26 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -18,7 +18,7 @@
             [bouncer.validators :as v]))
 
 (def login-template
-  [:div
+  [:div.form-horizontal
    [:h2 {:class "form-signin-heading"} "Please sign in"]
    [:hr]
    (c/input "Email" :text :email)

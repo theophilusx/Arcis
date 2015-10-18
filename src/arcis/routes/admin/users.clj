@@ -1,6 +1,6 @@
 ;;      Filename: users.clj
 ;; Creation Date: Sunday, 05 July 2015 02:34 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:15 PM AEST
+;; Last Modified: Sunday, 18 October 2015 06:00 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -19,11 +19,11 @@
   :allowed-methods [:get]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity "user-list")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "user-list")))
   :handle-ok (fn [ctx]
                (generate-user-list)))
 

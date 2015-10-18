@@ -1,6 +1,6 @@
 ;;      Filename: delete_network.clj
 ;; Creation Date: Friday, 09 October 2015 03:55 PM AEDT
-;; Last Modified: Saturday, 10 October 2015 05:50 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 05:57 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -42,12 +42,11 @@
   :allowed-methods [:post]
   :available-media-types ["application/json"]
   :authorized? (fn [ctx]
-                 (let [identity (get-in ctx [:request :identity])]
-                   (u/is-authorized? identity #{"Admin"})))
+                 (let [id (get-in ctx [:request :identity])]
+                   (u/is-authorized? id #{"Admin"})))
   :handle-unauthorized (fn [ctx]
-                         (let [identity (get-in ctx [:request :identity])]
-                           (u/handle-unauthorized identity
-                                                  "delete-network-group")))
+                         (let [id (get-in ctx [:request :identity])]
+                           (u/handle-unauthorized id "delete-network-group")))
   :malformed? (fn [ctx]
                 (let [params (get-in ctx [:request :params])]
                   (is-malformed-delete params)))
