@@ -1,6 +1,6 @@
 ;;      Filename: hosts.cljs
 ;; Creation Date: Monday, 20 July 2015 05:35 PM AEST
-;; Last Modified: Friday, 09 October 2015 03:43 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 08:21 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -13,9 +13,10 @@
             [arcis.state :as state]))
 
 (defn hosts-data-component [idx-cursor active-tab]
-  (if (= :upload active-tab)
-    [host-upload-component]
-    [host-list-component idx-cursor active-tab]))
+  [:div.row
+   (if (= :upload active-tab)
+     [host-upload-component]
+     [host-list-component idx-cursor active-tab])])
 
 (defn hosts-page []
   (let [net-idx-cursor (state/cursor [(state/this-page) :host-index])]
@@ -31,6 +32,7 @@
           (when-not (state/is-authenticated?)
             [login-component])
           [:div.row
-           [tabs/tab-component tab-list]
+           [tabs/tab-component tab-list]]
+          [:div.row
            [hosts-data-component net-idx-cursor (tabs/get-active)]]]]))))
 

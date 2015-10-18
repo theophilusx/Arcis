@@ -1,6 +1,6 @@
 ;;      Filename: components.cljs
 ;; Creation Date: Sunday, 26 April 2015 10:08 AM AEST
-;; Last Modified: Sunday, 11 October 2015 06:16 AM AEDT
+;; Last Modified: Sunday, 18 October 2015 11:40 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -24,15 +24,38 @@
 (defn row
   "Create an input row with supplied label and field definition"
   [label field]
-  [:div.row
-   [:div.form-group
-    [:div.col-md-4.[:label {:class "pull-right"} label]]
-    [:div.col-md-8 field]]])
+  [:div.form-group
+   [:label {:class "col-sm-2 control-label"
+            :for (:id field)} label]
+   [:div.col-sm-5 field]])
+
+;; (defn row
+;;   "Create an input row with supplied label and field definition"
+;;   [label field]
+;;   [:div.form-vertical.form-inline
+;;    [:div.form-group
+;;     [:div.col-md-5.[:label {:class "pull-right"} label]]
+;;     [:div.col-md-7 field]]])
 
 (defn input
   "Input field component"
   [label type id]
   (row label [:input.form-control {:field type :id id}]))
+
+(defn radio-row [id radio-buttons]
+  (into [:div.col-sm-5.radio-inlinel]
+        (for [b radio-buttons]
+          [:label
+           [:input
+            {:field :radio
+             :name id
+             :value (first b)} " "]
+           (str " " (second b) " ")])))
+
+(defn radio-input [label id radio-buttons]
+  [:div.form-group
+   [:label {:class "col-md-2 control-label"} label]
+   (radio-row id radio-buttons)])
 
 (defn render-vec
   "Vector display component. Will render vector as an un-ordered list"

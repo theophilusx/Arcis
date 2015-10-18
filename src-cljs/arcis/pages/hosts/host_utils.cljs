@@ -1,10 +1,10 @@
-;;      Filename: hosts_ajax.cljs
+;;      Filename: hosts_utils.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Friday, 16 October 2015 12:03 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 12:59 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
-(ns arcis.pages.hosts.hosts-ajax
+(ns arcis.pages.hosts.host-utils
   (:require [arcis.state :as state]
             [arcis.ajax :as ajax]
             [arcis.utils :as u]))
@@ -19,14 +19,13 @@
   (reduce (fn [m h]
             (let [host-id (:host_id h)]
               (assoc m (u/digit-keyword host-id)
-                     {:host-id host-id
-                      :visible "hidden"
+                     {:display-action :summary
+                      :host-id host-id
                       :mac (:mac h)
                       :ipv4 (:ipv4 h)
                       :ipv6 (:ipv6 h)
                       :hostname (:hostname h)
                       :os (:os h)
-                      :os-edit false
                       :dhcp (:dhcp h)
                       :dns (:dns h)
                       :reverse-dns (:reverse_dns h)
@@ -121,4 +120,10 @@ Then build an index broken into pages"
     (ajax/get-it "get-host-list" "/hosts/list" #'process-host-list)
     (u/report-unauthenticated "get-host-lists")))
 
+(defn get-display-action [host-key]
+  (state/value-in [(state/this-page) :host-list host-key :display-action]))
+
+(defn set-display-action [host-id action]
+  (state/set-value-in! [(state/this-page) :host-list
+                        (u/digit-keyword host-id) :display-action] action))
 

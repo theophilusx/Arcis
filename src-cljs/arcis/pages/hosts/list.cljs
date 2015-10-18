@@ -1,6 +1,6 @@
 ;;      Filename: list.cljs
 ;; Creation Date: Monday, 20 July 2015 06:07 PM AEST
-;; Last Modified: Friday, 16 October 2015 01:59 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 01:05 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -10,70 +10,68 @@
             [arcis.pages.components :as c]
             [arcis.pages.sidebar :as sidebar]
             [arcis.pages.pager :as pager]
-            [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
-            [arcis.pages.hosts.host-os :refer [os-component]]))
+            [arcis.pages.hosts.host-utils :as hu]
+            [arcis.pages.hosts.host-edit :refer [host-edit-component]]
+            [reagent.core :as r]
+            [reagent-forms.core :refer [bind-fields]]))
 
+(defn mac-str [val]
+  (if (= val "00:00:00:00:00:00")
+    ""
+    (str " (" val ")")))
 
+(defn host-summary-component [host]
+  [:dl.dl-horizontal
+   [:dt [:a {:class "pull-left"
+             :aria-label "Expand"
+             :on-click #(hu/set-display-action (:host-id host) :full)}
+         [:span {:class (str "fa fa-plus")}]] "Host"]
+   [:dd {:class (condp = (:status host)
+                  "Active" "text-success"
+                  "Inactive" "text-info"
+                  "Unknown" "text-warning"
+                  :else "text-danger")}
+    (str (:hostname host) " / " (:ipv4 host) (mac-str (:mac host)) " ")
+    [:a {:on-click #(hu/set-display-action (:host-id host) :edit)}
+     "(edit)"]]])
 
-(defn toggle-visibility [k h]
-  (let [new-v (if (= "show" (:visible h))
-                "hidden"
-                "show")]
-    (state/set-value-in! [(state/this-page) :host-list k :visible] new-v)))
+(defn host-full-component [host]
+  [:dl.dl-horizontal
+   [:dt [:a {:class "pull-left"
+             :aria-label "Expand"
+             :on-click #(hu/set-display-action (:host-id host) :summary)}
+         [:span {:class (str "fa fa-minus")}]] "Host"]
+   [:dd {:class (condp = (:status host)
+                  "Active" "text-success"
+                  "Inactive" "text-info"
+                  "Unknown" "text-warning"
+                  :else "text-danger")}
+    (str (:hostname host) " / " (:ipv4 host) (mac-str (:mac host)) " ")
+    [:a {:on-click #(hu/set-display-action (:host-id host) :edit)}
+     "(edit)"]]
+   [:dt "Status"] [:dd (:status host)]
+   [:dt "Operating System"] [:dd (:os host)]
+   [:dt "Network Group"] [:dd (str (:network-group host) " / "
+                                   (:subgroup-name host))]
+   [:dt "Type"] [:dd (:host-type host)]
+   [:dt "Managed"] [:dd (:management-group host)]
+   [:dt "DHCP"] [:dd (:dhcp host)]
+   [:dt "DNS"] [:dd (str (:dhcp host) " Reverse DNS " (:reverse-dns host))]
+   [:dt "Created"] [:dd (:created-dt host)]
+   [:dt "Last Seen"] [:dd (:last-seen-dt host)]
+   [:dt "Last Modified"] [:dd (:last-modified-dt host)]])
 
 (defn host-component [k]
   (let [host (state/value-in [(state/this-page) :host-list k])]
-    ^{:key k} [:div.panel.panel-default
-               [:div {:class "panel-heading show"}
-                [:div {:class (condp = (:status host)
-                                "Active" "text-success"
-                                "Inactive" "text-info"
-                                "Unknown" "text-warning"
-                                :else "text-danger")}
-                 [:button {:type "button" :class "btn btn-default"
-                           :aria-label "Expand"
-                           :on-click #(toggle-visibility k host)}
-                  [:span {:class (str "fa "
-                                      (if (= "show" (:visible host))
-                                        "fa-compress"
-                                        "fa-expand"))}]]
-                 [:strong " IPv4 Address: "] (:ipv4 host)
-                 [:strong " Hostname: "] (:hostname host)
-                 [:div.pull-right
-                  [:a {:on-click (fn [e]
-                                   (.log js/console (str "edit host " e)))}
-                   (str "Host ID: " (:host-id host) " ")
-                   [:span {:class "fa fa-pencil"}]]]]]
-               [:div {:class (str "panel-body " (:visible host))}
-                [:ul.list-group
-                 [:li.list-group-item
-                  [:strong "Host Status: "] (:status host)]
-                 [:li.list-group-item
-                  [:strong "MAC Address: "] (:mac host)]
-                 [:li.list-group-item
-                  [:strong "IPv6 Address: "] (:ipv6 host)]
-                 [:li.list-group-item
-                  [:strong "Operating System "] (:os host)]
-                 [:li.list-group-item
-                  [:strong "DHCP Client: "] (:dhcp host)
-                  [:strong " DNS Entry: "] (:dns host)
-                  [:strong " Revers DNS Entry: "] (:reverse-dns host)]
-                 [:li.list-group-item
-                  [:strong "Host Type: "] (:host-type host)]
-                 [:li.list-group-item
-                  [:strong "Network Group: "]
-                  (str (:network-group host) " / " (:subgroup-name host))]
-                 [:li.list-group-item
-                  [:strong "Managed By: "] (:management-group host)]
-                 [:li.list-group-item
-                  [:strong "Creation Date: "] (:created-dt host)]
-                 [:li.list-group-item
-                  [:strong "Last Modified Date: "] (:last-modified-dt host)]
-                 [:li.list-group-item
-                  [:strong "Last Seen Date: "] (:last-seen-dt host)]]]]))
+    (.log js/console (str "host-component display-action = "
+                          (:display-action host)))
+    (condp = (:display-action host)
+      :summary [host-summary-component host]
+      :full [host-full-component host]
+      :edit [host-edit-component host])))
 
 (defn hosts-page [page-cursor]
-  (into [:div]
+  (into [:div.col-md-12]
         (for [i (get-in @page-cursor [(pager/active-page)
                                       (pager/active-index)])]
           [host-component i])))

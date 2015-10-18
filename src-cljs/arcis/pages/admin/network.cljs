@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 11 October 2015 04:53 PM AEDT
+;; Last Modified: Sunday, 18 October 2015 11:50 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -19,12 +19,10 @@
             [bouncer.validators :as v]))
 
 (def add-network-template
-  [:div.row
-   [:div.col-md-8
-    [:br]
-    (c/input "Network Group" :text :group-name)
-    (c/input "Subgroup" :text :subgroup-name)
-    (c/input "Regular Expression" :text :group-regexp)]])
+  [:div.form-horizontal
+   (c/input "Network Group" :text :group-name)
+   (c/input "Subgroup" :text :subgroup-name)
+   (c/input "Regular Expression" :text :group-regexp)])
 
 (defn not-valid? [group]
   (let [vmap (first (b/validate group
@@ -80,6 +78,7 @@
   (let [network-group (atom {})]
     (fn []
       [:div
+       [:legend "Add Network Group"]
        [bind-fields add-network-template network-group]
        [:button.btn.btn-primary
         {:type "submit"

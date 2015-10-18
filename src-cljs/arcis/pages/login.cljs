@@ -1,6 +1,6 @@
 ;;      Filename: login.cljs
 ;; Creation Date: Sunday, 20 September 2015 01:37 PM AEST
-;; Last Modified: Sunday, 11 October 2015 08:53 AM AEDT
+;; Last Modified: Sunday, 18 October 2015 01:12 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,7 +11,7 @@
             [arcis.pages.components :as c]
             [arcis.pages.admin.network-ajax :refer [get-network-groups]]
             [arcis.pages.admin.users-ajax :refer [get-app-users]]
-            [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
+            [arcis.pages.hosts.host-utils :refer [get-host-list]]
             [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields]]
             [bouncer.core :as b]

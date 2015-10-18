@@ -1,6 +1,6 @@
 ;;      Filename: register.cljs
 ;; Creation Date: Sunday, 19 April 2015 02:44 PM AEST
-;; Last Modified: Friday, 25 September 2015 10:09 AM AEST
+;; Last Modified: Sunday, 18 October 2015 11:47 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -16,14 +16,13 @@
             [bouncer.validators :as v]))
 
 (def register-template
-  [:div.row
-   [:div.col-md-8
-    [:br]
-    (c/input "First Name" :text :first-name)
-    (c/input "Last Name" :text :last-name)
-    (c/input "Email" :text :email)
-    (c/input "Password" :password :pass)
-    (c/input "Confirm" :password :pass2)]])
+  [:div.form-horizontal
+   [:legend "New User"]
+   (c/input "First Name" :text :first-name)
+   (c/input "Last Name" :text :last-name)
+   (c/input "Email" :text :email)
+   (c/input "Password" :password :pass)
+   (c/input "Confirm" :password :pass2)])
 
 (defn not-valid? [user]
   (let [vmap (first (b/validate user

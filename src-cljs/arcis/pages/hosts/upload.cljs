@@ -1,13 +1,13 @@
 ;;      Filename: upload.cljs
 ;; Creation Date: Monday, 20 July 2015 06:10 PM AEST
-;; Last Modified: Friday, 25 September 2015 10:00 AM AEST
+;; Last Modified: Sunday, 18 October 2015 01:09 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
 (ns arcis.pages.hosts.upload
   (:require [arcis.utils :as u]
             [arcis.pages.components :as c]
-            [arcis.pages.hosts.hosts-ajax :refer [get-host-list]]
+            [arcis.pages.hosts.host-utils :refer [get-host-list]]
             [arcis.ajax :as ajax]
             [arcis.state :as state]))
 
@@ -27,13 +27,14 @@
     (u/report-unauthenticated "upload-file")))
 
 (defn host-upload-component []
-  [:div.form-inline
-   [:br]
-   [:div.form-group
-    [:label {:for "upload-file"} "Upload File: "
-     [:input {:type "file"
-              :name "upload-file"
-              :id "upload-file"
-              :class "form-control"}]]]
-   [:button {:class "btn btn-primary" :type "button"
-             :on-click #(upload-file "upload-file")} "Upload"]])
+  [:div.col-md-12
+   [:div.form-inline
+    [:br]
+    [:div.form-group
+     [:label {:for "upload-file"} "Upload File: "
+      [:input {:type "file"
+               :name "upload-file"
+               :id "upload-file"
+               :class "form-control"}]]]
+    [:button {:class "btn btn-primary" :type "button"
+              :on-click #(upload-file "upload-file")} "Upload"]]])
