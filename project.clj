@@ -4,7 +4,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [selmer "0.9.2"]
+                 [selmer "0.9.3"]
                  [com.taoensso/timbre "4.1.4"]
                  [com.taoensso/tower "3.0.2"]
                  ;;[markdown-clj "0.9.74"]
@@ -27,7 +27,7 @@
                  [buddy "0.7.2"]
                  [migratus "0.8.7"]
                  [clj-time "0.11.0"]
-                 [conman "0.2.1"]
+                 [conman "0.2.3"]
                  [org.postgresql/postgresql "9.4-1203-jdbc41"]
                  [org.clojure/clojurescript "1.7.145" :scope "provided"]
                  [org.clojure/tools.reader "0.10.0"]

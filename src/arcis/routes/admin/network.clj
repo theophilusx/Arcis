@@ -1,6 +1,6 @@
 ;;      Filename: network.clj
 ;; Creation Date: Saturday, 29 August 2015 06:42 PM AEST
-;; Last Modified: Sunday, 18 October 2015 05:58 PM AEDT
+;; Last Modified: Friday, 23 October 2015 10:52 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,7 +23,7 @@
       {:validation-errors vmap})))
 
 (defn group-exists? [group-name subgroup-name]
-  (if (< 0 (count (ndb/get-group-by-name {:group_name group-name
+  (if (pos? (count (ndb/get-group-by-name {:group_name group-name
                                           :subgroup_name subgroup-name})))
     true
     false))

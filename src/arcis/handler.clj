@@ -1,6 +1,6 @@
 ;;      Filename: handler.clj
 ;; Creation Date: Saturday, 04 July 2015 05:16 PM AEST
-;; Last Modified: Sunday, 20 September 2015 03:31 PM AEST
+;; Last Modified: Friday, 23 October 2015 10:50 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -34,7 +34,7 @@
 
   (if (env :dev) (parser/cache-off!))
   (db/connect!)
-  (when (= 0 (count (udb/get-user-by-email {:email "theophilusx@gmail.com"})))
+  (when (zero? (count (udb/get-user-by-email {:email "theophilusx@gmail.com"})))
     (udb/create-user! {:first_name "Tim"
                        :last_name "Cross"
                        :email "theophilusx@gmail.com"
@@ -65,9 +65,9 @@
 ;; (def app (middleware/wrap-base #'app-routes))
 
 (def app
-  (-> (routes
-       #'r/login-routes
-       #'r/api-routes
-       (wrap-routes #'r/app-routes middleware/wrap-csrf)
-       #'r/base-routes)
-      middleware/wrap-base))
+  (middleware/wrap-base
+    (routes
+      #'r/login-routes
+      #'r/api-routes
+      (wrap-routes #'r/app-routes middleware/wrap-csrf)
+      #'r/base-routes)))

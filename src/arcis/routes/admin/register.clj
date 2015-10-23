@@ -1,6 +1,6 @@
 ;;      Filename: services.clj
 ;; Creation Date: Saturday, 14 March 2015 07:29 AM AEDT
-;; Last Modified: Sunday, 18 October 2015 06:00 PM AEDT
+;; Last Modified: Friday, 23 October 2015 10:53 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -23,7 +23,7 @@
       {:validation-errors vmap})))
 
 (defn user-exists? [email]
-  (if (< 0 (count (udb/get-user-by-email {:email email})))
+  (if (pos? (count (udb/get-user-by-email {:email email})))
     true
     false))
 

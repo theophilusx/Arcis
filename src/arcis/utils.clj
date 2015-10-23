@@ -1,6 +1,6 @@
 ;;      Filename: utils.clj
 ;; Creation Date: Sunday, 05 July 2015 02:36 PM AEST
-;; Last Modified: Sunday, 11 October 2015 09:20 AM AEDT
+;; Last Modified: Friday, 23 October 2015 04:17 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -32,9 +32,9 @@
 ;;     true
 ;;     false))
 
-(defn is-authorized? [identity roles]
-  (if (and identity
-           (contains? roles (:user_role identity)))
+(defn is-authorized? [id roles]
+  (if (and id
+           (contains? roles (:user_role id)))
     true
     false))
 
@@ -43,16 +43,16 @@
   (generate-string {:status-text "not-authenticated"
                     :message "User is not authenticated"}))
 
-(defn unauthorized-msg [identity service]
+(defn unauthorized-msg [id service]
   (let [msg (str "You are not authorized to access " service " service")]
-    (println (str service " " (:email identity) " tried to access " service))
+    (println (str service " " (:email id) " tried to access " service))
     (generate-string {:status-text "not-authorised"
                       :message msg})))
 
-(defn handle-unauthorized [identity service]
-  (if-not identity
+(defn handle-unauthorized [id service]
+  (if-not id
     (unauthenticated-msg service)
-    (unauthorized-msg identity service)))
+    (unauthorized-msg id service)))
 
 (defn java-date-to-local-str [dt]
   (tf/unparse
@@ -64,8 +64,8 @@
     (java-date-to-local-str dt)
     "Unknown"))
 
-(defn str-to-java-date [fmt str]
-  (tc/to-date (tf/parse (tf/formatter fmt) str)))
+(defn str-to-java-date [fmt s]
+  (tc/to-date (tf/parse (tf/formatter fmt) s)))
 
 (defn parse-mdf-date [date-str]
   (try
@@ -92,7 +92,7 @@
     (cond (empty? m-str) ":::::"
           (re-seq mac-re m-str) m-str
           (re-seq #"^[0-9a-f]+\.[0-9a-f]+\.[0-9a-f]+$" m-str)
-          (apply str (flatten
+          (s/join (flatten
                       (interpose
                        \: (partition 2 (s/replace m-str #"\." "")))))
           :else ":::::")))
