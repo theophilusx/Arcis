@@ -4,29 +4,26 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.middleware
-  (:require [arcis.layout :refer [*app-context* error-page]]
-            [taoensso.timbre :as timbre]
-            [environ.core :refer [env]]
-            [selmer.middleware :refer [wrap-error-page]]
-            [prone.middleware :refer [wrap-exceptions]]
-            [ring.middleware.flash :refer [wrap-flash]]
-            [immutant.web.middleware :refer [wrap-session]]
-            [ring.middleware.reload :as reload]
-            [ring.middleware.webjars :refer [wrap-webjars]]
-            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
-            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-            [ring.middleware.format :refer [wrap-restful-format]]
-            [ring.util.http-response :as http-resp]
-            [arcis.layout :refer [*identity*]]
-            [cheshire.core :refer [generate-string]]
-            [buddy.core.nonce :as nonce]
-            [buddy.sign.jwe :as jwe]
-            [buddy.auth :refer [authenticated? throw-unauthorized]]
+  (:require [arcis.layout :refer [*app-context*]]
             [buddy.auth.backends.token :refer [jwe-backend]]
             [buddy.auth.middleware :refer [wrap-authentication
                                            wrap-authorization]]
-            [liberator.dev :refer [wrap-trace]]))
+            [buddy.core.nonce :as nonce]
+            [cheshire.core :refer [generate-string]]
+            [environ.core :refer [env]]
+            [prone.middleware :refer [wrap-exceptions]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [ring.middleware.defaults :refer [site-defaults
+                                              wrap-defaults]]
+            [ring.middleware.flash :refer [wrap-flash]]
+            [ring.middleware.format :refer [wrap-restful-format]]
+            [ring.middleware.reload :as reload]
+            [ring.middleware.webjars :refer [wrap-webjars]]
+            [ring.util.http-response :as http-resp]
+            [selmer.middleware :refer [wrap-error-page]]
+            [taoensso.timbre :as timbre]))
 
 (defonce secret (nonce/random-bytes 32))
 

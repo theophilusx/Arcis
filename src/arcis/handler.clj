@@ -4,19 +4,18 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.handler
-  (:require [compojure.core :refer [defroutes routes wrap-routes]]
-            [arcis.layout :refer [error-page]]
-            [arcis.routes.app-routes :as r]
-            [arcis.middleware :as middleware]
-            [arcis.db.core :as db]
+  (:require [arcis.db.core :as db]
             [arcis.db.users :as udb]
-            [compojure.route :as route]
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
-            [selmer.parser :as parser]
+            [arcis.middleware :as middleware]
+            [arcis.routes.app-routes :as r]
+            [arcis.utils :as u]
+            [compojure.core :refer [routes wrap-routes]]
             [environ.core :refer [env]]
-            [arcis.utils :as u]))
+            [selmer.parser :as parser]
+            [taoensso.timbre :as timbre]
+            [taoensso.timbre.appenders.3rd-party.rotor :as rotor]))
 
 (defn init
   "init will be called once when

@@ -6,12 +6,12 @@
 ;;
 
 (ns arcis.routes.admin.network
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
+  (:require [arcis.db.network :as ndb]
+            [arcis.utils :as u]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [arcis.utils :as u]
-            [arcis.db.network :as ndb]))
+            [cheshire.core :refer [generate-string]]
+            [liberator.core :refer [defresource]]))
 
 (defn is-malformed-group? [params]
   (let [vmap (first (b/validate params

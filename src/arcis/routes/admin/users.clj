@@ -4,11 +4,12 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.admin.users
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
-            [arcis.db.users :as udb]
-            [arcis.utils :as u]))
+  (:require [arcis.db.users :as udb]
+            [arcis.utils :as u]
+            [cheshire.core :refer [generate-string]]
+            [liberator.core :refer [defresource]]))
 
 (defn generate-user-list []
   (let [users (map #(assoc % :last_login (u/date-to-str (:last_login %)))

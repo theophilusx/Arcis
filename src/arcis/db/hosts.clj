@@ -4,9 +4,10 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.db.hosts
-  (:require [conman.core :as conman]
-            [arcis.db.core :refer [*conn*]]))
+  (:require [arcis.db.core :refer [*conn*]]
+            [conman.core :as conman]))
 
 (conman/bind-connection *conn* "sql/hosts.sql")
 

@@ -4,18 +4,15 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.login
-  (:require [arcis.layout :as layout]
-            [arcis.db.users :as db]
+  (:require [arcis.db.users :as db]
             [arcis.middleware :refer [secret]]
             [buddy.hashers :as hashers]
             [buddy.sign.jwe :as jwe]
-            [buddy.core.keys :as ks]
-            [buddy.core.nonce :as nonce]
-            [buddy.auth :refer [authenticated? throw-unauthorized]]
+            [cheshire.core :refer [generate-string]]
             [clj-time.core :as time]
-            [ring.util.http-response :as http-resp]
-            [cheshire.core :refer [generate-string]]))
+            [ring.util.http-response :as http-resp]))
 
 (defn valid-auth? [email password]
   (if-let [auth-data (first (db/get-user-by-email {:email email}))]

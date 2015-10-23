@@ -6,13 +6,13 @@
 ;;
 
 (ns arcis.layout
-  (:require [selmer.parser :as parser]
-            [selmer.filters :as filters]
+  (:require [environ.core :refer [env]]
             [markdown.core :refer [md-to-html-string]]
-            [ring.util.http-response :refer [content-type ok]]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
-            [environ.core :refer [env]]))
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [ring.util.http-response :refer [content-type ok]]
+            [selmer.filters :as filters]
+            [selmer.parser :as parser]))
 
 (declare ^:dynamic *identity*)
 (declare ^:dynamic *app-context*)

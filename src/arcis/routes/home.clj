@@ -4,11 +4,9 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.home
-  (:require [arcis.layout :as layout]
-            [compojure.core :refer [defroutes GET]]
-            [ring.util.http-response :refer [ok]]
-            [clojure.java.io :as io]))
+  (:require [arcis.layout :as layout]))
 
 (defn home-page []
   (layout/render "home.html"))

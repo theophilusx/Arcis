@@ -4,11 +4,12 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.hosts.host-list
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
-            [arcis.db.hosts :as hdb]
-            [arcis.utils :as u]))
+  (:require [arcis.db.hosts :as hdb]
+            [arcis.utils :as u]
+            [cheshire.core :refer [generate-string]]
+            [liberator.core :refer [defresource]]))
 
 (defn format-dates [host]
   (assoc host

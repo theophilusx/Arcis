@@ -6,23 +6,23 @@
 ;;
 
 (ns arcis.routes.app-routes
-  (:require [arcis.routes.home :refer [home-page]]
-            [arcis.routes.login :refer [authenticate-user]]
-            [arcis.routes.admin.users :refer [user-list]]
-            [arcis.routes.admin.register :refer [register-user]]
-            [arcis.routes.admin.user-state :refer [set-user-state]]
-            [arcis.routes.admin.user-role :refer [set-user-role]]
-            [arcis.routes.admin.password :refer [change-password]]
+  (:require [arcis.routes.admin.delete-network :refer [delete-network-group]]
             [arcis.routes.admin.delete-user :refer [delete-user]]
             [arcis.routes.admin.network :refer [add-group group-list]]
-            [arcis.routes.admin.delete-network :refer [delete-network-group]]
-            [arcis.routes.admin.network-state :refer [set-group-state]]
             [arcis.routes.admin.network-pattern :refer [group-pattern]]
-            [arcis.routes.hosts.upload :refer [upload-hosts]]
+            [arcis.routes.admin.network-state :refer [set-group-state]]
+            [arcis.routes.admin.password :refer [change-password]]
+            [arcis.routes.admin.register :refer [register-user]]
+            [arcis.routes.admin.user-role :refer [set-user-role]]
+            [arcis.routes.admin.user-state :refer [set-user-state]]
+            [arcis.routes.admin.users :refer [user-list]]
+            [arcis.routes.home :refer [home-page]]
             [arcis.routes.hosts.host-list :refer [host-list]]
             [arcis.routes.hosts.update-host :refer [do-host-update]]
-            [compojure.route :as route]
-            [compojure.core :refer [defroutes GET POST ANY]]))
+            [arcis.routes.hosts.upload :refer [upload-hosts]]
+            [arcis.routes.login :refer [authenticate-user]]
+            [compojure.core :refer [GET POST defroutes]]
+            [compojure.route :as route]))
 
 (defroutes base-routes
   (route/resources "/")

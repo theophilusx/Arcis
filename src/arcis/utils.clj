@@ -4,16 +4,14 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.utils
   (:require [buddy.hashers :as hashers]
             [cheshire.core :refer [generate-string]]
-            [arcis.db.users :as udb]
-            [arcis.db.network :as ndb]
-            [clojure.string :as s]
-            [clj-time.core :as t]
             [clj-time.coerce :as tc]
+            [clj-time.core :as t]
             [clj-time.format :as tf]
-            [clj-time.local :as tl]))
+            [clojure.string :as s]))
 
 (defn encrypt [pwd]
   (hashers/encrypt pwd {:algorithm :pbkdf2+sha256}))

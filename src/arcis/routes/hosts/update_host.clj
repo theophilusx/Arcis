@@ -4,13 +4,14 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.hosts.update-host
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
-            [arcis.db.hosts :as hdb]
+  (:require [arcis.db.hosts :as hdb]
             [arcis.utils :as u]
             [bouncer.core :as b]
-            [bouncer.validators :as v]))
+            [bouncer.validators :as v]
+            [cheshire.core :refer [generate-string]]
+            [liberator.core :refer [defresource]]))
 
 (defn is-malformed-host [params]
   (let [validation-map (first (b/validate params

@@ -4,20 +4,16 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.db.core
   (:require [cheshire.core :refer [generate-string parse-string]]
             [clojure.java.jdbc :as jdbc]
             [conman.core :as conman]
             [environ.core :refer [env]])
-  (:import org.postgresql.util.PGobject
-           org.postgresql.jdbc4.Jdbc4Array
-           clojure.lang.IPersistentMap
-           clojure.lang.IPersistentVector
-           [java.sql
-            BatchUpdateException
-            Date
-            Timestamp
-            PreparedStatement]))
+  (:import (clojure.lang IPersistentMap IPersistentVector)
+           (java.sql Date PreparedStatement Timestamp)
+           (org.postgresql.jdbc4 Jdbc4Array)
+           (org.postgresql.util PGobject)))
 
 (defonce ^:dynamic *conn* (atom nil))
 

@@ -6,8 +6,7 @@
 ;;
 
 (ns arcis.routes.hosts.network-groups
-  (:require [arcis.utils :as u]
-            [arcis.db.network :as ndb]))
+  (:require [arcis.db.network :as ndb]))
 
 (defn get-network-groups []
   (let [grp (ndb/get-active-network-groups)]

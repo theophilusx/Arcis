@@ -6,15 +6,15 @@
 ;;
 
 (ns arcis.routes.hosts.upload
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
+  (:require [arcis.db.hosts :as hdb]
+            [arcis.routes.hosts.network-groups :refer [make-classifier]]
+            [arcis.utils :as u]
             [bouncer.core :as b]
             [bouncer.validators :as v]
+            [cheshire.core :refer [generate-string]]
             [clojure.string :as s]
-            [arcis.utils :as u]
-            [arcis.db.hosts :as hdb]
-            [arcis.routes.hosts.network-groups :refer [make-classifier]])
-  (:import [java.sql BatchUpdateException]))
+            [liberator.core :refer [defresource]])
+  (:import (java.sql BatchUpdateException)))
 
 (defn y-or-n-check [v]
   (cond

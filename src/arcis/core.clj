@@ -4,14 +4,15 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.core
-  (:require [arcis.handler :refer [app init destroy]]
+  (:require [arcis.db.migrations :as migrations]
+            [arcis.handler :refer [app destroy init]]
+            [clojure.tools.nrepl.server :as nrepl]
+            [environ.core :refer [env]]
             [immutant.web :as immutant]
             [immutant.web.undertow :refer [options]]
-            [arcis.db.migrations :as migrations]
-            [clojure.tools.nrepl.server :as nrepl]
-            [taoensso.timbre :as timbre]
-            [environ.core :refer [env]])
+            [taoensso.timbre :as timbre])
   (:gen-class))
 
 (defonce nrepl-server (atom nil))

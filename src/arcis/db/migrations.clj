@@ -4,9 +4,10 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.db.migrations
-  (:require [migratus.core :as migratus]
-            [environ.core :refer [env]]
+  (:require [environ.core :refer [env]]
+            [migratus.core :as migratus]
             [to-jdbc-uri.core :refer [to-jdbc-uri]]))
 
 (defn parse-ids [args]

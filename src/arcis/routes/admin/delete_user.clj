@@ -4,13 +4,14 @@
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
+
 (ns arcis.routes.admin.delete-user
-  (:require [cheshire.core :refer [generate-string]]
-            [liberator.core :refer [defresource]]
+  (:require [arcis.db.users :as udb]
+            [arcis.utils :as u]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [arcis.utils :as u]
-            [arcis.db.users :as udb]))
+            [cheshire.core :refer [generate-string]]
+            [liberator.core :refer [defresource]]))
 
 (defn is-malformed-delete [params]
   (let [validation-map (first (b/validate params :id v/required))]
