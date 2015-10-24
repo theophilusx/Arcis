@@ -1,6 +1,6 @@
 ;;      Filename: core.clj
 ;; Creation Date: Saturday, 04 July 2015 12:26 PM AEST
-;; Last Modified: Tuesday, 15 September 2015 08:06 AM AEST
+;; Last Modified: Saturday, 24 October 2015 05:29 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -11,7 +11,7 @@
             [conman.core :as conman]
             [environ.core :refer [env]])
   (:import (clojure.lang IPersistentMap IPersistentVector)
-           (java.sql Date PreparedStatement Timestamp)
+           (java.sql BatchUpdateException Date PreparedStatement Timestamp)
            (org.postgresql.jdbc4 Jdbc4Array)
            (org.postgresql.util PGobject)))
 
@@ -38,6 +38,7 @@
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))
+
 
 (extend-protocol jdbc/IResultSetReadColumn
   Date

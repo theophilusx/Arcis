@@ -86,10 +86,10 @@
                                  [ring/ring-devel "1.4.0"]
                                  [pjstadig/humane-test-output "0.7.0"]
                                  [lein-figwheel "0.4.1"]
-                                 ;;[mvxcvi/puget "0.8.1"]
+                                 [mvxcvi/puget "0.8.1"]
                                  [com.cemerick/piggieback "0.2.1"]]
                   :plugins [[lein-figwheel "0.4.1"]]
-                   :cljsbuild
+                  :cljsbuild
                   {:builds
                     {:app
                      {:source-paths ["env/dev/cljs"]
@@ -100,6 +100,7 @@
                   {:http-server-root "public"
                    :server-port 3449
                    :nrepl-port 7002
+                   :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
                    :css-dirs ["resources/public/css"]
                    :ring-handler arcis.handler/app}
 
