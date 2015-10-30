@@ -1,6 +1,6 @@
 ;;      Filename: network-groups.clj
 ;; Creation Date: Friday, 04 September 2015 01:14 PM AEST
-;; Last Modified: Thursday, 17 September 2015 05:36 PM AEST
+;; Last Modified: Saturday, 31 October 2015 10:27 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -15,6 +15,12 @@
                      (re-pattern (:group_regexp v))))
             {} grp)))
 
+(defn make-unknown [ip]
+  (let [[match sub-match] (re-matches #"(\d+\.\d+\.\d+)\.\d+" ip)]
+    (if match
+      ["Unknown" (str (clojure.string/replace sub-match #"\." "-") "-X")]
+      ["Unknown" "Unknown"])))
+
 (defn make-classifier []
   (let [patterns (get-network-groups)]
     (fn [mdf-record]
@@ -25,7 +31,7 @@
                                   rx)) (keys patterns))
               [net grp] (if match-key
                           (clojure.string/split (name match-key) #"\|")
-                          ["Unknown" "Unknown"])]
+                          (make-unknown (:ipv4 mdf-record)))]
           (assoc mdf-record
                  :network_group net
                  :subgroup_name grp))
