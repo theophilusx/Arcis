@@ -1,6 +1,6 @@
 ;;      Filename: network.cljs
 ;; Creation Date: Saturday, 29 August 2015 11:58 AM AEST
-;; Last Modified: Sunday, 18 October 2015 11:50 AM AEDT
+;; Last Modified: Sunday, 25 October 2015 09:39 AM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -34,7 +34,8 @@
       vmap)))
 
 (defn network-group-add [response]
-  (get-network-groups))
+  (get-network-groups)
+  (u/report-success (:message response)))
 
 (defn post-network-group [group]
   (if (state/is-authenticated?)
@@ -91,6 +92,6 @@
 
 (defn network-component []
   [:div
-   [network-group-table]
+   [add-network-group-component]
    [:hr]
-   [add-network-group-component]])
+   [network-group-table]])
