@@ -15,7 +15,7 @@ AND subgroup_name = :subgroup_name
 -- name: update-group-pattern!
 -- Update the regexp for the group
 UPDATE network_grp
-SET group_regexp = :group_regexp
+SET group_regexp = :group_regexp,
     last_modified_dt = current_timestamp
 WHERE group_name = :group_name
 AND subgroup_name = :subgroup_name
