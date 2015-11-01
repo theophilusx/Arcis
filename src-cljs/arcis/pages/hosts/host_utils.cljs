@@ -1,6 +1,6 @@
 ;;      Filename: hosts_utils.cljs
 ;; Creation Date: Saturday, 01 August 2015 04:41 PM AEST
-;; Last Modified: Sunday, 18 October 2015 12:59 PM AEDT
+;; Last Modified: Sunday, 01 November 2015 02:31 PM AEDT
 ;;        Author: Tim Cross <theophilusx AT gmail.com>
 ;;   Description:
 ;;
@@ -9,8 +9,8 @@
             [arcis.ajax :as ajax]
             [arcis.utils :as u]))
 
-(def page-size 20)
-(def index-size 10)
+(def page-size 30)
+(def index-size 15)
 
 (defn keywordize-host-list
   "Convert a list of hosts maps and converts keys to keywords and
@@ -115,15 +115,21 @@ Then build an index broken into pages"
     (state/set-value-in! [:hosts :host-list] host-hash)
     (state/set-value-in! [:hosts :host-index] host-idx)))
 
-(defn get-host-list []
+(defn get-host-list
+  "Retrieve a list of hosts from the server"
+  []
   (if (state/is-authenticated?)
     (ajax/get-it "get-host-list" "/hosts/list" #'process-host-list)
     (u/report-unauthenticated "get-host-lists")))
 
-(defn get-display-action [host-key]
+(defn get-display-action
+  "Get the current display state for a host record"
+  [host-key]
   (state/value-in [(state/this-page) :host-list host-key :display-action]))
 
-(defn set-display-action [host-id action]
+(defn set-display-action
+  "Set the display state for a host record"
+  [host-id action]
   (state/set-value-in! [(state/this-page) :host-list
                         (u/digit-keyword host-id) :display-action] action))
 
